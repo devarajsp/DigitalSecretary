@@ -41,6 +41,15 @@ if ((git -C $repo status --porcelain).Length -gt 0) {
     git -C $repo commit -m "Publish: finalize GitHub Pages / repo URLs"
 }
 
+# Safety: never push commits that carry a personal (non-noreply) email.
+$leaky = git -C $repo log --format='%ae%n%ce' |
+    Where-Object { $_ -and ($_ -notmatch '^noreply@github\.com$') -and ($_ -notmatch '@users\.noreply\.github\.com$') } |
+    Sort-Object -Unique
+if ($leaky) {
+    Write-Error "Refusing to push: commit(s) contain non-noreply email(s): $($leaky -join ', '). Scrub history first."
+    exit 1
+}
+
 # 3. Create the repo and push (skips if origin already exists).
 if (-not (git -C $repo remote)) {
     gh repo create $RepoName "--$Visibility" --source $repo --remote origin --push --description $Description
