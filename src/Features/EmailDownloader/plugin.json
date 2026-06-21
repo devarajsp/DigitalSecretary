@@ -1,0 +1,9 @@
+{
+  "id": "email-downloader",
+  "title": "Download Emails",
+  "category": "Communication",
+  "description": "Download a local copy of all Yahoo Mail folders, emails and attachments.",
+  "order": 10,
+  "entryAssembly": "DigitalSecretary.Features.EmailDownloader.dll",
+  "entryType": "DigitalSecretary.Features.EmailDownloader.EmailDownloaderModule"
+}

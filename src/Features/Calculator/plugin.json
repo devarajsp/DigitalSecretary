@@ -1,0 +1,9 @@
+{
+  "id": "calculator",
+  "title": "Calculator",
+  "category": "Tools",
+  "description": "Quick keypad and type-an-expression calculator.",
+  "order": 20,
+  "entryAssembly": "DigitalSecretary.Features.Calculator.dll",
+  "entryType": "DigitalSecretary.Features.Calculator.CalculatorModule"
+}

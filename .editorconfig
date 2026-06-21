@@ -1,0 +1,60 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = crlf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+
+[*.{cs,csproj,props,targets}]
+indent_size = 4
+
+[*.{json,yml,yaml}]
+indent_size = 2
+
+[*.md]
+trim_trailing_whitespace = false
+
+# ---------------------------------------------------------------------------
+# C# code style + analyzer severities (static analysis)
+# ---------------------------------------------------------------------------
+[*.cs]
+# Language conventions
+dotnet_sort_system_directives_first = true
+csharp_prefer_braces = true:suggestion
+csharp_style_namespace_declarations = file_scoped:suggestion
+dotnet_style_qualification_for_field = false:suggestion
+dotnet_style_qualification_for_property = false:suggestion
+
+# Naming: private fields start with underscore (already used throughout).
+dotnet_naming_rule.private_fields_underscore.severity = suggestion
+dotnet_naming_rule.private_fields_underscore.symbols = private_fields
+dotnet_naming_rule.private_fields_underscore.style = underscore_prefix
+dotnet_naming_symbols.private_fields.applicable_kinds = field
+dotnet_naming_symbols.private_fields.applicable_accessibilities = private
+dotnet_naming_style.underscore_prefix.required_prefix = _
+dotnet_naming_style.underscore_prefix.capitalization = camel_case
+
+# --- Rules we intentionally relax for a desktop app (keep the build signal clean) ---
+# Catching general exceptions is deliberate (features must never crash the host).
+dotnet_diagnostic.CA1031.severity = none
+# UI strings are not localized in this app.
+dotnet_diagnostic.CA1303.severity = none
+dotnet_diagnostic.CA1304.severity = none
+dotnet_diagnostic.CA1305.severity = none
+dotnet_diagnostic.CA1310.severity = none
+dotnet_diagnostic.CA1311.severity = none
+# Plugin manifest / DTO types are instantiated via JSON or reflection.
+dotnet_diagnostic.CA1812.severity = none
+# "Mark members as static" is noise for event handlers / small helpers.
+dotnet_diagnostic.CA1822.severity = suggestion
+# Nested type visibility / collection property setters are fine for our DTOs.
+dotnet_diagnostic.CA2227.severity = none
+dotnet_diagnostic.CA1002.severity = none
+dotnet_diagnostic.CA1819.severity = none
+
+# --- Rules we want to keep loud ---
+dotnet_diagnostic.CA2200.severity = warning   # rethrow to preserve stack
+dotnet_diagnostic.CA1816.severity = warning   # GC.SuppressFinalize on Dispose
+dotnet_diagnostic.CA2000.severity = suggestion

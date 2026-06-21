@@ -1,0 +1,8 @@
+# Test-project relaxations (combined with the repo-root .editorconfig).
+[*.cs]
+# Underscores in test method names are the idiomatic "Given_When_Then" style.
+dotnet_diagnostic.CA1707.severity = none
+# Inline arrays in assertions are fine in tests.
+dotnet_diagnostic.CA1861.severity = none
+# ConfigureAwait is not relevant in test code.
+dotnet_diagnostic.CA2007.severity = none

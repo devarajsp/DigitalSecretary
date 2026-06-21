@@ -1,0 +1,9 @@
+{
+  "id": "launcher",
+  "title": "Launcher",
+  "category": "Tools",
+  "description": "One-click launch your favorite apps, files, folders, and links.",
+  "order": 10,
+  "entryAssembly": "DigitalSecretary.Features.Launcher.dll",
+  "entryType": "DigitalSecretary.Features.Launcher.LauncherModule"
+}

@@ -1,0 +1,18 @@
+# Build output
+bin/
+obj/
+
+# Test & coverage artifacts
+artifacts/
+TestResults/
+*.trx
+coverage.cobertura.xml
+
+# User-specific
+*.user
+*.suo
+.vs/
+
+# Rider / VS Code
+.idea/
+.vscode/

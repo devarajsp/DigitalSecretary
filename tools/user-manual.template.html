@@ -1,0 +1,267 @@
+<!doctype html>
+<!--
+  AUTO-GENERATED: docs/user-guide/DigitalSecretary-User-Manual.html is built from this template plus
+  screenshots. Do NOT edit the generated .html by hand. Edit tools/user-manual.template.html and the
+  views, then run:  dotnet run --project tools/DocShots  &&  ./tools/build-user-manual.ps1
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DigitalSecretary — User Manual</title>
+<style>
+  :root{
+    --bg:#f3f3f3; --card:#ffffff; --ink:#1b1b1b; --muted:#5f6368; --line:#e6e6e6;
+    --accent:#0067c0; --accent-weak:#eaf2fb; --radius:10px;
+    --shadow:0 1px 2px rgba(0,0,0,.06),0 6px 18px rgba(0,0,0,.06);
+    --tip:#107c41; --tip-bg:#eafaf0; --note:#0067c0; --note-bg:#eaf2fb; --warn:#9a6700; --warn-bg:#fff6e5;
+    --font:"Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{--bg:#1f1f1f;--card:#272727;--ink:#eaeaea;--muted:#a6a6a6;--line:#3a3a3a;
+      --accent:#4cc2ff;--accent-weak:#13344b;--tip-bg:#13301f;--note-bg:#13344b;--warn-bg:#3a2f12;
+      --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 18px rgba(0,0,0,.35);}
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.6}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .app{display:grid;grid-template-columns:288px 1fr;min-height:100vh}
+
+  /* Sidebar */
+  .side{position:sticky;top:0;align-self:start;height:100vh;overflow:auto;background:var(--card);
+    border-right:1px solid var(--line);padding:22px 18px}
+  .brand{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+  .logo{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#00a2ed);
+    color:#fff;display:grid;place-items:center;font-weight:700;font-size:17px;box-shadow:var(--shadow)}
+  .brand b{font-size:16px}.brand small{display:block;color:var(--muted);font-weight:400;font-size:12px}
+  .search{width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);
+    color:var(--ink);font:inherit;font-size:14px;margin:6px 0 14px}
+  nav a{display:block;padding:7px 10px;border-radius:7px;color:var(--ink);font-size:14.5px}
+  nav a:hover{background:var(--accent-weak);text-decoration:none}
+  nav a.active{background:var(--accent-weak);color:var(--accent);font-weight:600}
+  nav .grp{margin:14px 0 4px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+
+  /* Content */
+  .main{max-width:980px;margin:0 auto;padding:36px 40px 80px}
+  .topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:8px}
+  .hero{background:linear-gradient(135deg,var(--accent),#00a2ed);color:#fff;border-radius:16px;
+    padding:30px 32px;box-shadow:var(--shadow);margin:8px 0 30px}
+  .hero h1{margin:0 0 6px;font-size:30px}.hero p{margin:0;opacity:.95}
+  .btn{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;
+    padding:8px 14px;font:inherit;font-size:14px;cursor:pointer;box-shadow:var(--shadow)}
+  .btn:hover{border-color:var(--accent);color:var(--accent)}
+  section.doc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:24px 26px;margin:0 0 22px;box-shadow:var(--shadow);scroll-margin-top:18px}
+  section.doc h2{margin:.1em 0 .5em;font-size:23px}
+  section.doc h3{margin:1.1em 0 .35em;font-size:17px}
+  .lead{color:var(--muted);margin-top:0}
+  .pill{display:inline-block;font-size:12px;color:var(--accent);background:var(--accent-weak);
+    border-radius:999px;padding:2px 10px;margin-left:8px;vertical-align:middle}
+  figure{margin:16px 0}
+  figure img{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow)}
+  figcaption{color:var(--muted);font-size:13px;margin-top:8px;text-align:center}
+  ol.steps{counter-reset:s;list-style:none;padding-left:0;margin:.4em 0}
+  ol.steps>li{position:relative;padding:4px 0 8px 40px;margin:0}
+  ol.steps>li::before{counter-increment:s;content:counter(s);position:absolute;left:0;top:2px;
+    width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font-size:13px;font-weight:700}
+  kbd{background:var(--bg);border:1px solid var(--line);border-bottom-width:2px;border-radius:6px;padding:1px 7px;font-size:13px;font-family:Consolas,monospace}
+  .call{border:1px solid var(--line);border-left-width:4px;border-radius:8px;padding:12px 14px;margin:14px 0;font-size:14.5px}
+  .call .h{font-weight:600;margin-bottom:2px}
+  .tip{border-left-color:var(--tip);background:var(--tip-bg)} .tip .h{color:var(--tip)}
+  .note{border-left-color:var(--note);background:var(--note-bg)} .note .h{color:var(--note)}
+  .warn{border-left-color:var(--warn);background:var(--warn-bg)} .warn .h{color:var(--warn)}
+  table{border-collapse:collapse;width:100%;margin:12px 0;font-size:14.5px}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left}
+  th{background:var(--bg)}
+  .noresult{display:none;color:var(--muted);padding:18px}
+  footer{color:var(--muted);font-size:13px;text-align:center;margin-top:24px}
+  @media (max-width:880px){.app{grid-template-columns:1fr}.side{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line)}}
+  @media print{.side,.topbar{display:none}.app{display:block}.main{max-width:none;padding:0}
+    section.doc{break-inside:avoid;box-shadow:none;border-color:#ccc}.hero{color:#000;background:none;border:1px solid #ccc}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <div class="brand"><div class="logo">DS</div><div><b>Digital Secretary</b><small>User Manual · v2.0</small></div></div>
+    <input id="q" class="search" type="search" placeholder="Search this manual…" aria-label="Search">
+    <nav id="toc">
+      <div class="grp">Get started</div>
+      <a href="#welcome">Welcome</a>
+      <a href="#start">Install &amp; run</a>
+      <a href="#window">The main window</a>
+      <a href="#configure">Show / hide features</a>
+      <div class="grp">Features</div>
+      <a href="#launcher">Launcher</a>
+      <a href="#calculator">Calculator</a>
+      <a href="#clipboard">Clipboard History</a>
+      <a href="#email">Download Emails</a>
+      <div class="grp">More</div>
+      <a href="#data">Your data &amp; privacy</a>
+      <a href="#faq">Troubleshooting / FAQ</a>
+    </nav>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <div style="color:var(--muted);font-size:13px">Digital Secretary — User Manual</div>
+      <button class="btn" onclick="window.print()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:6px"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Print / Save as PDF</button>
+    </div>
+
+    <div class="hero">
+      <h1>Digital Secretary — User Manual</h1>
+      <p>Your personal toolbox for Windows. This guide shows you how to use every feature, with pictures.</p>
+    </div>
+
+    <p class="noresult" id="noresult">No sections match your search.</p>
+
+    <section class="doc" id="welcome" data-t="welcome what is digital secretary overview">
+      <h2>Welcome</h2>
+      <p class="lead">Digital Secretary collects handy day-to-day tools (“features”) in one window. You choose which ones to show, and new tools can be added over time.</p>
+      <p>The current version includes a <b>Launcher</b>, a <b>Calculator</b>, a <b>Clipboard History</b>, and a <b>Download Emails</b> tool. Everything runs on your PC and works offline (except email download, which needs the internet).</p>
+    </section>
+
+    <section class="doc" id="start" data-t="install run requirements dotnet exe launch start">
+      <h2>Install &amp; run</h2>
+      <ol class="steps">
+        <li>Make sure you have <b>Windows 10 or 11</b> and the <b>.NET 9 runtime</b>.</li>
+        <li>Open the app by running <b>DigitalSecretary.exe</b>.</li>
+        <li>The main window opens on the <b>Home</b> screen, shown below.</li>
+      </ol>
+      <div class="call note"><div class="h">Note</div>The first time you open a feature it loads instantly and is remembered for the rest of your session.</div>
+    </section>
+
+    <section class="doc" id="window" data-t="main window menu dashboard home tiles navigation">
+      <h2>The main window</h2>
+      <p class="lead">The home screen is your dashboard — a tile for each feature you’ve chosen to show.</p>
+      <figure><img src="{{main-shell}}" alt="Digital Secretary main window"><figcaption>The main window: menu bar (File · Features · View · Help) and the Home dashboard of feature tiles.</figcaption></figure>
+      <h3>Ways to open a feature</h3>
+      <ul>
+        <li><b>Click a tile</b> on the Home dashboard, or</li>
+        <li>Use the menu: <b>Features → Category → Feature</b>.</li>
+      </ul>
+      <p>Return to Home any time with <b>View → Home</b>. See app info under <b>Help → About</b>.</p>
+    </section>
+
+    <section class="doc" id="configure" data-t="configure features show hide dashboard menu visibility settings">
+      <h2>Show / hide features <span class="pill">your choice</span></h2>
+      <p class="lead">Decide which features appear on the dashboard and in the menu — independently.</p>
+      <figure><img src="{{configure-features}}" alt="Configure Features dialog"><figcaption>View → Configure Features… — tick <b>On Dashboard</b> and/or <b>In Menu</b> per feature.</figcaption></figure>
+      <ol class="steps">
+        <li>Click <b>View → Configure Features…</b></li>
+        <li>For each feature, tick <b>On Dashboard</b> and/or <b>In Menu</b>.</li>
+        <li>Click <b>OK</b>. Your choices are saved and applied right away.</li>
+      </ol>
+      <div class="call tip"><div class="h">Tip</div>Hid everything by accident? You can always reopen this from <b>View → Configure Features…</b> — that menu never disappears.</div>
+    </section>
+
+    <section class="doc" id="launcher" data-t="launcher favorites shortcuts apps files folders url links open launch">
+      <h2>Launcher</h2>
+      <p class="lead">Open your favorite apps, files, folders, and websites in one click.</p>
+      <figure><img src="{{launcher}}" alt="Launcher feature"><figcaption>Launcher with a few saved shortcuts. Toolbar: Add App/File · Add Folder · Add URL · Edit · Remove · Launch.</figcaption></figure>
+      <h3>Add a shortcut</h3>
+      <ul>
+        <li><b>App or file:</b> <b>Add App / File</b> → pick it → give it a name → <b>OK</b>.</li>
+        <li><b>Folder:</b> <b>Add Folder</b> → choose it → name it → <b>OK</b>.</li>
+        <li><b>Website:</b> <b>Add URL</b> → type the address → name it → <b>OK</b>.</li>
+      </ul>
+      <h3>Open, edit, remove</h3>
+      <ol class="steps">
+        <li><b>Open:</b> double-click an item (or select it and click <b>Launch</b>).</li>
+        <li><b>Edit:</b> select an item → <b>Edit</b> → change its name/target.</li>
+        <li><b>Remove:</b> select an item → <b>Remove</b> → confirm <b>Yes</b>.</li>
+      </ol>
+      <div class="call tip"><div class="h">Tip</div>Your list is saved automatically and comes back next time you open the app.</div>
+      <div class="call warn"><div class="h">If “Could not open…” appears</div>The file or folder may have moved, or a link is mistyped — use <b>Edit</b> to fix the target.</div>
+    </section>
+
+    <section class="doc" id="calculator" data-t="calculator keypad expression math add subtract multiply divide parentheses">
+      <h2>Calculator</h2>
+      <p class="lead">A quick calculator you can click or type into.</p>
+      <figure><img src="{{calculator}}" alt="Calculator feature"><figcaption>Type a whole expression in the display, or use the keypad.</figcaption></figure>
+      <h3>Two ways to use it</h3>
+      <ul>
+        <li><b>Keypad:</b> click the digits and operators (<kbd>+</kbd> <kbd>−</kbd> <kbd>×</kbd> <kbd>÷</kbd>, parentheses, <kbd>.</kbd>), then <kbd>=</kbd>.</li>
+        <li><b>Type it:</b> click in the display, type something like <kbd>(12 + 5) * 3 / 2</kbd>, and press <kbd>Enter</kbd>.</li>
+      </ul>
+      <p><b>C</b> clears everything · <b>⌫</b> deletes the last character · <b>=</b> calculates.</p>
+      <div class="call tip"><div class="h">Tip</div>For a decimal answer, include a decimal point — e.g. <kbd>7.0 / 2</kbd> gives <b>3.5</b>.</div>
+      <div class="call note"><div class="h">“Error”?</div>The expression isn’t valid (e.g. <kbd>2 +</kbd>) or you divided by zero. Press <b>C</b> and try again.</div>
+    </section>
+
+    <section class="doc" id="clipboard" data-t="clipboard history copy paste capture re-copy delete clear">
+      <h2>Clipboard History</h2>
+      <p class="lead">Windows keeps only the latest copied text. This remembers recent items so you can paste something from earlier.</p>
+      <figure><img src="{{clipboard-history}}" alt="Clipboard History feature"><figcaption>Text you copy anywhere appears here, newest first.</figcaption></figure>
+      <h3>How to use it</h3>
+      <ol class="steps">
+        <li>Open <b>Clipboard History</b> and keep it running — new copied text is captured automatically.</li>
+        <li>To paste an earlier item, <b>double-click</b> it (or select it and click <b>Copy</b>) — it goes back on the clipboard, ready to paste with <kbd>Ctrl</kbd>+<kbd>V</kbd>.</li>
+        <li>Use <b>Delete</b> to drop one item, or <b>Clear All</b> to empty the list.</li>
+      </ol>
+      <div class="call note"><div class="h">Private by design</div>The history is kept only while the app is open and is <b>never saved to disk</b>.</div>
+    </section>
+
+    <section class="doc" id="email" data-t="download emails yahoo imap backup attachments app password eml txt">
+      <h2>Download Emails (Yahoo)</h2>
+      <p class="lead">Save a local <b>copy</b> of your Yahoo Mail — every folder, message, and attachment — without changing anything on the server.</p>
+      <figure><img src="{{email-downloader}}" alt="Download Emails feature"><figcaption>Enter your Yahoo email and app password, choose a folder, then Start.</figcaption></figure>
+      <div class="call warn"><div class="h">You need a Yahoo “app password”</div>Yahoo does not allow your normal password for this. Create one at <b>Yahoo Account → Account Security → Generate app password</b> and paste it into <b>App password</b>.</div>
+      <h3>Download your mail</h3>
+      <ol class="steps">
+        <li>Enter your <b>Yahoo email</b> and the <b>app password</b>.</li>
+        <li>Choose a <b>Save to folder</b> (or accept the default) with <b>Browse…</b>.</li>
+        <li>Click <b>Start Download</b>. Watch the progress bar and log; click <b>Cancel</b> any time.</li>
+      </ol>
+      <h3>What you get</h3>
+      <ul>
+        <li>Your Yahoo folder structure, recreated on your PC.</li>
+        <li>Each email saved <b>twice</b>: a readable <b>.txt</b> and a full-fidelity <b>.eml</b>.</li>
+        <li><b>All attachments</b> saved as-is, including inline images.</li>
+      </ul>
+      <div class="call tip"><div class="h">It’s a copy — your mailbox is untouched</div>Folders are opened read-only, so nothing is deleted, moved, or marked as read in Yahoo. Your <b>email address and folder are remembered</b>; your <b>password is never saved</b>.</div>
+    </section>
+
+    <section class="doc" id="data" data-t="data privacy storage appdata where files security password">
+      <h2>Your data &amp; privacy</h2>
+      <p>Everything stays on your PC under <kbd>%APPDATA%\DigitalSecretary\</kbd>:</p>
+      <table>
+        <tr><th>Location</th><th>What it holds</th></tr>
+        <tr><td><kbd>app-settings.json</kbd></td><td>Your show/hide choices.</td></tr>
+        <tr><td><kbd>data\&lt;feature&gt;\…</kbd></td><td>Each feature’s own data (e.g. your launcher shortcuts).</td></tr>
+      </table>
+      <div class="call note"><div class="h">Privacy</div>Nothing is uploaded anywhere. Passwords are never stored. Clipboard history lives only in memory.</div>
+    </section>
+
+    <section class="doc" id="faq" data-t="troubleshooting faq help problems error feature missing">
+      <h2>Troubleshooting / FAQ</h2>
+      <h3>A feature showed an error or didn’t open</h3>
+      <p>The rest of the app keeps working. Reopen the feature from the menu. If it keeps happening, note the message shown.</p>
+      <h3>I don’t see a tool I expected</h3>
+      <p>It may be hidden — open <b>View → Configure Features…</b> and tick it for the dashboard and/or menu.</p>
+      <h3>Is my data private?</h3>
+      <p>Yes — everything is local to your PC, and passwords are never saved.</p>
+    </section>
+
+    <footer>Digital Secretary · User Manual · generated from the app. © You.</footer>
+  </div>
+</div>
+
+<script>
+  // Search: hide sections that don't match.
+  const q=document.getElementById('q'), secs=[...document.querySelectorAll('section.doc')], nores=document.getElementById('noresult');
+  q.addEventListener('input',()=>{
+    const t=q.value.trim().toLowerCase(); let shown=0;
+    secs.forEach(s=>{const hay=(s.dataset.t+' '+s.textContent).toLowerCase();const ok=!t||hay.includes(t);s.style.display=ok?'':'none';if(ok)shown++;});
+    nores.style.display=shown?'none':'block';
+  });
+  // Active TOC link on scroll.
+  const links=[...document.querySelectorAll('#toc a')];
+  const map=new Map(links.map(a=>[a.getAttribute('href').slice(1),a]));
+  const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.classList.remove('active'));const a=map.get(e.target.id);if(a)a.classList.add('active');}});},{rootMargin:'-20% 0px -70% 0px'});
+  secs.forEach(s=>io.observe(s));
+</script>
+</body>
+</html>
