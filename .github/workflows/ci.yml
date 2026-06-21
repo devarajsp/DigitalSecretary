@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  quality-gate:
+    runs-on: windows-latest   # WinForms + the WinForms-hosting QA tests need Windows
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up .NET 9
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Set up Python (for the docs/traceability consistency gate)
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install openpyxl
+        run: pip install openpyxl
+
+      - name: Run full quality + consistency gate
+        shell: pwsh
+        run: ./build.ps1 -All -WarnAsError -MinCoverage 80
+
+      - name: Upload quality report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: quality-report
+          path: docs/QUALITY_REPORT.md
+          if-no-files-found: ignore

@@ -48,6 +48,16 @@ coverage. Current status: build clean (0 warnings), unit + QA green, ~88% logic 
 See [`docs/CODING_STANDARDS.md`](docs/CODING_STANDARDS.md), [`docs/TESTING.md`](docs/TESTING.md),
 and [`docs/STATIC_ANALYSIS.md`](docs/STATIC_ANALYSIS.md).
 
+### Automated gates (hooks + CI)
+- **Pre-commit hook** — runs a fast gate (build + static analysis + docs/traceability consistency) so
+  broken or drifted changes can't be committed. Enable once per clone:
+  ```powershell
+  ./tools/setup-hooks.ps1      # or: git config core.hooksPath .githooks
+  ```
+  Bypass a single commit with `git commit --no-verify`.
+- **CI** ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) — runs the full
+  `build.ps1 -All -WarnAsError -MinCoverage 80` on every push/PR to `main`.
+
 ## Repository layout
 ```
 DigitalSecretary.sln

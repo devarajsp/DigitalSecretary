@@ -1,0 +1,25 @@
+#!/bin/sh
+# Pre-commit quality gate for DigitalSecretary.
+#
+# Runs a FAST gate (build + static analysis + docs/traceability consistency) so broken or drifted
+# changes can't be committed. The FULL gate (unit tests + QA + coverage) runs in CI on push/PR.
+#
+#   - Make the local gate stricter: change "-NoPrompt" to "-All" below.
+#   - Bypass for a WIP commit:      git commit --no-verify
+#
+# Enable once per clone:  git config core.hooksPath .githooks   (or run tools/setup-hooks.ps1)
+
+echo "[pre-commit] Running build.ps1 -NoPrompt (build + static analysis + docs consistency)..."
+
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "build.ps1" -NoPrompt
+status=$?
+
+if [ "$status" -ne 0 ]; then
+  echo ""
+  echo "[pre-commit] BLOCKED: quality/consistency gate FAILED (exit $status)."
+  echo "[pre-commit] Fix the issues above, or bypass for a WIP commit: git commit --no-verify"
+  exit 1
+fi
+
+echo "[pre-commit] OK."
+exit 0
