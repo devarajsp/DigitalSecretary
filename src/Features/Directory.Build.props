@@ -1,0 +1,43 @@
+<Project>
+
+  <!-- Inherit the repo-wide defaults (analyzers, nullable, …). -->
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+
+  <!--
+    Shared settings for every feature plugin under src/Features.
+    Each feature project stays tiny: it only declares its own name and any extra packages.
+  -->
+  <PropertyGroup>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+
+    <!-- Where the host expects to find plugins at runtime. -->
+    <PluginsDir>$(MSBuildThisFileDirectory)..\DigitalSecretary.App\bin\$(Configuration)\net9.0-windows\plugins\</PluginsDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Features depend ONLY on the contract; Private=false so the host's copy is the one used. -->
+    <ProjectReference Include="$(MSBuildThisFileDirectory)..\DigitalSecretary.Abstractions\DigitalSecretary.Abstractions.csproj">
+      <Private>false</Private>
+    </ProjectReference>
+  </ItemGroup>
+
+  <!-- Every feature ships a plugin.json manifest next to its DLL. -->
+  <ItemGroup>
+    <Content Include="plugin.json" Condition="Exists('plugin.json')" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <!-- After building a feature, copy its output into the host's plugins/<FeatureName> folder. -->
+  <Target Name="CopyToPlugins" AfterTargets="Build">
+    <ItemGroup>
+      <_PluginOutput Include="$(TargetDir)**\*.*" />
+    </ItemGroup>
+    <MakeDir Directories="$(PluginsDir)$(MSBuildProjectName)" />
+    <Copy SourceFiles="@(_PluginOutput)"
+          DestinationFiles="@(_PluginOutput->'$(PluginsDir)$(MSBuildProjectName)\%(RecursiveDir)%(Filename)%(Extension)')"
+          SkipUnchangedFiles="true" />
+  </Target>
+
+</Project>

@@ -1,0 +1,9 @@
+{
+  "id": "clipboard-history",
+  "title": "Clipboard History",
+  "category": "Tools",
+  "description": "Keeps a history of copied text so you can paste older items.",
+  "order": 30,
+  "entryAssembly": "DigitalSecretary.Features.ClipboardHistory.dll",
+  "entryType": "DigitalSecretary.Features.ClipboardHistory.ClipboardHistoryModule"
+}

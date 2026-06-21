@@ -1,0 +1,26 @@
+<Project>
+
+  <!--
+    Repo-wide defaults for EVERY project (host, features, tests).
+    Static code analysis is on by default here; see docs/STATIC_ANALYSIS.md.
+    Feature projects also import this file (see src/Features/Directory.Build.props).
+  -->
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+
+    <!-- Static analysis (Roslyn / .NET analyzers). -->
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisLevel>latest-recommended</AnalysisLevel>
+    <AnalysisMode>Recommended</AnalysisMode>
+    <CodeAnalysisTreatWarningsAsErrors>false</CodeAnalysisTreatWarningsAsErrors>
+
+    <!-- Reproducible builds. -->
+    <Deterministic>true</Deterministic>
+
+    <!-- Quality bar: opt in per build via -WarnAsError in build.ps1, not by default. -->
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+</Project>

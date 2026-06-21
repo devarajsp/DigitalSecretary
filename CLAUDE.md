@@ -1,0 +1,97 @@
+# CLAUDE.md — working on Digital Secretary
+
+This file tells Claude how to work in this repo. Read it fully before making changes.
+
+## What this app is
+**Digital Secretary** is a pluggable Windows (WinForms, .NET 9) personal assistant. The host
+shell (`DigitalSecretary.App`) discovers **features** at runtime from a `plugins/` folder and
+loads each one **lazily** (only when the user opens it). Features are independent projects that
+know nothing about each other and depend only on a tiny contract assembly.
+
+The user's goal: **add new features by asking Claude, without hand-writing code.** So the most
+important workflow in this repo is "add a feature" — keep it mechanical and reliable.
+
+## Golden rules
+1. **Never make the host reference a feature.** The host (`DigitalSecretary.App`) references only
+   `DigitalSecretary.Abstractions`. Features reference only `DigitalSecretary.Abstractions`.
+   Features never reference each other.
+2. **One feature = one project** under `src/Features/<Name>/` + a `plugin.json` + a `FEATURE.md`.
+3. **Persist per feature**, only under `IFeatureContext.DataDirectory`. Never write to the host's
+   settings or another feature's folder.
+4. **Feature-specific NuGet packages stay in the feature.** Add the `PackageReference` to that
+   feature's `.csproj` and set `<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>`
+   so the dependency ships in the plugin folder (see the EmailDownloader feature).
+5. **Keep the contract small.** Only change `DigitalSecretary.Abstractions` when every feature
+   needs it; it's a breaking change for all plugins.
+6. **Put logic in plain classes, not WinForms controls** — so it can be unit-tested. Controls just
+   wire UI to those classes. See `docs/CODING_STANDARDS.md`.
+7. **Every change ships tests and stays green.** Add unit tests for new logic; keep static analysis
+   clean. **Always finish with `./build.ps1 -All` and confirm `VERDICT: PASS`.**
+
+## Quality workflow (do this for every change)
+- `./build.ps1 -All` — builds (with static analysis), runs unit tests + QA automation, collects
+  coverage, and writes `docs/QUALITY_REPORT.md`. It must report **PASS**.
+- New logic class/method → add unit tests in `tests/DigitalSecretary.UnitTests` (reference the
+  feature project there). New feature → QA automation covers loading/viewing it automatically.
+- Don't suppress analyzer warnings ad-hoc; tune centrally in `.editorconfig` with a reason.
+- **Update `docs/DEVELOPMENT_JOURNAL.md`** — append a Timeline entry (date + what + why) and record any
+  new decision/pitfall. This repo is the worked example of codeless development with Claude; the journal
+  must stay current. If a convention evolves, mirror it back to `…/Claude/app_standards/`.
+- **Update the product & user documentation (required, App → Feature → Sub-feature):**
+  - `docs/requirements/` — product/BA view: purpose, user stories, functional requirements, acceptance
+    criteria, NFRs, traceability. New feature ⇒ new `docs/requirements/features/<id>.md`.
+  - `docs/user-guide/` — end-user how-to per feature. New feature ⇒ new `docs/user-guide/features/<id>.md`.
+  - `docs/user-guide/DigitalSecretary-User-Manual.html` — single-file HTML manual **with screenshots**.
+    Regenerate after UI changes: `dotnet run --project tools/DocShots` then `./tools/build-user-manual.ps1`.
+  - `docs/requirements/DigitalSecretary-Requirements.xlsx` — single flat requirements sheet (JIRA-importable).
+  - `docs/traceability/DigitalSecretary-Traceability-Matrix.xlsx` — **bi-directional traceability matrix**
+    (feature/sub-feature ↔ requirement ID ↔ requirement doc · mock/screen · code · unit test · QA · user
+    manual · architecture doc · code doc), with an auto **Coverage** flag. Both are generated from the data
+    tables in `tools/docgen/build_excel_docs.py` — edit those tables and regenerate: `python
+    tools/docgen/build_excel_docs.py`. Every requirement must trace to all artifacts (Coverage = Complete).
+- **Cleanliness review (required).** Before finishing any change, review every created/generated
+  document and text output for encoding artifacts / mojibake (`Â`, `Ã`, `â€`), garbled characters,
+  leftover template tokens (`{{…}}`), and correct rendering. When writing text via PowerShell, read
+  **and** write with explicit UTF-8 (5.1 defaults to ANSI and corrupts non-ASCII). After regenerating
+  the user manual, grep the HTML for `Â|Ã|â€` and confirm **zero** before considering it done.
+- Standards: `docs/CODING_STANDARDS.md` · Testing/QA: `docs/TESTING.md` · Analysis: `docs/STATIC_ANALYSIS.md`.
+
+## Layout
+```
+src/
+  DigitalSecretary.Abstractions/   contract: IFeatureModule, IFeatureContext  (referenced by all)
+  DigitalSecretary.App/            host: menu, dashboard, plugin loader, settings
+  Features/
+    Directory.Build.props          shared feature settings + auto-copy to plugins/
+    <Name>/                        one feature (project + plugin.json + FEATURE.md)
+```
+At build time each feature's output is copied to
+`src/DigitalSecretary.App/bin/<Config>/net9.0-windows/plugins/<ProjectName>/`, which is what the
+host scans.
+
+## How to add a feature (summary)
+See **`docs/ADDING_A_FEATURE.md`** for the full copy-paste recipe. In short:
+1. Create `src/Features/<Name>/` with `<Name>.csproj`, `plugin.json`, a `…Module.cs` implementing
+   `IFeatureModule`, a `…Control.cs` (the UI), and `FEATURE.md`.
+2. `dotnet sln add` the new project.
+3. `dotnet build` the solution; the host picks the feature up automatically (no host edits).
+
+## Build & run
+```
+dotnet build DigitalSecretary.sln -c Debug
+src/DigitalSecretary.App/bin/Debug/net9.0-windows/DigitalSecretary.exe
+```
+
+## Docs map
+- `docs/ARCHITECTURE.md` — how the host, manifests, lazy loading, and isolation work.
+- `docs/ADDING_A_FEATURE.md` — the step-by-step recipe with templates (incl. tests).
+- `docs/FEATURE_TEMPLATE.md` — skeleton files to copy.
+- `docs/CODING_STANDARDS.md` — the rules (also printed by `build.ps1`).
+- `docs/TESTING.md` — unit tests, QA automation, coverage, how to add tests.
+- `docs/STATIC_ANALYSIS.md` — analyzers and `.editorconfig` tuning.
+- `docs/QUALITY_REPORT.md` — generated each `build.ps1` run (build/tests/coverage/QA).
+- `docs/DEVELOPMENT_JOURNAL.md` — living record of the build + the codeless-dev process (keep updated).
+- `docs/requirements/` — product/BA requirements (App + per feature/sub-feature).
+- `docs/user-guide/` — end-user guides + the single-file HTML **User Manual** (with screenshots).
+- `tools/DocShots/` + `tools/build-user-manual.ps1` — regenerate the manual's screenshots + HTML.
+- `src/Features/<Name>/FEATURE.md` — per-feature developer documentation (always add one).
