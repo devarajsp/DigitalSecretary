@@ -39,4 +39,4 @@ included `Install.cmd` for Start Menu / Desktop shortcuts. Windows 10/11, 64-bit
 - A single-file **HTML user manual with screenshots**.
 - A **Requirements spreadsheet** (JIRA-importable) and a **bi-directional traceability matrix**.
 
-[2.0.0]: https://github.com/__OWNER__/__REPO__/releases/tag/v2.0.0
+[2.0.0]: https://github.com/devarajsp/DigitalSecretary/releases/tag/v2.0.0
