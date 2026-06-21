@@ -6,6 +6,9 @@ and new features can be added without touching the core.
 
 > Built with .NET 9 + WinForms. Successor to the earlier "SPD Personal App".
 
+[![CI](__REPO_URL__/actions/workflows/ci.yml/badge.svg)](__REPO_URL__/actions/workflows/ci.yml)
+&nbsp;**Showcase:** __PAGES_URL__ &nbsp;·&nbsp; **User manual:** [open it](docs/user-guide/DigitalSecretary-User-Manual.html)
+
 ## Features included
 | Feature | Category | What it does |
 |---------|----------|--------------|
