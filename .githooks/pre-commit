@@ -9,7 +9,18 @@
 #
 # Enable once per clone:  git config core.hooksPath .githooks   (or run tools/setup-hooks.ps1)
 
-echo "[pre-commit] Running build.ps1 -NoPrompt (build + static analysis + docs consistency)..."
+# Fast fail: no secrets / personal info (emails, passwords, tokens, keys, PII) in any artifact.
+# Run via powershell.exe so it uses the same Python as build.ps1 (avoids the MS Store python stub).
+echo "[pre-commit] Scanning for secrets / personal information..."
+powershell.exe -NoProfile -ExecutionPolicy Bypass -Command 'python tools/check_secrets.py; exit $LASTEXITCODE'
+if [ "$?" -ne 0 ]; then
+  echo ""
+  echo "[pre-commit] BLOCKED: secrets or personal information detected (see above)."
+  echo "[pre-commit] Remove them, or mark a confirmed false positive with '# pragma: allowlist secret'."
+  exit 1
+fi
+
+echo "[pre-commit] Running build.ps1 -NoPrompt (build + static analysis + docs + secret gate)..."
 
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File "build.ps1" -NoPrompt
 status=$?

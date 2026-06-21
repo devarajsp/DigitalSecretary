@@ -223,11 +223,27 @@ if ((Get-Command python -ErrorAction SilentlyContinue) -and (Test-Path $checkScr
 }
 
 # --------------------------------------------------------------------------
+# 6b. Secret / PII scan (always; fast). No emails, passwords, tokens, keys, or PII in any artifact.
+# --------------------------------------------------------------------------
+Write-Section 'Secret / PII scan'
+$secrets = [pscustomobject]@{ Run = $false; Findings = 0 }
+$secretScript = Join-Path $root 'tools\check_secrets.py'
+if ((Get-Command python -ErrorAction SilentlyContinue) -and (Test-Path $secretScript)) {
+    $secOut = & python $secretScript 2>&1
+    $secOut | ForEach-Object { Write-Host $_ }
+    $secrets.Run = $true
+    $sm = $secOut | Select-String -Pattern 'RESULT findings=(\d+)' | Select-Object -Last 1
+    if ($sm) { $secrets.Findings = [int]$sm.Matches[0].Groups[1].Value }
+} else {
+    Write-Host '  Skipped (python or tools/check_secrets.py not found).' -ForegroundColor Yellow
+}
+
+# --------------------------------------------------------------------------
 # 7. Verdict + quality report (always written).
 # --------------------------------------------------------------------------
 $testsFailed = ($unit.Summary -and $unit.Summary.Failed -gt 0) -or ($qaResult.Summary -and $qaResult.Summary.Failed -gt 0)
 $coverageOk  = (-not ($coverageFresh -and $MinCoverage -gt 0)) -or ($coverage.Overall.Pct -ge $MinCoverage)
-$overallOk   = $buildOk -and ($errors -eq 0) -and -not $testsFailed -and $coverageOk -and ($docs.Errors -eq 0)
+$overallOk   = $buildOk -and ($errors -eq 0) -and -not $testsFailed -and $coverageOk -and ($docs.Errors -eq 0) -and ($secrets.Findings -eq 0)
 $verdict     = if ($overallOk) { 'PASS' } else { 'FAIL' }
 
 function Fmt($summary) {
@@ -251,6 +267,7 @@ $rep.Add("| Unit tests | $(Fmt $unit.Summary) |")
 $rep.Add("| Code coverage (overall) | $(if ($coverage) { "$($coverage.Overall.Pct)%" } else { 'n/a' }) |")
 $rep.Add("| QA automation | $(Fmt $qaResult.Summary) |")
 $rep.Add("| Docs & traceability | $(if (-not $docs.Run) { 'skipped' } elseif ($docs.Errors -eq 0) { "consistent ($($docs.Warnings) warning(s))" } else { "**$($docs.Errors) error(s)**" }) |")
+$rep.Add("| Secret / PII scan | $(if (-not $secrets.Run) { 'skipped' } elseif ($secrets.Findings -eq 0) { 'clean' } else { "**$($secrets.Findings) finding(s)**" }) |")
 $rep.Add('')
 
 $rep.Add('## Static code analysis report')
@@ -295,6 +312,16 @@ if (-not $docs.Run) {
     $rep.Add("**$($docs.Errors) consistency error(s)** found - see console output / run ``python tools/docgen/check_docs.py``.")
 }
 $rep.Add('')
+$rep.Add('## Secret / PII scan')
+$rep.Add('')
+if (-not $secrets.Run) {
+    $rep.Add('Skipped (Python not available).')
+} elseif ($secrets.Findings -eq 0) {
+    $rep.Add('No secrets or personal information (emails, passwords, tokens, keys, SSN/credit-card) found in any tracked artifact.')
+} else {
+    $rep.Add("**$($secrets.Findings) secret/PII finding(s)** - see console / run ``python tools/check_secrets.py``. Remove before committing.")
+}
+$rep.Add('')
 $rep.Add('## Notes')
 $rep.Add('- Standards: `docs/CODING_STANDARDS.md` - Testing/QA: `docs/TESTING.md` - Analysis: `docs/STATIC_ANALYSIS.md`.')
 $rep.Add('- Regenerate any time with `./build.ps1 -All`.')
@@ -314,6 +341,7 @@ Write-Host ("  Unit tests ......... {0}" -f (Fmt $unit.Summary))
 Write-Host ("  Coverage (overall) . {0}" -f $(if ($coverage) { "$($coverage.Overall.Pct)%" } else { 'n/a' }))
 Write-Host ("  QA automation ...... {0}" -f (Fmt $qaResult.Summary))
 Write-Host ("  Docs & traceability  {0}" -f $(if (-not $docs.Run) { 'skipped' } elseif ($docs.Errors -eq 0) { "consistent ($($docs.Warnings) warning(s))" } else { "$($docs.Errors) error(s)" }))
+Write-Host ("  Secret / PII scan .. {0}" -f $(if (-not $secrets.Run) { 'skipped' } elseif ($secrets.Findings -eq 0) { 'clean' } else { "$($secrets.Findings) finding(s)" }))
 Write-Host ("  Report ............. docs/QUALITY_REPORT.md")
 Write-Host ''
 Write-Host "  VERDICT: $verdict" -ForegroundColor $color

@@ -61,6 +61,11 @@ important workflow in this repo is "add a feature" — keep it mechanical and re
 - **Artifact consistency is gated.** `build.ps1` runs `tools/docgen/check_docs.py`, which fails the
   build if any traceability path/symbol is broken, a feature is missing an artifact, requirement IDs
   don't match, coverage has a gap, or generated text is unclean. Keep it green (part of the VERDICT).
+- **No secrets or personal info, ever — gated before every commit.** The pre-commit hook and
+  `build.ps1` run `tools/check_secrets.py`, which **fails** if any tracked artifact (code, docs, config)
+  contains a personal email, password, token / API key, private key, SSN, or credit-card number. Use a
+  **generic git identity** (no real name/email in commit metadata). Mark a confirmed false positive with
+  a trailing `# pragma: allowlist secret`.
 - **The repo is git-tracked** — make a commit per logical change so anything can be reviewed/reverted.
 - **Gates run automatically.** A **pre-commit hook** (`.githooks/pre-commit`) runs a fast gate
   (build + static analysis + docs consistency) so broken/drifted changes can't be committed; **CI**

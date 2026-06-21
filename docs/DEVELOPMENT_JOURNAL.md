@@ -145,6 +145,17 @@ consistency) so broken/drifted changes can't be committed, and a **GitHub Action
 `docs/QUALITY_REPORT.md` (regenerated each build) so the hook doesn't create churn. _Why: make the
 quality + consistency gate impossible to skip — drift can't be committed (hook) or merged (CI)._
 
+### Phase 16 — Secret / PII gate before every commit (2026-06-20)
+Added `tools/check_secrets.py` (Python), a scanner over all tracked text artifacts that flags personal
+emails, hardcoded passwords/secrets/tokens/API keys, GitHub/AWS/Google/Slack tokens, JWTs, private-key
+blocks, US SSNs, and Luhn-valid credit-card numbers (with placeholder/example allow-listing and a
+`# pragma: allowlist secret` escape). Wired it into the **pre-commit hook** (fast fail, before the
+build) and into `build.ps1` as a gate (part of the VERDICT) so it also runs in CI. Verified it catches
+all 7 leak types and doesn't self-flag. Also scrubbed git history to a generic identity
+`DigitalSecretary <noreply@github.com>` (no real name/email) and added a pre-push guard. Made it a
+**rule** (CLAUDE.md + `app_standards/`). _Why: no personal information or secrets should ever reach git
+— enforced automatically, not by memory._
+
 _(Append new phases here as we go.)_
 
 ---
