@@ -125,6 +125,17 @@ artifacts (Coverage = Complete). Made it a **rule** in `CLAUDE.md`, `ADDING_A_FE
 `app_standards/` file. _Why: one place to trace any artifact to any other and verify full requirement
 coverage; the requirements sheet publishes to JIRA/PM tools._
 
+### Phase 14 — Artifact integrity: consistency gate + version control (2026-06-20)
+Added `tools/docgen/check_docs.py`, a **docs & traceability consistency validator** wired into
+`build.ps1` (and the VERDICT): it fails the build if a traceability path/symbol is broken, the
+spreadsheets are stale/hand-edited, a feature is missing an artifact, requirement IDs don't match,
+coverage has a gap, or generated text is unclean. Verified it fails loudly (renamed a referenced .cs
+→ 2 errors, exit 1). Stamped generated files (manual HTML, both `.xlsx`) with **AUTO-GENERATED**
+banners. **Initialized git** (commit `4b78a73`, 102 files) + `.gitattributes`, so every change is
+reviewable/revertable. Made all of this a **rule** (CLAUDE.md + `app_standards/`). _Why: as the
+artifact web grew, we needed to detect drift automatically and keep a revertable history — manual
+edits to any artifact now get caught or can be undone._
+
 _(Append new phases here as we go.)_
 
 ---
