@@ -12,6 +12,10 @@
 *.runsettings text
 .editorconfig text
 
+# Git hooks must stay LF so /bin/sh can run them on Windows.
+.githooks/* text eol=lf
+*.sh        text eol=lf
+
 # Binary assets (never normalize/diff as text)
 *.png  binary
 *.xlsx binary

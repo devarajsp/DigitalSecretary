@@ -62,6 +62,11 @@ important workflow in this repo is "add a feature" — keep it mechanical and re
   build if any traceability path/symbol is broken, a feature is missing an artifact, requirement IDs
   don't match, coverage has a gap, or generated text is unclean. Keep it green (part of the VERDICT).
 - **The repo is git-tracked** — make a commit per logical change so anything can be reviewed/reverted.
+- **Gates run automatically.** A **pre-commit hook** (`.githooks/pre-commit`) runs a fast gate
+  (build + static analysis + docs consistency) so broken/drifted changes can't be committed; **CI**
+  (`.github/workflows/ci.yml`) runs the full `build.ps1 -All -WarnAsError -MinCoverage 80` on push/PR.
+  Enable the hook once per clone: `tools/setup-hooks.ps1` (or `git config core.hooksPath .githooks`).
+  Bypass for a WIP commit with `git commit --no-verify`.
 - Standards: `docs/CODING_STANDARDS.md` · Testing/QA: `docs/TESTING.md` · Analysis: `docs/STATIC_ANALYSIS.md`.
 
 ## Layout

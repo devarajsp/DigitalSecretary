@@ -136,6 +136,15 @@ reviewable/revertable. Made all of this a **rule** (CLAUDE.md + `app_standards/`
 artifact web grew, we needed to detect drift automatically and keep a revertable history — manual
 edits to any artifact now get caught or can be undone._
 
+### Phase 15 — Automated gates: pre-commit hook + CI (2026-06-20)
+Added a versioned **pre-commit hook** (`.githooks/pre-commit`, enabled via `tools/setup-hooks.ps1` →
+`core.hooksPath`) that runs a fast gate (`build.ps1 -NoPrompt`: build + static analysis + docs
+consistency) so broken/drifted changes can't be committed, and a **GitHub Actions CI**
+(`.github/workflows/ci.yml`, windows-latest + .NET 9 + Python) that runs the full
+`build.ps1 -All -WarnAsError -MinCoverage 80` on push/PR to block merges. Untracked the per-run
+`docs/QUALITY_REPORT.md` (regenerated each build) so the hook doesn't create churn. _Why: make the
+quality + consistency gate impossible to skip — drift can't be committed (hook) or merged (CI)._
+
 _(Append new phases here as we go.)_
 
 ---
