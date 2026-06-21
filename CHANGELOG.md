@@ -7,6 +7,10 @@ All notable changes to Digital Secretary. Format based on [Keep a Changelog](htt
 First public release of **Digital Secretary** &mdash; a pluggable personal toolbox for Windows,
 re-architected from the earlier single-project "SPD Personal App".
 
+**Download:** grab `DigitalSecretary-v2.0.0-win-x64.zip` from the assets below &mdash; it's
+**self-contained** (no .NET install needed). Unzip and run `DigitalSecretary.exe`, or use the
+included `Install.cmd` for Start Menu / Desktop shortcuts. Windows 10/11, 64-bit.
+
 ### Features
 - **Launcher** &mdash; one-click open favorite apps, files, folders, and links.
 - **Calculator** &mdash; keypad plus a type-an-expression evaluator.
