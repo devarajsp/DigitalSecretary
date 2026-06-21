@@ -54,6 +54,14 @@ important workflow in this repo is "add a feature" — keep it mechanical and re
   leftover template tokens (`{{…}}`), and correct rendering. When writing text via PowerShell, read
   **and** write with explicit UTF-8 (5.1 defaults to ANSI and corrupts non-ASCII). After regenerating
   the user manual, grep the HTML for `Â|Ã|â€` and confirm **zero** before considering it done.
+- **Never hand-edit generated files** — the user manual HTML, the `.xlsx` requirement/traceability
+  sheets, and `docs/QUALITY_REPORT.md` are build outputs (they carry an AUTO-GENERATED banner). Edit
+  the *source* (`tools/user-manual.template.html` + views, or `tools/docgen/build_excel_docs.py` data
+  tables) and regenerate.
+- **Artifact consistency is gated.** `build.ps1` runs `tools/docgen/check_docs.py`, which fails the
+  build if any traceability path/symbol is broken, a feature is missing an artifact, requirement IDs
+  don't match, coverage has a gap, or generated text is unclean. Keep it green (part of the VERDICT).
+- **The repo is git-tracked** — make a commit per logical change so anything can be reviewed/reverted.
 - Standards: `docs/CODING_STANDARDS.md` · Testing/QA: `docs/TESTING.md` · Analysis: `docs/STATIC_ANALYSIS.md`.
 
 ## Layout
