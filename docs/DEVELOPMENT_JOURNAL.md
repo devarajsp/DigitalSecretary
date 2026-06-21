@@ -156,6 +156,16 @@ all 7 leak types and doesn't self-flag. Also scrubbed git history to a generic i
 **rule** (CLAUDE.md + `app_standards/`). _Why: no personal information or secrets should ever reach git
 — enforced automatically, not by memory._
 
+### Phase 17 — Downloadable release for end users (2026-06-20)
+Added `tools/package-release.ps1`, which builds a **self-contained** (no .NET install) portable Windows
+zip: `DigitalSecretary.exe` + the `plugins/` folder + `User-Manual.html` + a lightweight
+`Install.cmd`/`Uninstall.cmd` + `README.txt` → `release/DigitalSecretary-v2.0.0-win-x64.zip` (~47 MB).
+Verified the published self-contained app launches and discovers its plugins. **Release binaries are
+gitignored** (distributed via GitHub Releases, not committed); `tools/publish-github.ps1` now builds
+and **attaches the zip to the release**, and the showcase page + README have a **Download** button.
+`release/README.md` documents it. _Why: users should be able to download and run the app directly from
+the project page without building it._
+
 _(Append new phases here as we go.)_
 
 ---

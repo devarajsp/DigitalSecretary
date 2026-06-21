@@ -66,8 +66,15 @@ try {
     Write-Host "Pages not auto-enabled (private repo on a free plan won't allow it). Enable manually: Settings > Pages > Branch=main, Folder=/docs." -ForegroundColor Yellow
 }
 
-# 5. Release v2.0.0 from the changelog.
-gh release create v2.0.0 --repo "$owner/$RepoName" --title "Digital Secretary v2.0.0" --notes-file (Join-Path $repo "CHANGELOG.md")
+# 5. Build the downloadable release artifact, then create the release with it attached.
+Write-Host "Building the downloadable release zip..." -ForegroundColor Cyan
+& (Join-Path $PSScriptRoot "package-release.ps1") -Version "2.0.0" -Runtime "win-x64"
+$zip = Join-Path $repo "release\DigitalSecretary-v2.0.0-win-x64.zip"
+if (-not (Test-Path $zip)) { Write-Error "Release artifact not found: $zip"; exit 1 }
+
+gh release create v2.0.0 --repo "$owner/$RepoName" --title "Digital Secretary v2.0.0" `
+    --notes-file (Join-Path $repo "CHANGELOG.md") "$zip"
+Write-Host "Attached release asset: $(Split-Path $zip -Leaf)" -ForegroundColor Green
 
 Write-Host ""
 Write-Host "Done." -ForegroundColor Green
