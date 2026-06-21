@@ -1,0 +1,131 @@
+<!doctype html>
+<!-- GitHub Pages showcase landing page for DigitalSecretary. Served from /docs on the main branch.
+     Links to the user manual + screenshots (relative). __REPO_URL__/__PAGES_URL__ are filled by
+     tools/publish-github.ps1 at publish time. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Digital Secretary &mdash; your pluggable Windows toolbox</title>
+<style>
+  :root{
+    --bg:#f3f3f3;--card:#fff;--ink:#1b1b1b;--muted:#5f6368;--line:#e6e6e6;
+    --accent:#0067c0;--accent2:#00a2ed;--radius:14px;
+    --shadow:0 1px 2px rgba(0,0,0,.06),0 10px 30px rgba(0,0,0,.08);
+    --font:"Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;
+  }
+  @media (prefers-color-scheme:dark){:root{--bg:#1c1c1c;--card:#262626;--ink:#eaeaea;--muted:#a6a6a6;--line:#3a3a3a;--accent:#4cc2ff;}}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);line-height:1.6}
+  a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+  .wrap{max-width:1060px;margin:0 auto;padding:0 22px}
+  header.hero{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;padding:64px 0 56px}
+  .hero .wrap{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+  .logo{width:74px;height:74px;border-radius:18px;background:rgba(255,255,255,.16);display:grid;place-items:center;font-size:30px;font-weight:800}
+  h1{font-size:38px;margin:0}
+  .tag{opacity:.95;margin:6px 0 0;font-size:18px}
+  .cta{margin-top:22px;display:flex;gap:12px;flex-wrap:wrap}
+  .btn{display:inline-block;padding:11px 18px;border-radius:10px;font-weight:600;border:1px solid rgba(255,255,255,.5);color:#fff}
+  .btn.primary{background:#fff;color:var(--accent);border-color:#fff}
+  .badges{margin-top:22px;display:flex;gap:8px;flex-wrap:wrap}
+  .badge{background:rgba(255,255,255,.18);border-radius:999px;padding:5px 12px;font-size:13px}
+  section{padding:46px 0}
+  h2{font-size:26px;margin:0 0 6px}
+  .lead{color:var(--muted);margin:0 0 26px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+  .card img{display:block;width:100%;height:170px;object-fit:cover;object-position:top left;border-bottom:1px solid var(--line);background:#fff}
+  .card .body{padding:16px 18px}
+  .card h3{margin:0 0 6px;font-size:18px}
+  .card p{margin:0;color:var(--muted);font-size:14.5px}
+  .shot{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;margin-top:8px}
+  .shot img{display:block;width:100%}
+  ul.feats{columns:2;gap:30px;margin:0;padding-left:18px}
+  ul.feats li{margin:6px 0;break-inside:avoid}
+  footer{color:var(--muted);font-size:14px;text-align:center;padding:30px 0 50px}
+  @media (max-width:640px){ul.feats{columns:1}h1{font-size:30px}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="logo">DS</div>
+    <div style="flex:1;min-width:260px">
+      <h1>Digital Secretary</h1>
+      <p class="tag">A pluggable personal toolbox for Windows &mdash; grow it one independent feature at a time.</p>
+      <div class="cta">
+        <a class="btn primary" href="user-guide/DigitalSecretary-User-Manual.html">Open the User Manual</a>
+        <a class="btn" href="__REPO_URL__">View on GitHub</a>
+        <a class="btn" href="__REPO_URL__/releases">Release notes</a>
+      </div>
+      <div class="badges">
+        <span class="badge">.NET 9 &middot; WinForms</span>
+        <span class="badge">Plugin architecture</span>
+        <span class="badge">56 automated tests</span>
+        <span class="badge">~88% logic coverage</span>
+        <span class="badge">CI quality gate</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <h2>What it does</h2>
+    <p class="lead">Handy day-to-day tools in one window. Show or hide each one; add more by request.</p>
+    <div class="grid">
+      <div class="card">
+        <img src="user-guide/images/launcher.png" alt="Launcher">
+        <div class="body"><h3>Launcher</h3><p>One-click open your favorite apps, files, folders, and links.</p></div>
+      </div>
+      <div class="card">
+        <img src="user-guide/images/calculator.png" alt="Calculator">
+        <div class="body"><h3>Calculator</h3><p>Keypad plus a type-an-expression evaluator.</p></div>
+      </div>
+      <div class="card">
+        <img src="user-guide/images/clipboard-history.png" alt="Clipboard History">
+        <div class="body"><h3>Clipboard History</h3><p>Re-paste anything you copied earlier.</p></div>
+      </div>
+      <div class="card">
+        <img src="user-guide/images/email-downloader.png" alt="Download Emails">
+        <div class="body"><h3>Download Emails</h3><p>Save a local copy of all your Yahoo Mail &mdash; emails and attachments.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--card);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+  <div class="wrap">
+    <h2>One clean home screen</h2>
+    <p class="lead">A dashboard of tiles plus a menu &mdash; you choose what shows where.</p>
+    <div class="shot"><img src="user-guide/images/main-shell.png" alt="Digital Secretary main window"></div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Built to a standard</h2>
+    <p class="lead">Every feature is an independent plugin, and quality is enforced on every build.</p>
+    <ul class="feats">
+      <li>Pluggable host &mdash; features load lazily, only when opened</li>
+      <li>Logic in testable classes, not in the UI</li>
+      <li>Unit tests (xUnit) + black-box QA automation</li>
+      <li>Static code analysis (.NET analyzers)</li>
+      <li>Code coverage reported per feature</li>
+      <li>One-command quality gate with a PASS/FAIL verdict</li>
+      <li>Full docs: architecture, user manual, requirements</li>
+      <li>Bi-directional requirements traceability matrix</li>
+      <li>Docs/traceability consistency validator in the build</li>
+      <li>Pre-commit hook + CI so drift can't slip in</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  Digital Secretary v2.0 &middot; <a href="__REPO_URL__">source on GitHub</a> &middot;
+  <a href="user-guide/DigitalSecretary-User-Manual.html">user manual</a>
+</footer>
+
+</body>
+</html>
