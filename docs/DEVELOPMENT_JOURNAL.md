@@ -190,6 +190,54 @@ sections + real screenshots (seeded sample data in `DocShots`). **No host change
 added purely as plugins. `./build.ps1 -All` ⇒ **VERDICT: PASS**. _Why: the user asked for Gmail and
 Google Drive downloaders as features; Drive needed OAuth + export because native docs have no raw bytes._
 
+### Phase 19 — Email Intelligence (2026-06-22)
+Added a new **Insights** feature plugin, `email-intelligence`, that *consumes* the archive the
+downloaders produce (`.eml`/`.txt` + attachments) and turns it into an offline people-and-life
+intelligence base — **no network, no AI, no database**. Pipeline of pure, testable classes:
+`ArchiveScanner` (prefers `.eml` over its `.txt` sibling) → `EmailParser` (MimeKit for `.eml`,
+heuristic for the downloader `.txt`; HTML→text via `MailText`) → `MessageClassifier` →
+`Deduplicator` (Message-Id + content hash + thread key) → `ContactExtractor`/`IdentityResolver`
+(owner detection + merge addresses by full name) → `SignatureExtractor` (phones/links) →
+`RelationshipAnalyzer` (counts, first/last, strength score, dormant flag) → `TopicExtractor` →
+`NetworkGraphBuilder` (co-occurrence edges) → `TimelineBuilder` (per-person history). Outputs are
+portable files (CSV, JSON, vCard, GraphML) plus a **self-contained HTML5 report** with tabbed views
+(Overview / People+dossier / Timeline / Graph / Topics) — data is emitted to `data/data.js` and loaded
+via a `<script>` tag so the single page opens straight from `file://` with no server. UI
+(`EmailIntelligenceControl`) is thin: pick folders, phased progress + cancel, open report. Added **36
+unit tests** (now 121 total) at **92.2%** feature coverage; QA loads the plugin (now 19 QA). Full doc
+set updated: requirement + user-guide docs, the App index, requirements (93) + traceability (53)
+spreadsheets (extended `check_docs.py`'s ID regex for `EI-` with an optional letter group). Chose **CSV
+over a native `.xlsx` library** to stay dependency-light/portable. **No host change.** `./build.ps1
+-All` ⇒ **VERDICT: PASS**. _Why: the user downloaded their Yahoo+Gmail mail and wanted to clean,
+organize and mine it locally — contacts, relationships, timelines and a graph — with a name-search
+dossier as the headline, all offline._
+
+_Follow-up (2026-06-22): added an **Append vs Overwrite** mode (`EI-I4`). Overwrite replaces results
+from the current input only; Append merges the new archive with a persisted de-duplicated corpus
+(`MessageStore` → `data/messages.json`) and **re-de-duplicates**, so several mailboxes
+(Yahoo + Gmail + ...) consolidate into one contact/relationship dataset. The pipeline was split into
+`ScanAndParse` + `AnalyzeCore` so the merge happens at the message level (dedupe / identity / metrics /
+graph re-derived over the union). UI gained an "Append" checkbox (remembered in settings). Now 125 unit
+tests, requirements (94) + traceability (54); `build.ps1 -All` ⇒ PASS. Why: running on a second archive
+overwrote the first; the user wanted to consolidate all mailboxes into one de-duplicated contact set._
+
+### Phase 20 — Email Intelligence: tone, life-data & documents (2026-06-22)
+Second increment on `email-intelligence`, all still **offline / no AI**:
+- **Tone & sentiment (`EI-E2`)** — `ToneAnalyzer` scores each relationship using a bundled AFINN-style
+  `SentimentLexicon` (positive/negative word weights, shipped in the assembly) and labels it
+  Positive / Neutral / Negative. Surfaced in the dossier + a `Tone` column in `Contacts.csv`.
+- **Life-data extraction (`EI-F1..F4`)** — `LifeDataExtractor` categorizes transactional mail into
+  Purchase / Subscription / Travel / Account by keyword, and pulls an amount + currency via regex →
+  `LifeData.csv` + a **Life Data** report tab.
+- **Useful-document library (`EI-F7`)** — `DocumentLibrary` de-duplicates attachments by content hash,
+  classifies them (PDF/Image/Document/Spreadsheet/...), counts occurrences → `Documents.csv` + a
+  **Documents** report tab.
+The pipeline runs these in `AnalyzeCore`; the HTML report gained the two new tabs and a tone line.
+Added **22 unit tests** (now 147), feature coverage 91%; requirements (100) + traceability (57)
+spreadsheets regenerated. **No host change.** `./build.ps1 -All` ⇒ **VERDICT: PASS**. _Why: these were
+the deferred analytics from the original requirements; all kept rule/lexicon-based to honour the
+no-network, no-AI constraint, and clearly labelled as heuristics in the UI._
+
 _(Append new phases here as we go.)_
 
 ---

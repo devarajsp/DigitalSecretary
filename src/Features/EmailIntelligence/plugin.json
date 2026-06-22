@@ -1,0 +1,9 @@
+{
+  "id": "email-intelligence",
+  "title": "Email Intelligence",
+  "category": "Insights",
+  "description": "Turn your downloaded email archive (.txt/.eml + attachments) into an offline, searchable people-and-life intelligence base with dossiers and a relationship graph. No cloud, no AI.",
+  "order": 30,
+  "entryAssembly": "DigitalSecretary.Features.EmailIntelligence.dll",
+  "entryType": "DigitalSecretary.Features.EmailIntelligence.EmailIntelligenceModule"
+}

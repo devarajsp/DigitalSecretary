@@ -27,7 +27,7 @@ REQ_XLSX = ROOT / "docs/requirements/DigitalSecretary-Requirements.xlsx"
 TRACE_XLSX = ROOT / "docs/traceability/DigitalSecretary-Traceability-Matrix.xlsx"
 MANUAL = ROOT / "docs/user-guide/DigitalSecretary-User-Manual.html"
 
-ID_RE = re.compile(r"\b(?:APP|NFR|LAU|CAL|CLP|EML|GML|GDR)-\d+\b")
+ID_RE = re.compile(r"\b(?:APP|NFR|LAU|CAL|CLP|EML|GML|GDR|EI)-[A-Z]?\d+\b")
 MOJIBAKE = ["Â", "Ã", "â"]
 ARTIFACT_COLS = {4: "Requirement Doc", 5: "Mock/Screen", 6: "Code", 7: "Unit Test",
                  8: "QA", 9: "User Manual", 10: "Architecture", 11: "Code Doc"}
