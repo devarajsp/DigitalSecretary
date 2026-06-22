@@ -48,6 +48,12 @@ important workflow in this repo is "add a feature" — keep it mechanical and re
      re-run — the variance + the EST-vs-ACTUAL **Trend** chart update automatically.
   3. **Append the narrative entry** to `docs/DEVECONOMICS.md` (output delivered, cost & time, velocity).
   The point: keep cost-per-feature, $/KLOC, and time visible and trending down (see the doc's levers).
+- **Showcase the no-code economics in the release notes (required).** Every feature's entry in
+  `CHANGELOG.md` (the GitHub release notes) leads with a short, **catchy, visible "Built with no code"
+  callout** (a one- to two-line blockquote, e.g. `> ⚡ **Built with no code.** …`) stating that feature/
+  release's **time**, **LoC**, and **est. cost** (pulled from the DevEconomics workbook) and linking to
+  `docs/DEVECONOMICS.md`. Keep it to ~2 lines — the goal is to keep the no-code-development trend
+  front-and-centre for every reader of a release, not to bury it.
 - **Update the product & user documentation (required, App → Feature → Sub-feature):**
   - `docs/requirements/` — product/BA view: purpose, user stories, functional requirements, acceptance
     criteria, NFRs, traceability. New feature ⇒ new `docs/requirements/features/<id>.md`.
