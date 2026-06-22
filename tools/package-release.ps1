@@ -5,12 +5,12 @@
   Produces release/DigitalSecretary-v<Version>-<Runtime>.zip containing the app (self-contained),
   its plugins, the user manual, and a lightweight Install/Uninstall. The zip is a GitHub Release
   asset (binaries are gitignored, not committed).
-.PARAMETER Version    Release version (default 2.0.0).
+.PARAMETER Version    Release version (default 2.1.0).
 .PARAMETER Runtime    RID (default win-x64).
 #>
 [CmdletBinding()]
 param(
-    [string]$Version = "2.0.0",
+    [string]$Version = "2.1.0",
     [string]$Runtime = "win-x64"
 )
 
