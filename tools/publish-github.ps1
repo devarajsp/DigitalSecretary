@@ -68,11 +68,11 @@ try {
 
 # 5. Build the downloadable release artifact, then create the release with it attached.
 Write-Host "Building the downloadable release zip..." -ForegroundColor Cyan
-& (Join-Path $PSScriptRoot "package-release.ps1") -Version "2.0.0" -Runtime "win-x64"
-$zip = Join-Path $repo "release\DigitalSecretary-v2.0.0-win-x64.zip"
+& (Join-Path $PSScriptRoot "package-release.ps1") -Version "2.1.0" -Runtime "win-x64"
+$zip = Join-Path $repo "release\DigitalSecretary-v2.1.0-win-x64.zip"
 if (-not (Test-Path $zip)) { Write-Error "Release artifact not found: $zip"; exit 1 }
 
-gh release create v2.0.0 --repo "$owner/$RepoName" --title "Digital Secretary v2.0.0" `
+gh release create v2.1.0 --repo "$owner/$RepoName" --title "Digital Secretary v2.1.0" `
     --notes-file (Join-Path $repo "CHANGELOG.md") "$zip"
 Write-Host "Attached release asset: $(Split-Path $zip -Leaf)" -ForegroundColor Green
 
@@ -80,4 +80,4 @@ Write-Host ""
 Write-Host "Done." -ForegroundColor Green
 Write-Host "  Repo:  $repoUrl"
 Write-Host "  Pages: $pagesUrl   (allow ~1 minute for first publish)"
-Write-Host "  Release: $repoUrl/releases/tag/v2.0.0"
+Write-Host "  Release: $repoUrl/releases/tag/v2.1.0"
