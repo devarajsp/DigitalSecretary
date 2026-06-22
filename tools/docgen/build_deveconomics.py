@@ -104,6 +104,16 @@ ACTIVITIES = [
 # turn, served mostly from cache (~0.1x input). Estimated; reconcile the total against /cost.
 CONTEXT_OVERHEAD_USD = 2.77
 
+# Whole-app baseline for everything built BEFORE DevEconomics tracking began (phases 1-17: the
+# re-architecture to a pluggable host, the first 4 features, and the quality/docs/CI/release infra).
+# ROUGH order-of-magnitude estimate - not logged live. Refine if real figures surface.
+FOUNDATION = {
+    "name": "Foundation (host + first 4 features + quality/docs/CI/release infra)",
+    "date": "2026-06-19..20", "model": "Opus (multi-session)",
+    "kloc": 1.70, "tokens": 2_000_000, "cost_est": 45.0, "time_est": 720.0,
+    "note": "ROUGH estimate - phases 1-17 predate DevEconomics tracking (not logged live).",
+}
+
 ACT_HEADERS = ["#", "Phase", "Activity", "Bucket", "Tool / Method", "LLM?",
                "Est. Tokens", "Est. Cost (USD)", "Time (min)", "Time Basis", "Notes"]
 
@@ -168,39 +178,60 @@ def feature_rollup():
     a = [x for x in ACTIVITIES if x[2] == "A"]
     bc = [x for x in ACTIVITIES if x[2] != "A"]
     direct_cost = round(sum(x[6] for x in ACTIVITIES), 2)
+    tokens = sum(x[5] for x in ACTIVITIES)
     local_time = round(sum(x[7] for x in ACTIVITIES if x[2] != "A"), 2)
     total_time = round(sum(x[7] for x in ACTIVITIES), 2)
     total_est = round(direct_cost + CONTEXT_OVERHEAD_USD, 2)
     return {
-        "activities": len(ACTIVITIES), "a": len(a), "bc": len(bc),
+        "activities": len(ACTIVITIES), "a": len(a), "bc": len(bc), "tokens": tokens,
         "direct_cost": direct_cost, "overhead": CONTEXT_OVERHEAD_USD, "total_est": total_est,
         "local_time": local_time, "total_time": total_time,
     }
 
 
+# Cols: A Feature B Date C Model D Activities E LLM(A) F Local(B/C) G KLOC H Tokens
+#       I DirectEST J OverheadEST K TotalEST L TotalACTUAL M Variance N LocalTime
+#       O TotalTimeEST P TotalTimeACTUAL Q $/KLOC R Notes
 SUM_HEADERS = ["Feature", "Date", "Model", "Activities", "LLM (A)", "Local/Remote (B/C)",
-               "Direct LLM cost EST ($)", "Context/cache overhead EST ($)", "Total cost EST ($)",
-               "Total cost ACTUAL ($)", "Cost variance ($)", "Local compute time (min)",
-               "Total time EST (min)", "Total time ACTUAL (min)", "Prod. KLOC", "$/KLOC EST", "Notes"]
+               "Prod. KLOC", "Est. tokens (direct)", "Direct LLM cost EST ($)",
+               "Context/cache overhead EST ($)", "Total cost EST ($)", "Total cost ACTUAL ($)",
+               "Cost variance ($)", "Local time (min)", "Total time EST (min)",
+               "Total time ACTUAL (min)", "$/KLOC EST", "Notes"]
+DATA_ROWS = 2  # foundation + tracked feature(s); App Total follows.
+MONEY_COLS = ("I", "J", "K", "L", "M", "Q")
 
 
 def build_feature_summary(ws, roll):
     ws.title = "Feature Summary"
     ws.append(SUM_HEADERS)
-    # ACTUAL columns (J, N) left blank until reconciled with /cost.
+
+    # Row 2 - foundation baseline (rough estimate, pre-tracking). ACTUAL (L/P) blank.
+    ws.append([
+        FOUNDATION["name"], FOUNDATION["date"], FOUNDATION["model"], None, None, None,
+        FOUNDATION["kloc"], FOUNDATION["tokens"], None, None, FOUNDATION["cost_est"], None,
+        '=IF(ISNUMBER(L2),L2-K2,"pending /cost")', None, FOUNDATION["time_est"], None,
+        round(FOUNDATION["cost_est"] / FOUNDATION["kloc"], 2), FOUNDATION["note"],
+    ])
+    # Row 3 - tracked feature. ACTUAL (L/P) blank until reconciled with /cost.
     ws.append([
         FEATURE, FEATURE_DATE, MODEL, roll["activities"], roll["a"], roll["bc"],
-        roll["direct_cost"], roll["overhead"], roll["total_est"],
-        None,                                   # J: Total cost ACTUAL (run /cost)
-        '=IF(ISNUMBER(J2),J2-I2,"pending /cost")',  # K: variance
-        roll["local_time"], roll["total_time"],
-        None,                                   # N: Total time ACTUAL
-        PRODUCTION_KLOC, round(roll["total_est"] / PRODUCTION_KLOC, 2),
+        PRODUCTION_KLOC, roll["tokens"], roll["direct_cost"], roll["overhead"], roll["total_est"], None,
+        '=IF(ISNUMBER(L3),L3-K3,"pending /cost")', roll["local_time"], roll["total_time"], None,
+        round(roll["total_est"] / PRODUCTION_KLOC, 2),
         "Estimate; reconcile ACTUAL via /cost. Excludes the DevEconomics report + cost analysis.",
     ])
-    for col in ("G", "H", "I", "J", "K", "P"):
-        ws[f"{col}2"].number_format = '$#,##0.00'
-    widths = [30, 12, 9, 10, 8, 14, 16, 18, 14, 16, 14, 14, 14, 16, 10, 11, 40]
+    # Row 4 - APP TOTAL (whole-app development to date = foundation + tracked features).
+    tr = DATA_ROWS + 1
+    ws.append([
+        "APP TOTAL (est)", "", "", None, None, None,
+        f"=SUM(G2:G{tr})", f"=SUM(H2:H{tr})", None, None, f"=SUM(K2:K{tr})",
+        f'=IF(COUNT(L2:L{tr})>0,SUM(L2:L{tr}),"")', f'=IF(ISNUMBER(L{tr+1}),L{tr+1}-K{tr+1},"pending /cost")',
+        None, f"=SUM(O2:O{tr})", f'=IF(COUNT(P2:P{tr})>0,SUM(P2:P{tr}),"")',
+        f'=IF(G{tr+1}>0,ROUND(K{tr+1}/G{tr+1},2),"")',
+        "Whole-app development to date (foundation + tracked features).",
+    ])
+
+    widths = [34, 13, 18, 9, 7, 13, 9, 14, 14, 16, 13, 14, 13, 12, 14, 15, 10, 42]
     for i, w in enumerate(widths, start=1):
         ws.column_dimensions[get_column_letter(i)].width = w
     style_header(ws, len(SUM_HEADERS))
@@ -210,6 +241,11 @@ def build_feature_summary(ws, roll):
             cell.font = BODY_FONT
             cell.alignment = WRAP_TOP
             cell.border = BORDER
+        ws.cell(row=r, column=8).number_format = '#,##0'
+        for col in MONEY_COLS:
+            ws[f"{col}{r}"].number_format = '$#,##0.00'
+    for c in range(1, len(SUM_HEADERS) + 1):  # bold the App Total row
+        ws.cell(row=tr + 1, column=c).font = Font(name=FONT, bold=True, size=10)
     ws["A1"].comment = Comment(BANNER, "build_deveconomics")
     return ws
 
@@ -226,30 +262,31 @@ def build_trend(wb, summary_ws):
     ws["A4"].alignment = WRAP_TOP
     ws.column_dimensions["A"].width = 100
 
-    last = summary_ws.max_row  # data rows in Feature Summary
-    # Cost chart: EST (col I) vs ACTUAL (col J), categories = Feature (col A).
+    last = DATA_ROWS + 1  # chart the foundation + feature rows; exclude the App Total row.
+    cats = Reference(summary_ws, min_col=1, max_col=1, min_row=2, max_row=last)
+
+    # Cost chart: Total cost EST (col K) vs ACTUAL (col L).
     cost_chart = BarChart()
     cost_chart.type = "col"
-    cost_chart.title = "Cost per feature: EST vs ACTUAL ($)"
+    cost_chart.title = "Cost per scope: EST vs ACTUAL ($)"
     cost_chart.y_axis.title = "USD"
-    cost_chart.x_axis.title = "Feature"
-    cost_data = Reference(summary_ws, min_col=9, max_col=10, min_row=1, max_row=last)
-    cost_cats = Reference(summary_ws, min_col=1, max_col=1, min_row=2, max_row=last)
-    cost_chart.add_data(cost_data, titles_from_data=True)
-    cost_chart.set_categories(cost_cats)
+    cost_chart.x_axis.title = "Scope"
+    cost_chart.add_data(Reference(summary_ws, min_col=11, max_col=12, min_row=1, max_row=last),
+                        titles_from_data=True)
+    cost_chart.set_categories(cats)
     cost_chart.height = 8
     cost_chart.width = 16
     ws.add_chart(cost_chart, "A7")
 
-    # Time chart: EST (col M) vs ACTUAL (col N).
+    # Time chart: Total time EST (col O) vs ACTUAL (col P).
     time_chart = BarChart()
     time_chart.type = "col"
-    time_chart.title = "Time per feature: EST vs ACTUAL (min)"
+    time_chart.title = "Time per scope: EST vs ACTUAL (min)"
     time_chart.y_axis.title = "minutes"
-    time_chart.x_axis.title = "Feature"
-    time_data = Reference(summary_ws, min_col=13, max_col=14, min_row=1, max_row=last)
-    time_chart.add_data(time_data, titles_from_data=True)
-    time_chart.set_categories(cost_cats)
+    time_chart.x_axis.title = "Scope"
+    time_chart.add_data(Reference(summary_ws, min_col=15, max_col=16, min_row=1, max_row=last),
+                        titles_from_data=True)
+    time_chart.set_categories(cats)
     time_chart.height = 8
     time_chart.width = 16
     ws.add_chart(time_chart, "A24")
@@ -270,9 +307,13 @@ def build_readme(wb, roll):
                               "meter). Local times are MEASURED from command output where captured. "
                               "Per-feature ACTUAL cost comes from /cost (Claude Code) or the Anthropic "
                               "Console - fill columns J/N in Feature Summary, then re-run."],
-        ["This run", f"{roll['activities']} activities ({roll['a']} LLM / {roll['bc']} local|remote); "
-                     f"~${roll['total_est']} est total; ~{roll['total_time']} min est "
-                     f"(of which ~{roll['local_time']} min measured local compute)."],
+        ["This release", f"{roll['activities']} activities ({roll['a']} LLM / {roll['bc']} local|remote); "
+                         f"~${roll['total_est']} est; ~{roll['total_time']} min est "
+                         f"(~{roll['local_time']} min measured local compute)."],
+        ["Whole app to date (est)", f"~{round(FOUNDATION['kloc'] + PRODUCTION_KLOC, 2)} prod KLOC; "
+                                    f"~${round(FOUNDATION['cost_est'] + roll['total_est'], 2)} est; "
+                                    f"~{round((FOUNDATION['time_est'] + roll['total_time']) / 60, 1)} h est. "
+                                    f"Foundation portion is a ROUGH pre-tracking estimate."],
         ["Regenerate", "python tools/docgen/build_deveconomics.py"],
         ["Companion", "docs/DEVECONOMICS.md (narrative + improvement levers); "
                       "docs/DEVELOPMENT_JOURNAL.md (what/why)."],
@@ -300,10 +341,14 @@ def main():
     out = ROOT / "docs" / "deveconomics" / "DigitalSecretary-DevEconomics.xlsx"
     out.parent.mkdir(parents=True, exist_ok=True)
     wb.save(out)
+    app_cost = round(FOUNDATION["cost_est"] + roll["total_est"], 2)
+    app_kloc = round(FOUNDATION["kloc"] + PRODUCTION_KLOC, 2)
     print(f"DevEconomics: {out}")
-    print(f"  {roll['activities']} activities | direct ${roll['direct_cost']} + overhead "
-          f"${roll['overhead']} = ${roll['total_est']} est | {roll['total_time']} min est "
-          f"({roll['local_time']} min local measured)")
+    print(f"  This release: {roll['activities']} activities | ${roll['total_est']} est | "
+          f"{roll['total_time']} min est ({roll['local_time']} min local measured)")
+    print(f"  App total (est): {app_kloc} prod KLOC | ${app_cost} | "
+          f"{round((FOUNDATION['time_est'] + roll['total_time']) / 60, 1)} h "
+          f"(foundation is a rough pre-tracking estimate)")
 
 
 if __name__ == "__main__":
