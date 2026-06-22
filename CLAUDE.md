@@ -37,6 +37,12 @@ important workflow in this repo is "add a feature" — keep it mechanical and re
 - **Update `docs/DEVELOPMENT_JOURNAL.md`** — append a Timeline entry (date + what + why) and record any
   new decision/pitfall. This repo is the worked example of codeless development with Claude; the journal
   must stay current. If a convention evolves, mirror it back to `…/Claude/app_standards/`.
+- **Update `docs/DEVECONOMICS.md`** — append a per-feature **DevEconomics** entry: measured output
+  (hand-authored LOC, files, tests, gate result) and the **activity ledger** classifying every activity as
+  Bucket **A** (LLM tokens), **B** (local compute, $0 tokens), or **C** (remote/network, $0 tokens), plus a
+  token/cost line. Run `/cost` for the exact session figure (only the harness knows it); if unavailable,
+  record a clearly-labeled estimate and reconcile later. The point is to keep the cost-per-feature /
+  cost-per-KLOC of "develop by asking" visible and trending down (see the doc's improvement levers).
 - **Update the product & user documentation (required, App → Feature → Sub-feature):**
   - `docs/requirements/` — product/BA view: purpose, user stories, functional requirements, acceptance
     criteria, NFRs, traceability. New feature ⇒ new `docs/requirements/features/<id>.md`.
@@ -109,6 +115,7 @@ src/DigitalSecretary.App/bin/Debug/net9.0-windows/DigitalSecretary.exe
 - `docs/STATIC_ANALYSIS.md` — analyzers and `.editorconfig` tuning.
 - `docs/QUALITY_REPORT.md` — generated each `build.ps1` run (build/tests/coverage/QA).
 - `docs/DEVELOPMENT_JOURNAL.md` — living record of the build + the codeless-dev process (keep updated).
+- `docs/DEVECONOMICS.md` — living cost/velocity ledger (token vs local-compute split, $/feature, $/KLOC).
 - `docs/requirements/` — product/BA requirements (App + per feature/sub-feature).
 - `docs/user-guide/` — end-user guides + the single-file HTML **User Manual** (with screenshots).
 - `tools/DocShots/` + `tools/build-user-manual.ps1` — regenerate the manual's screenshots + HTML.
