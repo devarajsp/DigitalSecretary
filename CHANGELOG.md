@@ -2,6 +2,26 @@
 
 All notable changes to Digital Secretary. Format based on [Keep a Changelog](https://keepachangelog.com).
 
+## [2.1.0] - 2026-06-22
+
+> ⚡ **Built with no code.** Both features below &mdash; **~1.0 KLOC** of production C# with unit + QA
+> tests, full docs, screenshots, and a green quality gate &mdash; were built **entirely by asking Claude**
+> (Opus 4.8), not hand-written: **~48 min**, **~$5.50 est. LLM cost**. We showcase this every release to
+> track the no-code-development trend &mdash; full per-activity ledger + trend in
+> [DevEconomics](docs/DEVECONOMICS.md).
+
+### Features
+- **Download Gmail** &mdash; save a local copy of every Gmail folder/label over IMAP, each email as
+  `.txt` + `.eml` with all attachments (incl. inline images); read-only, so the mailbox is untouched.
+  Uses a Gmail **app password**.
+- **Download Google Drive** &mdash; save a local copy of your Drive over the Drive API (**read-only**
+  OAuth); mirrors the folder tree, downloads regular files as-is, and **exports Google Docs/Sheets/Slides
+  to both Office formats and PDF**. New **Cloud** feature category.
+
+Both ship as independent plugins with their own private NuGet dependencies &mdash; **no change to the host**.
+
+[2.1.0]: https://github.com/devarajsp/DigitalSecretary/releases/tag/v2.1.0
+
 ## [2.0.0] - 2026-06-20
 
 First public release of **Digital Secretary** &mdash; a pluggable personal toolbox for Windows,
