@@ -238,6 +238,16 @@ spreadsheets regenerated. **No host change.** `./build.ps1 -All` ⇒ **VERDICT: 
 the deferred analytics from the original requirements; all kept rule/lexicon-based to honour the
 no-network, no-AI constraint, and clearly labelled as heuristics in the UI._
 
+### Phase 21 — Email Intelligence: native Excel (.xlsx) output (2026-06-22)
+Added `XlsxWriter` — a **dependency-free OOXML (SpreadsheetML) writer** built on `ZipArchive` — and
+`WorkbookExporter`, so a run now also produces **`EmailIntelligence.xlsx`** with Contacts / Life Data /
+Documents sheets and **typed numeric cells**. Validated the output with `openpyxl` (loads cleanly: 3
+sheets, numbers typed). Chose a built-in writer over a NuGet library (e.g. ClosedXML) to keep the
+plugin fully offline / portable and avoid a network restore. Added 6 unit tests (now 153), feature
+coverage ~92%; requirement `EI-H7` + a traceability row registered (101 reqs / 58 rows). **No host
+change.** `./build.ps1 -All` ⇒ **VERDICT: PASS**. _Why: the user's original ask was Excel output; CSV
+was the interim, this delivers a real multi-sheet workbook without adding a dependency._
+
 _(Append new phases here as we go.)_
 
 ---

@@ -30,6 +30,8 @@ In the output folder:
   - **Topics** — the most common themes across your archive.
   - **Life Data** — purchases, subscriptions, travel and account sign-ups detected in your mail.
   - **Documents** — every attachment, de-duplicated and grouped by type.
+- **`EmailIntelligence.xlsx`** — a single Excel workbook with **Contacts**, **Life Data** and
+  **Documents** sheets (numeric columns kept as numbers).
 - **`Contacts.csv`** — your master contact list, incl. a heuristic tone column (opens in Excel).
 - **`LifeData.csv`** / **`Documents.csv`** — the extracted life data and document library.
 - **`Contacts.vcf`** — a vCard you can import into Gmail or Outlook contacts.

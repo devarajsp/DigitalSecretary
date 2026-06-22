@@ -173,6 +173,7 @@ public sealed class IntelligencePipeline
         csv.WriteDocuments(report, Path.Combine(outDir, "Documents.csv"));
         new VCardExporter().Write(report, Path.Combine(outDir, "Contacts.vcf"));
         new GraphMlExporter().Write(report, Path.Combine(outDir, "network.graphml"));
+        new WorkbookExporter().Write(report, Path.Combine(outDir, "EmailIntelligence.xlsx"));
         new HtmlReportGenerator().Write(report, outDir);
     }
 

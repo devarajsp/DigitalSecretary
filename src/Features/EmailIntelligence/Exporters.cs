@@ -198,3 +198,50 @@ public sealed class GraphMlExporter
 
     private static string Xml(string s) => System.Security.SecurityElement.Escape(s) ?? "";
 }
+
+/// <summary>Builds the native multi-sheet Excel workbook (Contacts / Life Data / Documents).</summary>
+public sealed class WorkbookExporter
+{
+    private static readonly CultureInfo Inv = CultureInfo.InvariantCulture;
+
+    private static readonly string[] ContactHeaders =
+        { "Name", "Primary Address", "All Addresses", "Phones", "URLs", "Organization", "From Me", "From Them", "Total", "First Contact", "Last Contact", "Strength", "Dormant", "Topics", "Tone", "Tone Score" };
+    private static readonly string[] LifeHeaders =
+        { "Category", "Date", "Sender", "Subject", "Amount", "Currency", "Detail" };
+    private static readonly string[] DocHeaders =
+        { "File Name", "Type", "Size (bytes)", "Count", "Senders" };
+
+    public void Write(IntelligenceReport r, string path)
+    {
+        var contacts = new XlsxWriter.Sheet(
+            "Contacts",
+            ContactHeaders,
+            r.People.Select(p => (IReadOnlyList<string>)new[]
+            {
+                p.DisplayName, p.Id, string.Join("; ", p.Addresses), string.Join("; ", p.Phones),
+                string.Join("; ", p.Urls), p.Organization ?? "", p.FromMe.ToString(Inv), p.FromThem.ToString(Inv),
+                p.TotalMessages.ToString(Inv), p.FirstContact?.ToString("yyyy-MM-dd") ?? "",
+                p.LastContact?.ToString("yyyy-MM-dd") ?? "", p.StrengthScore.ToString(Inv),
+                p.Dormant ? "yes" : "no", string.Join("; ", p.Topics), p.ToneLabel, p.ToneScore.ToString(Inv),
+            }).ToList());
+
+        var lifeData = new XlsxWriter.Sheet(
+            "Life Data",
+            LifeHeaders,
+            r.LifeData.Select(l => (IReadOnlyList<string>)new[]
+            {
+                l.Category, l.Date == default ? "" : l.Date.ToString("yyyy-MM-dd"), l.Sender, l.Subject,
+                l.Amount?.ToString(Inv) ?? "", l.Currency ?? "", l.Detail,
+            }).ToList());
+
+        var documents = new XlsxWriter.Sheet(
+            "Documents",
+            DocHeaders,
+            r.Documents.Select(d => (IReadOnlyList<string>)new[]
+            {
+                d.FileName, d.Type, d.Size.ToString(Inv), d.Count.ToString(Inv), d.Senders,
+            }).ToList());
+
+        new XlsxWriter().Write(path, new[] { contacts, lifeData, documents });
+    }
+}
