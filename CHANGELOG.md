@@ -4,21 +4,21 @@ All notable changes to Digital Secretary. Format based on [Keep a Changelog](htt
 
 ## [2.1.0] - 2026-06-22
 
-> ⚡ **Built with no code.** Both features below &mdash; **~1.0 KLOC** of production C# with unit + QA
-> tests, full docs, screenshots, and a green quality gate &mdash; were built **entirely by asking Claude**
-> (Opus 4.8), not hand-written: **~48 min**, **~$5.50 est. LLM cost**. We showcase this every release to
-> track the no-code-development trend &mdash; full per-activity ledger + trend in
-> [DevEconomics](docs/DEVECONOMICS.md).
+**New:** **Download Gmail** and **Download Google Drive** &mdash; read-only local backups (Drive exports
+Docs/Sheets/Slides to Office + PDF), added as plugins with no change to the host.
 
-### Features
-- **Download Gmail** &mdash; save a local copy of every Gmail folder/label over IMAP, each email as
-  `.txt` + `.eml` with all attachments (incl. inline images); read-only, so the mailbox is untouched.
-  Uses a Gmail **app password**.
-- **Download Google Drive** &mdash; save a local copy of your Drive over the Drive API (**read-only**
-  OAuth); mirrors the folder tree, downloads regular files as-is, and **exports Google Docs/Sheets/Slides
-  to both Office formats and PDF**. New **Cloud** feature category.
+> ⚡ **Built with no code &mdash; DevEconomics.** Digital Secretary is built by *asking Claude* (Opus 4.8),
+> not by hand-writing code. We publish the cost every release; the per-activity ledger, per-feature rows,
+> and the trend live in the
+> [DevEconomics workbook](docs/deveconomics/DigitalSecretary-DevEconomics.xlsx).
 
-Both ship as independent plugins with their own private NuGet dependencies &mdash; **no change to the host**.
+| Scope | Prod. KLOC | Est. tokens | Est. cost | Time |
+|---|--:|--:|--:|--:|
+| **This release** (Gmail + Drive) | ~1.0 | ~120 K | **~$5.50** | ~48 min |
+| **Whole app to date** (est) | ~2.7 | ~2.1 M | **~$50** | ~13 h |
+
+_LLM cost/tokens are estimates (the model can't meter itself); the whole-app foundation predates live
+tracking. Reconcile with `/cost`._
 
 [2.1.0]: https://github.com/devarajsp/DigitalSecretary/releases/tag/v2.1.0
 
