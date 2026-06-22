@@ -112,6 +112,7 @@ folders beside it. **Progress is shown throughout** the build.
 | EI-H4 | **Scale guard**: when message count exceeds Excel's ~1,048,576-row limit (or a configurable threshold), write the bulk `Messages_Index` as CSV/JSON and keep Excel for curated summaries; warn the user. Parsing **streams** - never loads the whole corpus into memory. |
 | EI-H5 | All outputs land under a **user-chosen output folder** (and the feature's own data folder for settings). **No database. Nothing leaves the PC.** |
 | EI-H6 | The structured data also feeds the **HTML5 report's `data/` folder** (see Group K), which is the **human-facing view**; the Excel/CSV/JSON files are the **analyst / portable view** of the same model. |
+| EI-H7 | **Native Excel workbook (`.xlsx`)**: a single multi-sheet workbook (Contacts / Life Data / Documents) written with a **built-in OOXML writer (no third-party library)**, so results open directly in Excel with **typed numeric columns**. |
 
 ### Group I - Re-run / incremental
 | ID | Requirement |
@@ -156,6 +157,7 @@ folders beside it. **Progress is shown throughout** the build.
 ### 4.13 Unified HTML5 report (K) - *Accept:* one `index.html` opens **offline** with all tabs working, type-ahead search and graph/dossier navigation functioning, and bulk data served from the `data/` folder; the folder zips and opens elsewhere.
 ### 4.14 Granular progress (J5) - *Accept:* during a run the user sees phase, current item, counts and an ETA; Cancel stops cleanly; the UI stays responsive on a large archive.
 ### 4.15 Append / overwrite (I4) - *Accept:* running on a second archive in **Append** mode (same output folder) yields one dataset containing contacts from both, with a message shared across archives counted once; **Overwrite** mode replaces the results with the current input only.
+### 4.16 Native Excel workbook (H7) - *Accept:* a run writes `EmailIntelligence.xlsx` containing **Contacts**, **Life Data** and **Documents** sheets that open in Excel; numeric columns (counts, amounts, strength) are stored as numbers.
 
 ## 5. Acceptance criteria (feature)
 A run over a folder of `.txt`/`.eml`/attachments produces, **fully offline** and with **live progress

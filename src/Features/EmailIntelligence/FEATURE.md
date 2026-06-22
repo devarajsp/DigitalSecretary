@@ -22,8 +22,9 @@ timelines, and a self-contained **HTML5 report**. **100% local — no network ca
    `NetworkGraphBuilder` (co-occurrence edges), `TimelineBuilder` (per-person history),
    `LifeDataExtractor` (purchases/subscriptions/travel/accounts) and `DocumentLibrary` (deduped
    attachments).
-8. **Export** — `JsonExporter`, `CsvExporter`, `VCardExporter`, `GraphMlExporter`, and
-   `HtmlReportGenerator` (the `index.html` + `assets/` + `data/data.js` report).
+8. **Export** — `JsonExporter`, `CsvExporter`, `VCardExporter`, `GraphMlExporter`,
+   `WorkbookExporter` + `XlsxWriter` (a dependency-free native `.xlsx`), and `HtmlReportGenerator`
+   (the `index.html` + `assets/` + `data/data.js` report).
 
 ## Design notes
 - **Logic is in plain classes** (above); `EmailIntelligenceControl` only wires the UI and reports
