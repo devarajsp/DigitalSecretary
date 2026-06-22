@@ -98,6 +98,8 @@
       <a href="#calculator">Calculator</a>
       <a href="#clipboard">Clipboard History</a>
       <a href="#email">Download Emails</a>
+      <a href="#gmail">Download Gmail</a>
+      <a href="#drive">Download Google Drive</a>
       <div class="grp">More</div>
       <a href="#data">Your data &amp; privacy</a>
       <a href="#faq">Troubleshooting / FAQ</a>
@@ -120,7 +122,7 @@
     <section class="doc" id="welcome" data-t="welcome what is digital secretary overview">
       <h2>Welcome</h2>
       <p class="lead">Digital Secretary collects handy day-to-day tools (“features”) in one window. You choose which ones to show, and new tools can be added over time.</p>
-      <p>The current version includes a <b>Launcher</b>, a <b>Calculator</b>, a <b>Clipboard History</b>, and a <b>Download Emails</b> tool. Everything runs on your PC and works offline (except email download, which needs the internet).</p>
+      <p>The current version includes a <b>Launcher</b>, a <b>Calculator</b>, a <b>Clipboard History</b>, a <b>Download Emails</b> tool, a <b>Download Gmail</b> tool, and a <b>Download Google Drive</b> tool. Everything runs on your PC and works offline (except the download tools, which need the internet).</p>
     </section>
 
     <section class="doc" id="start" data-t="install run requirements dotnet exe launch start">
@@ -222,6 +224,47 @@
         <li><b>All attachments</b> saved as-is, including inline images.</li>
       </ul>
       <div class="call tip"><div class="h">It’s a copy — your mailbox is untouched</div>Folders are opened read-only, so nothing is deleted, moved, or marked as read in Yahoo. Your <b>email address and folder are remembered</b>; your <b>password is never saved</b>.</div>
+    </section>
+
+    <section class="doc" id="gmail" data-t="download gmail google imap backup attachments app password 2-step verification eml txt labels">
+      <h2>Download Gmail</h2>
+      <p class="lead">Save a local <b>copy</b> of your Gmail — every folder/label, message, and attachment — without changing anything on the server.</p>
+      <figure><img src="{{gmail-downloader}}" alt="Download Gmail feature"><figcaption>Enter your Gmail address and app password, choose a folder, then Start.</figcaption></figure>
+      <div class="call warn"><div class="h">You need a Gmail “app password”</div>Gmail does not allow your normal password here. Turn on <b>2-Step Verification</b>, then create one at <b>Google Account → Security → App passwords</b> and paste it into <b>App password</b>. Also enable IMAP in <b>Gmail → Settings → Forwarding and POP/IMAP</b>.</div>
+      <h3>Download your mail</h3>
+      <ol class="steps">
+        <li>Enter your <b>Gmail address</b> and the <b>app password</b>.</li>
+        <li>Choose a <b>Save to folder</b> (or accept the default) with <b>Browse…</b>.</li>
+        <li>Click <b>Start Download</b>. Watch the progress bar and log; click <b>Cancel</b> any time.</li>
+      </ol>
+      <h3>What you get</h3>
+      <ul>
+        <li>Your Gmail folder/label structure, recreated on your PC.</li>
+        <li>Each email saved <b>twice</b>: a readable <b>.txt</b> and a full-fidelity <b>.eml</b>.</li>
+        <li><b>All attachments</b> saved as-is, including inline images.</li>
+      </ul>
+      <div class="call note"><div class="h">About Gmail labels</div>In Gmail a message can carry several labels, so the same message may be saved under more than one folder (for example <b>Inbox</b> and <b>[Gmail]/All Mail</b>).</div>
+      <div class="call tip"><div class="h">It’s a copy — your mailbox is untouched</div>Folders are opened read-only. Your <b>email address and folder are remembered</b>; your <b>password is never saved</b>.</div>
+    </section>
+
+    <section class="doc" id="drive" data-t="download google drive cloud backup oauth credentials export docs sheets slides docx xlsx pptx pdf">
+      <h2>Download Google Drive</h2>
+      <p class="lead">Save a local <b>copy</b> of your Google Drive — folders, files, and Google documents — without changing anything in your Drive.</p>
+      <figure><img src="{{google-drive-downloader}}" alt="Download Google Drive feature"><figcaption>Select your OAuth credentials JSON, choose a folder, then Start.</figcaption></figure>
+      <div class="call warn"><div class="h">One-time Google setup (OAuth)</div>Drive has no app password. In the <b>Google Cloud Console</b>, enable the <b>Google Drive API</b>, create an <b>OAuth client ID</b> of type <b>Desktop app</b>, and download its JSON. The first run opens a browser to grant <b>read-only</b> access; the sign-in is then remembered.</div>
+      <h3>Download your Drive</h3>
+      <ol class="steps">
+        <li><b>Browse…</b> to your <b>Credentials (.json)</b> file.</li>
+        <li>Choose a <b>Save to folder</b> (or accept the default).</li>
+        <li>Click <b>Start Download</b>, approve access in the browser if asked, and watch the progress.</li>
+      </ol>
+      <h3>What you get</h3>
+      <ul>
+        <li>Your Drive folder structure, recreated on your PC.</li>
+        <li><b>Regular files</b> (PDFs, images, Office files…) downloaded exactly as they are.</li>
+        <li><b>Google documents exported twice</b>: Docs → <b>.docx + .pdf</b>, Sheets → <b>.xlsx + .pdf</b>, Slides → <b>.pptx + .pdf</b>, Drawings → <b>.png + .pdf</b>.</li>
+      </ul>
+      <div class="call tip"><div class="h">It’s a copy — your Drive is untouched</div>The app asks only for <b>read-only</b> access. Your credentials path and folder are remembered; your sign-in token is stored securely in the feature’s own data folder, <b>never</b> in the settings file.</div>
     </section>
 
     <section class="doc" id="data" data-t="data privacy storage appdata where files security password">

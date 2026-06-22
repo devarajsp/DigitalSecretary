@@ -27,7 +27,11 @@ public sealed class PluginPipelineQaTests
     public void All_expected_features_are_installed()
     {
         var ids = QaEnvironment.Manifests().Select(m => m.Id).ToList();
-        ids.Should().Contain(new[] { "launcher", "calculator", "clipboard-history", "email-downloader" });
+        ids.Should().Contain(new[]
+        {
+            "launcher", "calculator", "clipboard-history", "email-downloader",
+            "gmail-downloader", "google-drive-downloader"
+        });
     }
 
     [Theory]
@@ -78,5 +82,33 @@ public sealed class PluginPipelineQaTests
 
         Path.GetDirectoryName(mailkit.Location).Should().Be(m.Directory,
             "MailKit must come from the feature's own folder, not the host");
+    }
+
+    [Fact]
+    public void Gmail_feature_resolves_its_own_private_MailKit()
+    {
+        var m = QaEnvironment.Manifests().First(x => x.Id == "gmail-downloader");
+        var asmPath = Path.Combine(m.Directory, m.EntryAssembly);
+
+        var ctx = new PluginLoadContext(asmPath);
+        ctx.LoadFromAssemblyPath(asmPath);
+        var mailkit = ctx.LoadFromAssemblyName(new AssemblyName("MailKit"));
+
+        Path.GetDirectoryName(mailkit.Location).Should().Be(m.Directory,
+            "MailKit must come from the feature's own folder, not the host");
+    }
+
+    [Fact]
+    public void Drive_feature_resolves_its_own_private_Google_Apis()
+    {
+        var m = QaEnvironment.Manifests().First(x => x.Id == "google-drive-downloader");
+        var asmPath = Path.Combine(m.Directory, m.EntryAssembly);
+
+        var ctx = new PluginLoadContext(asmPath);
+        ctx.LoadFromAssemblyPath(asmPath);
+        var drive = ctx.LoadFromAssemblyName(new AssemblyName("Google.Apis.Drive.v3"));
+
+        Path.GetDirectoryName(drive.Location).Should().Be(m.Directory,
+            "Google.Apis.Drive.v3 must come from the feature's own folder, not the host");
     }
 }

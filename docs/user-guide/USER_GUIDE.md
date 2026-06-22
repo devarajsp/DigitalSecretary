@@ -39,6 +39,8 @@ DigitalSecretary is your personal toolbox for Windows. It collects handy day-to-
 | Calculator | Quick keypad / type-an-expression calculator | [Open guide](features/calculator.md) |
 | Clipboard History | Re-paste things you copied earlier | [Open guide](features/clipboard-history.md) |
 | Download Emails | Save a local copy of your Yahoo Mail | [Open guide](features/email-downloader.md) |
+| Download Gmail | Save a local copy of your Gmail | [Open guide](features/gmail-downloader.md) |
+| Download Google Drive | Save a local copy of your Google Drive (Docs exported to Office + PDF) | [Open guide](features/google-drive-downloader.md) |
 
 ## Where your data is stored
 Everything stays on your PC under **`%APPDATA%\DigitalSecretary\`**:

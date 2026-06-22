@@ -166,6 +166,30 @@ and **attaches the zip to the release**, and the showcase page + README have a *
 `release/README.md` documents it. _Why: users should be able to download and run the app directly from
 the project page without building it._
 
+### Phase 18 — Gmail + Google Drive downloaders (2026-06-22)
+Added two new feature plugins alongside the Yahoo **Download Emails** tool, both following the same
+"download a read-only local copy" model:
+- **Download Gmail** (`gmail-downloader`) — a near-clone of the Yahoo downloader over **Gmail IMAP**
+  (`imap.gmail.com`, MailKit, private to the plugin). Uses a Google **app password** (2-Step Verification
+  required); walks all folders/labels read-only; saves each message as `.txt` + `.eml` with all
+  attachments. Documents the Gmail-label overlap (a message can appear under several folders).
+- **Download Google Drive** (`google-drive-downloader`, category **Cloud**) — uses the **Google Drive
+  API** with the **OAuth 2.0 installed-app flow** (`Google.Apis.Drive.v3`, private to the plugin). The
+  user supplies a *Desktop app* OAuth `credentials.json`; the first run consents in a browser
+  (read-only scope) and the token is cached under the feature's `token/` folder. Mirrors the Drive tree,
+  downloads regular files as-is, and **exports Google-native files to both Office and PDF**
+  (Docs→docx, Sheets→xlsx, Slides→pptx, Drawings→png; all +pdf).
+
+Logic was kept in pure, testable classes (`GmailFileNaming`/`GmailAttachmentScanner`,
+`GoogleExportFormats`/`DriveFileNaming` incl. parent-chain folder resolution with cycle guard); UI stays
+thin. Added **40 unit tests** (now 85 total) and **2 QA tests** verifying each plugin resolves its own
+private MailKit / Google.Apis (now 17 QA total). Updated the full doc set: per-feature requirement +
+user-guide docs, the App requirement/user-guide indexes, the requirements (56) + traceability (37)
+spreadsheets (extended `check_docs.py`'s ID regex with `GML`/`GDR`), and the HTML user manual with new
+sections + real screenshots (seeded sample data in `DocShots`). **No host change** — both features were
+added purely as plugins. `./build.ps1 -All` ⇒ **VERDICT: PASS**. _Why: the user asked for Gmail and
+Google Drive downloaders as features; Drive needed OAuth + export because native docs have no raw bytes._
+
 _(Append new phases here as we go.)_
 
 ---

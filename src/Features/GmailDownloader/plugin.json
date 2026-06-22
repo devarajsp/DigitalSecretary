@@ -1,0 +1,9 @@
+{
+  "id": "gmail-downloader",
+  "title": "Download Gmail",
+  "category": "Communication",
+  "description": "Download a local copy of all Gmail labels/folders, emails and attachments.",
+  "order": 11,
+  "entryAssembly": "DigitalSecretary.Features.GmailDownloader.dll",
+  "entryType": "DigitalSecretary.Features.GmailDownloader.GmailDownloaderModule"
+}

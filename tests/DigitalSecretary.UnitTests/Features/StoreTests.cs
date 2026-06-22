@@ -1,4 +1,6 @@
 using DigitalSecretary.Features.EmailDownloader;
+using DigitalSecretary.Features.GmailDownloader;
+using DigitalSecretary.Features.GoogleDriveDownloader;
 using DigitalSecretary.Features.Launcher;
 using FluentAssertions;
 using Xunit;
@@ -61,6 +63,52 @@ public sealed class StoreTests
         var loaded = new EmailSettingsStore(dir.Path).Load();
 
         loaded.Email.Should().BeEmpty();
+        loaded.DownloadDir.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void Gmail_settings_round_trip()
+    {
+        using var dir = new TempDir();
+        var store = new GmailSettingsStore(dir.Path);
+
+        store.Save(new GmailSettings { Email = "me@gmail.com", DownloadDir = @"D:\Gmail" });
+
+        var loaded = store.Load();
+        loaded.Email.Should().Be("me@gmail.com");
+        loaded.DownloadDir.Should().Be(@"D:\Gmail");
+    }
+
+    [Fact]
+    public void Gmail_settings_default_when_absent()
+    {
+        using var dir = new TempDir();
+        var loaded = new GmailSettingsStore(dir.Path).Load();
+
+        loaded.Email.Should().BeEmpty();
+        loaded.DownloadDir.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void Drive_settings_round_trip_remembers_path_not_token()
+    {
+        using var dir = new TempDir();
+        var store = new DriveSettingsStore(dir.Path);
+
+        store.Save(new DriveSettings { CredentialsPath = @"C:\creds\client.json", DownloadDir = @"D:\Drive" });
+
+        var loaded = store.Load();
+        loaded.CredentialsPath.Should().Be(@"C:\creds\client.json");
+        loaded.DownloadDir.Should().Be(@"D:\Drive");
+    }
+
+    [Fact]
+    public void Drive_settings_default_when_absent()
+    {
+        using var dir = new TempDir();
+        var loaded = new DriveSettingsStore(dir.Path).Load();
+
+        loaded.CredentialsPath.Should().BeEmpty();
         loaded.DownloadDir.Should().BeEmpty();
     }
 }

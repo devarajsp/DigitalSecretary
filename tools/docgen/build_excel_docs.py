@@ -37,6 +37,7 @@ REQ_HEADERS = ["Req ID", "Issue Type", "Feature (Epic)", "Sub-feature", "Priorit
 APP = "Application Shell"
 NFR = "Non-Functional"
 LAU, CAL, CLP, EML = "Launcher", "Calculator", "Clipboard History", "Download Emails"
+GML, GDR = "Download Gmail", "Download Google Drive"
 RD = "docs/requirements/REQUIREMENTS.md"
 RDF = "docs/requirements/features/{}.md"
 
@@ -144,6 +145,40 @@ REQUIREMENTS = [
      "Show a progress bar + log; allow Cancel; report per-item errors and continue.", "", "Bar advances; Cancel stops cleanly.", RDF.format("email-downloader")),
     ("EML-8", "Story", EML, "Remember, no password", "High", "Done", "Remember email/folder; never store password",
      "Remember the email address + target folder; never store the password.", "", "Settings file has email + folder only.", RDF.format("email-downloader")),
+
+    ("GML-1", "Story", GML, "Connect & auth", "High", "Done", "IMAP SSL + app password",
+     "Connect to Gmail over IMAP (SSL) using the user's email + app password.", "", "Normal password => clear app-password message.", RDF.format("gmail-downloader")),
+    ("GML-2", "Story", GML, "Folder/label traversal", "High", "Done", "Visit all folders/labels",
+     "Traverse all folders/labels (Inbox, Sent, [Gmail]/All Mail, custom, nested).", "", "Every selectable folder is visited; counts shown.", RDF.format("gmail-downloader")),
+    ("GML-3", "Story", GML, "Read-only copy", "High", "Done", "Nothing changed on server",
+     "Open folders read-only so nothing is deleted, moved, or marked read on the server.", "", "Mailbox unchanged after a run.", RDF.format("gmail-downloader")),
+    ("GML-4", "Story", GML, "Save .txt + .eml", "High", "Done", "Both formats per email",
+     "Save each email as both .txt (readable) and .eml (full fidelity).", "", "Each message yields a date-prefixed .txt and .eml.", RDF.format("gmail-downloader")),
+    ("GML-5", "Story", GML, "Attachments", "High", "Done", "All attachments incl. inline",
+     "Save all attachments as-is, including inline/embedded images.", "", "File attachments keep names; inline parts get synthesised names.", RDF.format("gmail-downloader")),
+    ("GML-6", "Story", GML, "Mirror + collisions", "Medium", "Done", "Mirror folders; _1,_2 on clash",
+     "Mirror the remote folder structure locally; resolve name collisions with _1, _2, ...", "", "Folder tree recreated; no overwrite on collision.", RDF.format("gmail-downloader")),
+    ("GML-7", "Story", GML, "Progress & cancel", "Medium", "Done", "Progress bar + log + cancel",
+     "Show a progress bar + log; allow Cancel; report per-item errors and continue.", "", "Bar advances; Cancel stops cleanly.", RDF.format("gmail-downloader")),
+    ("GML-8", "Story", GML, "Remember, no password", "High", "Done", "Remember email/folder; never store password",
+     "Remember the email address + target folder; never store the password.", "", "Settings file has email + folder only.", RDF.format("gmail-downloader")),
+
+    ("GDR-1", "Story", GDR, "OAuth sign-in", "High", "Done", "OAuth read-only + token cache",
+     "Authenticate with the OAuth installed-app flow using the user's Desktop-app client; read-only Drive scope; cache the token.", "", "Missing creds => clear setup message; first run consents in browser.", RDF.format("google-drive-downloader")),
+    ("GDR-2", "Story", GDR, "List & tree", "High", "Done", "List files; build folder tree",
+     "List all non-trashed files via the Drive API (paged) and build the folder tree from parents.", "", "All items listed; parent chain resolves to a path.", RDF.format("google-drive-downloader")),
+    ("GDR-3", "Story", GDR, "Mirror structure", "Medium", "Done", "Recreate Drive tree locally",
+     "Mirror the Drive folder structure on disk.", "", "Local folders match the Drive tree.", RDF.format("google-drive-downloader")),
+    ("GDR-4", "Story", GDR, "Download files", "High", "Done", "Regular files as-is",
+     "Download regular files (PDF, images, Office, ...) as-is.", "", "Binary files saved byte-for-byte with original names.", RDF.format("google-drive-downloader")),
+    ("GDR-5", "Story", GDR, "Export Google docs", "High", "Done", "Docs -> Office + PDF",
+     "Export Google-native files to both an Office format and PDF (Docs->docx, Sheets->xlsx, Slides->pptx, Drawings->png; all +pdf).", "", "A Doc yields .docx + .pdf; a Sheet .xlsx + .pdf.", RDF.format("google-drive-downloader")),
+    ("GDR-6", "Story", GDR, "Skip + collisions", "Medium", "Done", "Skip non-exportable; _1,_2 on clash",
+     "Skip non-exportable native items with a note; resolve name collisions with _1, _2, ...", "", "Forms/Sites skipped with a note; no overwrite on collision.", RDF.format("google-drive-downloader")),
+    ("GDR-7", "Story", GDR, "Progress & cancel", "Medium", "Done", "Progress bar + log + cancel",
+     "Show a progress bar + log; allow Cancel; report per-item errors and continue.", "", "Bar advances; Cancel stops cleanly.", RDF.format("google-drive-downloader")),
+    ("GDR-8", "Story", GDR, "Remember, token cached", "High", "Done", "Remember path/folder; token cached separately",
+     "Remember the credentials-file path + target folder; cache the OAuth token separately, never in settings.", "", "Settings file has path + folder only; token under token/.", RDF.format("google-drive-downloader")),
 ]
 
 # --------------------------------------------------------------------------- #
@@ -159,6 +194,8 @@ TRACE_HEADERS = ["Feature", "Sub-feature", "Requirement ID(s)", "Requirement Doc
 QA = "tests/DigitalSecretary.QaTests/PluginPipelineQaTests.cs"
 QA_LOAD = QA + " (Feature_loads_instantiates_and_builds_a_view)"
 QA_MAIL = QA + " (Email_feature_resolves_its_own_private_MailKit)"
+QA_GMAIL = QA + " (Gmail_feature_resolves_its_own_private_MailKit)"
+QA_DRIVE = QA + " (Drive_feature_resolves_its_own_private_Google_Apis)"
 ARCH = "docs/ARCHITECTURE.md"
 MAN = "docs/user-guide/DigitalSecretary-User-Manual.html"
 IMG = "docs/user-guide/images/{}.png"
@@ -249,6 +286,40 @@ TRACE = [
     (EML, "Settings (remember; no password)", "EML-8", RDF.format("email-downloader"), IMG.format("email-downloader"),
      "src/Features/EmailDownloader/EmailSettings.cs (EmailSettingsStore)",
      "tests/DigitalSecretary.UnitTests/Features/StoreTests.cs (Email_settings_round_trip)", QA_LOAD, MAN + "#email", ARCH, FDOC.format("EmailDownloader"), "Password never stored."),
+
+    # Gmail
+    (GML, "Connect & authenticate", "GML-1", RDF.format("gmail-downloader"), IMG.format("gmail-downloader"),
+     "src/Features/GmailDownloader/GmailDownloader.cs (RunAsync)", NET_QA, QA_GMAIL, MAN + "#gmail", ARCH, FDOC.format("GmailDownloader"), "App password + 2-Step Verification required."),
+    (GML, "Folder/label traversal (read-only)", "GML-2, GML-3", RDF.format("gmail-downloader"), IMG.format("gmail-downloader"),
+     "src/Features/GmailDownloader/GmailDownloader.cs (CollectSelectableFoldersAsync)", NET_QA, QA_LOAD, MAN + "#gmail", ARCH, FDOC.format("GmailDownloader"), "EXAMINE / read-only; labels can overlap."),
+    (GML, "Save .txt + .eml + mirror", "GML-4, GML-6", RDF.format("gmail-downloader"), IMG.format("gmail-downloader"),
+     "src/Features/GmailDownloader/GmailDownloader.cs (SaveMessage), src/Features/GmailDownloader/GmailFileNaming.cs",
+     "tests/DigitalSecretary.UnitTests/Features/GmailFileNamingTests.cs", QA_LOAD, MAN + "#gmail", ARCH, FDOC.format("GmailDownloader"), ""),
+    (GML, "Attachments (incl. inline)", "GML-5", RDF.format("gmail-downloader"), IMG.format("gmail-downloader"),
+     "src/Features/GmailDownloader/GmailAttachmentScanner.cs",
+     "tests/DigitalSecretary.UnitTests/Features/GmailAttachmentScannerTests.cs", QA_LOAD, MAN + "#gmail", ARCH, FDOC.format("GmailDownloader"), ""),
+    (GML, "Progress & cancel + errors", "GML-7", RDF.format("gmail-downloader"), IMG.format("gmail-downloader"),
+     "src/Features/GmailDownloader/DownloadGmailControl.cs (OnStart, OnCancel)", UI_QA, QA_LOAD, MAN + "#gmail", ARCH, FDOC.format("GmailDownloader"), ""),
+    (GML, "Settings (remember; no password)", "GML-8", RDF.format("gmail-downloader"), IMG.format("gmail-downloader"),
+     "src/Features/GmailDownloader/GmailSettings.cs (GmailSettingsStore)",
+     "tests/DigitalSecretary.UnitTests/Features/StoreTests.cs (Gmail_settings_round_trip)", QA_LOAD, MAN + "#gmail", ARCH, FDOC.format("GmailDownloader"), "Password never stored."),
+
+    # Google Drive
+    (GDR, "OAuth sign-in (read-only)", "GDR-1", RDF.format("google-drive-downloader"), IMG.format("google-drive-downloader"),
+     "src/Features/GoogleDriveDownloader/GoogleDriveDownloader.cs (CreateServiceAsync)", NET_QA, QA_DRIVE, MAN + "#drive", ARCH, FDOC.format("GoogleDriveDownloader"), "Desktop-app OAuth client; token cached."),
+    (GDR, "List & build folder tree", "GDR-2, GDR-3", RDF.format("google-drive-downloader"), IMG.format("google-drive-downloader"),
+     "src/Features/GoogleDriveDownloader/GoogleDriveDownloader.cs (ListAllAsync), src/Features/GoogleDriveDownloader/DriveFileNaming.cs (ResolveFolderPath)",
+     "tests/DigitalSecretary.UnitTests/Features/DriveFileNamingTests.cs", QA_LOAD, MAN + "#drive", ARCH, FDOC.format("GoogleDriveDownloader"), ""),
+    (GDR, "Download regular files", "GDR-4", RDF.format("google-drive-downloader"), IMG.format("google-drive-downloader"),
+     "src/Features/GoogleDriveDownloader/GoogleDriveDownloader.cs (DownloadAsync)", NET_QA, QA_LOAD, MAN + "#drive", ARCH, FDOC.format("GoogleDriveDownloader"), "Saved byte-for-byte."),
+    (GDR, "Export Google docs (Office + PDF)", "GDR-5, GDR-6", RDF.format("google-drive-downloader"), IMG.format("google-drive-downloader"),
+     "src/Features/GoogleDriveDownloader/GoogleExportFormats.cs, src/Features/GoogleDriveDownloader/GoogleDriveDownloader.cs (ExportAsync)",
+     "tests/DigitalSecretary.UnitTests/Features/GoogleExportFormatsTests.cs", QA_LOAD, MAN + "#drive", ARCH, FDOC.format("GoogleDriveDownloader"), ""),
+    (GDR, "Progress & cancel + errors", "GDR-7", RDF.format("google-drive-downloader"), IMG.format("google-drive-downloader"),
+     "src/Features/GoogleDriveDownloader/DownloadDriveControl.cs (OnStart, OnCancel)", UI_QA, QA_LOAD, MAN + "#drive", ARCH, FDOC.format("GoogleDriveDownloader"), ""),
+    (GDR, "Settings (remember path; token cached)", "GDR-8", RDF.format("google-drive-downloader"), IMG.format("google-drive-downloader"),
+     "src/Features/GoogleDriveDownloader/DriveSettings.cs (DriveSettingsStore)",
+     "tests/DigitalSecretary.UnitTests/Features/StoreTests.cs (Drive_settings_round_trip_remembers_path_not_token)", QA_LOAD, MAN + "#drive", ARCH, FDOC.format("GoogleDriveDownloader"), "Token cached separately, not in settings."),
 ]
 
 
