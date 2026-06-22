@@ -62,6 +62,7 @@ private by default, and easy to extend.
 | Download Emails | Communication | [features/email-downloader.md](features/email-downloader.md) | [user guide](../user-guide/features/email-downloader.md) |
 | Download Gmail | Communication | [features/gmail-downloader.md](features/gmail-downloader.md) | [user guide](../user-guide/features/gmail-downloader.md) |
 | Download Google Drive | Cloud | [features/google-drive-downloader.md](features/google-drive-downloader.md) | [user guide](../user-guide/features/google-drive-downloader.md) |
+| Email Intelligence | Insights | [features/email-intelligence.md](features/email-intelligence.md) | [user guide](../user-guide/features/email-intelligence.md) |
 
 ## 8. Glossary
 - **Feature / plugin:** an independent capability, shipped as its own module/DLL.
