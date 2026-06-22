@@ -11,7 +11,7 @@
             (DigitalSecretary.QaTests) and manual runs, not by unit tests, so they are excluded
             from the unit-coverage metric to keep it meaningful.
           -->
-          <Exclude>[*]*Control,[*]*Form,[*]*Module,[*]*Program,[*]*Prompt,[*]*PluginLoader,[*]*PluginLoadContext,[*]*LoadedFeature,[DigitalSecretary.Features.EmailDownloader]*.EmailDownloader</Exclude>
+          <Exclude>[*]*Control,[*]*Form,[*]*Module,[*]*Program,[*]*Prompt,[*]*PluginLoader,[*]*PluginLoadContext,[*]*LoadedFeature,[DigitalSecretary.Features.EmailDownloader]*.EmailDownloader,[DigitalSecretary.Features.GmailDownloader]*.GmailDownloader,[DigitalSecretary.Features.GoogleDriveDownloader]*.GoogleDriveDownloader</Exclude>
           <ExcludeByAttribute>GeneratedCodeAttribute,CompilerGeneratedAttribute,ExcludeFromCodeCoverageAttribute</ExcludeByAttribute>
           <SkipAutoProps>true</SkipAutoProps>
         </Configuration>

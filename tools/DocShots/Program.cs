@@ -168,6 +168,16 @@ internal static class Program
         Directory.CreateDirectory(email);
         var settings = new { Email = "yourname@yahoo.com", DownloadDir = @"C:\Users\You\Documents\DigitalSecretary_Email" };
         File.WriteAllText(Path.Combine(email, "email_settings.json"), JsonSerializer.Serialize(settings, json));
+
+        var gmail = Path.Combine(dataRoot, "gmail-downloader");
+        Directory.CreateDirectory(gmail);
+        var gmailSettings = new { Email = "yourname@gmail.com", DownloadDir = @"C:\Users\You\Documents\DigitalSecretary_Gmail" };
+        File.WriteAllText(Path.Combine(gmail, "gmail_settings.json"), JsonSerializer.Serialize(gmailSettings, json));
+
+        var drive = Path.Combine(dataRoot, "google-drive-downloader");
+        Directory.CreateDirectory(drive);
+        var driveSettings = new { CredentialsPath = @"C:\Users\You\Downloads\credentials.json", DownloadDir = @"C:\Users\You\Documents\DigitalSecretary_Drive" };
+        File.WriteAllText(Path.Combine(drive, "drive_settings.json"), JsonSerializer.Serialize(driveSettings, json));
     }
 
     private static string LocateRepoRoot()

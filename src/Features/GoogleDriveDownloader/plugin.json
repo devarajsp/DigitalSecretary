@@ -1,0 +1,9 @@
+{
+  "id": "google-drive-downloader",
+  "title": "Download Google Drive",
+  "category": "Cloud",
+  "description": "Download a local copy of your Google Drive files, exporting Google Docs/Sheets/Slides.",
+  "order": 20,
+  "entryAssembly": "DigitalSecretary.Features.GoogleDriveDownloader.dll",
+  "entryType": "DigitalSecretary.Features.GoogleDriveDownloader.GoogleDriveDownloaderModule"
+}
