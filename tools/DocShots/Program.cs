@@ -178,6 +178,18 @@ internal static class Program
         Directory.CreateDirectory(drive);
         var driveSettings = new { CredentialsPath = @"C:\Users\You\Downloads\credentials.json", DownloadDir = @"C:\Users\You\Documents\DigitalSecretary_Drive" };
         File.WriteAllText(Path.Combine(drive, "drive_settings.json"), JsonSerializer.Serialize(driveSettings, json));
+
+        // Seed placeholder paths so the Email Intelligence screenshot never shows the real OS username.
+        var emailIntel = Path.Combine(dataRoot, "email-intelligence");
+        Directory.CreateDirectory(emailIntel);
+        var eiSettings = new
+        {
+            InputDir = @"C:\Users\You\Documents\DigitalSecretary_Email",
+            OutputDir = @"C:\Users\You\Documents\DigitalSecretary_EmailIntelligence",
+            OwnerAddress = "yourname@example.com",
+            Append = false
+        };
+        File.WriteAllText(Path.Combine(emailIntel, "email_intelligence_settings.json"), JsonSerializer.Serialize(eiSettings, json));
     }
 
     private static string LocateRepoRoot()

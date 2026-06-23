@@ -91,9 +91,15 @@ important workflow in this repo is "add a feature" — keep it mechanical and re
   don't match, coverage has a gap, or generated text is unclean. Keep it green (part of the VERDICT).
 - **No secrets or personal info, ever — gated before every commit.** The pre-commit hook and
   `build.ps1` run `tools/check_secrets.py`, which **fails** if any tracked artifact (code, docs, config)
-  contains a personal email, password, token / API key, private key, SSN, or credit-card number. Use a
+  contains a personal email, password, token / API key, private key, SSN, credit-card number, **or a
+  local user-home path that leaks the OS username** (`C:\Users\<name>\`, `/home/<name>/`). Use a
   **generic git identity** (no real name/email in commit metadata). Mark a confirmed false positive with
   a trailing `# pragma: allowlist secret`.
+  - **Image-baked PII is not text-scannable** — a real name/path/email **rendered into a screenshot**
+    won't be caught by the scanner. So **all screenshots and sample/seed data must use placeholders**
+    (`C:\Users\You\...`, `yourname@example.com`); feed those to `tools/DocShots`, never real values.
+  - **Never commit build caches** that embed absolute source paths — `__pycache__/`, `*.pyc`, `bin/`,
+    `obj/` are git-ignored (a `.pyc` records `C:\Users\<you>\...` as its source path = username PII).
 - **The repo is git-tracked** — make a commit per logical change so anything can be reviewed/reverted.
 - **Gates run automatically.** A **pre-commit hook** (`.githooks/pre-commit`) runs a fast gate
   (build + static analysis + docs consistency) so broken/drifted changes can't be committed; **CI**
