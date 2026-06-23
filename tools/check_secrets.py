@@ -4,7 +4,11 @@ Scans every tracked text artifact (code, docs, config) for personal data and sec
 never be committed. Wired into build.ps1 (part of the VERDICT) and therefore the pre-commit hook.
 
 Detects: personal email addresses, hardcoded passwords/secrets/tokens/API keys, GitHub/AWS/Google/
-Slack tokens, JWTs, private-key blocks, US SSNs, and Luhn-valid credit-card numbers.
+Slack tokens, JWTs, private-key blocks, US SSNs, Luhn-valid credit-card numbers, and local user-home
+paths that leak the OS username (e.g. C:\\Users\\<name>\\, /home/<name>/, /Users/<name>/).
+
+Note: image-baked PII (a real name/path rendered into a screenshot) is NOT catchable here - it is
+prevented upstream by feeding screenshots/sample data placeholder values (see tools/DocShots).
 
 Allow a known-safe line with a trailing comment:  ... # pragma: allowlist secret
 Run:  python tools/check_secrets.py
@@ -31,6 +35,11 @@ ALLOW_LOCALPARTS = {"yourname", "you", "me", "user", "username", "test", "exampl
 EMAIL_RE = re.compile(r"[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}")
 SSN_RE = re.compile(r"\b\d{3}-\d{2}-\d{4}\b")
 CC_RE = re.compile(r"\b(?:\d[ \-]?){13,16}\b")
+
+# Local user-home paths leak the OS username (real-name PII). Allow obvious placeholders.
+HOME_PATH_RE = re.compile(r"(?i)(?:[A-Za-z]:[\\/]+Users[\\/]+|/home/|/Users/)([A-Za-z0-9._%+\-]+)")
+ALLOW_USERS = {"you", "public", "default", "yourname", "user", "username", "runneradmin",
+               "runner", "administrator", "name", "example", "someone"}
 
 TOKEN_PATTERNS = [
     ("GitHub token", re.compile(r"gh[pousr]_[A-Za-z0-9]{36,}")),
@@ -93,6 +102,9 @@ def scan_line(rel, n, line):
         digits = re.sub(r"\D", "", cand)
         if 13 <= len(digits) <= 16 and luhn_ok(digits):
             findings.append((rel, n, "credit-card number", digits[:4] + "********"))
+    for m in HOME_PATH_RE.finditer(line):
+        if m.group(1).lower() not in ALLOW_USERS:
+            findings.append((rel, n, "local user-home path (OS username)", m.group(0)))
 
 
 def main():
