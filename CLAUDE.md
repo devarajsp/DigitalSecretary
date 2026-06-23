@@ -61,7 +61,10 @@ important workflow in this repo is "add a feature" — keep it mechanical and re
   **test-count + coverage badges**, and the footer version) so the public repo and site reflect the
   latest feature — not just the release notes. This is **gated**: `tools/docgen/check_docs.py` fails the
   build if any feature's `plugin.json` **title** is missing from `README.md` or `docs/index.html`, so the
-  showcase can never drift behind a release again.
+  showcase can never drift behind a release again. Also **regenerate the HTML user manual** (template +
+  DocShots screenshots) so it covers the new feature, and **link any rendered HTML doc by its GitHub
+  Pages URL** (`https://<owner>.github.io/<repo>/…`), **never** the repo blob path — GitHub serves an
+  `.html` blob as raw source, not a page.
 - **Update the product & user documentation (required, App → Feature → Sub-feature):**
   - `docs/requirements/` — product/BA view: purpose, user stories, functional requirements, acceptance
     criteria, NFRs, traceability. New feature ⇒ new `docs/requirements/features/<id>.md`.

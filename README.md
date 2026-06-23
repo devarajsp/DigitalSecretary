@@ -7,7 +7,7 @@ and new features can be added without touching the core.
 > Built with .NET 9 + WinForms. Successor to the earlier "SPD Personal App".
 
 [![CI](https://github.com/devarajsp/DigitalSecretary/actions/workflows/ci.yml/badge.svg)](https://github.com/devarajsp/DigitalSecretary/actions/workflows/ci.yml)
-&nbsp;**Download:** [latest release](https://github.com/devarajsp/DigitalSecretary/releases/latest) &nbsp;·&nbsp; **Showcase:** https://devarajsp.github.io/DigitalSecretary/ &nbsp;·&nbsp; **User manual:** [open it](docs/user-guide/DigitalSecretary-User-Manual.html)
+&nbsp;**Download:** [latest release](https://github.com/devarajsp/DigitalSecretary/releases/latest) &nbsp;·&nbsp; **Showcase:** https://devarajsp.github.io/DigitalSecretary/ &nbsp;·&nbsp; **User manual:** [open it](https://devarajsp.github.io/DigitalSecretary/user-guide/DigitalSecretary-User-Manual.html)
 
 > **Get the app:** download the latest `DigitalSecretary-v<version>-win-x64.zip` from [Releases](https://github.com/devarajsp/DigitalSecretary/releases/latest) — self-contained (no .NET install), unzip & run or use `Install.cmd`.
 
