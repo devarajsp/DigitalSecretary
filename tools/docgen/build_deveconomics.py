@@ -46,72 +46,74 @@ RATE = {"in": 5.0, "out": 25.0, "cache_read": 0.50, "cache_write": 6.25}
 #    (Phase, Activity, Bucket, Tool/Method, LLM?, EstTokens, EstCostUSD, TimeMin, TimeBasis, Notes)
 #    Bucket: "A" LLM tokens | "B" local compute | "C" remote | "B+C" local that pulls from network.
 # --------------------------------------------------------------------------- #
-FEATURE = "Gmail + Google Drive downloaders"
+FEATURE = "Email Intelligence"
 FEATURE_DATE = "2026-06-22"
 MODEL = "Opus 4.8"
-PRODUCTION_KLOC = 1.03  # Gmail 521 + Drive 512 lines of production C#
+PRODUCTION_KLOC = 2.50  # ~2,495 lines of production C# across 25 .cs files (incl. embedded report CSS/JS)
 
 ACTIVITIES = [
-    ("Explore", "Read CLAUDE.md; locate solution & memory", "A", "Read/Glob", "Yes", 4000, 0.05, 1.5, "estimate", "orient"),
-    ("Explore", "Study EmailDownloader (control, IMAP, settings, helpers)", "A", "Read", "Yes", 12000, 0.12, 3.0, "estimate", "model to clone"),
-    ("Explore", "Read contract, ADDING_A_FEATURE, Directory.Build.props", "A", "Read", "Yes", 6000, 0.07, 1.5, "estimate", ""),
-    ("Explore", "Read unit + QA tests and QA harness", "A", "Read", "Yes", 7000, 0.08, 1.5, "estimate", ""),
-    ("Explore", "Read build.ps1, docgen scripts, check_docs", "A", "Read", "Yes", 14000, 0.14, 3.0, "estimate", "quality gates"),
-    ("Explore", "Read requirements/user-guide/journal/manual template/DocShots", "A", "Read", "Yes", 13000, 0.13, 3.0, "estimate", "docs pipeline"),
-    ("Decide", "Ask 3 scoping questions (IMAP vs API, OAuth, export fmt)", "A", "AskUserQuestion", "Yes", 2000, 0.06, 1.0, "estimate", "blocking decisions"),
-    ("Setup", "Verify toolchain (dotnet/python/nuget/git/openpyxl)", "B", "PowerShell", "No", 0, 0.0, 0.2, "measured", ""),
+    ("Requirements", "Brainstorm uses; draft email-intelligence requirements (Groups A-K)", "A", "Write", "Yes", 9000, 0.40, 8.0, "estimate", "BA/product doc"),
+    ("Requirements", "Add timeline / documents / progress / HTML-report requirements", "A", "Edit", "Yes", 4000, 0.15, 3.0, "estimate", ""),
 
-    ("Build Gmail", "Author 9 Gmail files (module, control, IMAP, naming, scanner, settings, manifest, FEATURE)", "A", "Write", "Yes", 14000, 0.45, 6.0, "estimate", "521 LOC"),
-    ("Build Gmail", "Add project to solution + unit-test reference", "B", "dotnet sln/add", "No", 0, 0.0, 0.2, "measured", ""),
-    ("Build Gmail", "Compile Gmail feature (0 warnings)", "B", "dotnet build", "No", 0, 0.0, 0.14, "measured", "8.4s"),
+    ("Explore", "Read CLAUDE.md, contract, EmailDownloader, build.ps1, docgen, tests (~20 reads)", "A", "Read", "Yes", 40000, 0.45, 8.0, "estimate", "one-time pattern learning"),
+    ("Explore", "Read ADDING_A_FEATURE, check_docs, build_excel_docs, coverage.runsettings", "A", "Read", "Yes", 18000, 0.20, 4.0, "estimate", "quality gates"),
+    ("Setup", "Verify dotnet/python/nuget/git + MimeKit cache", "B", "Bash", "No", 0, 0.0, 0.3, "measured", ""),
 
-    ("Build Drive", "Author pure logic (export formats, file naming, settings)", "A", "Write", "Yes", 6000, 0.18, 3.0, "estimate", "testable, no Google dep"),
-    ("Build Drive", "Author csproj / manifest / module", "A", "Write", "Yes", 2000, 0.06, 1.0, "estimate", ""),
-    ("Build Drive", "Add Google.Apis.Drive.v3 + restore", "B+C", "dotnet add package", "No", 0, 0.0, 0.10, "measured", "NuGet download 5.9s"),
-    ("Build Drive", "Author OAuth + Drive API downloader + control + FEATURE", "A", "Write", "Yes", 9000, 0.40, 4.0, "estimate", "512 LOC"),
-    ("Build Drive", "Simplify download helper", "A", "Edit", "Yes", 1500, 0.04, 0.5, "estimate", ""),
-    ("Build Drive", "Add to solution + unit-test reference", "B", "dotnet sln/add", "No", 0, 0.0, 0.2, "measured", ""),
-    ("Build Drive", "Compile Drive (2 analyzer warnings)", "B", "dotnet build", "No", 0, 0.0, 0.10, "measured", "6.3s"),
-    ("Build Drive", "Fix CA1859 + CA2016 warnings", "A", "Edit", "Yes", 1500, 0.04, 0.5, "estimate", ""),
-    ("Build Drive", "Recompile Drive (0 warnings)", "B", "dotnet build", "No", 0, 0.0, 0.04, "measured", "2.5s"),
+    ("Build P1", "Author models + MailText + EmailParser + ArchiveScanner", "A", "Write", "Yes", 9000, 0.35, 6.0, "estimate", "MimeKit + .txt"),
+    ("Build P1", "Compile parsing slice", "B", "dotnet build", "No", 0, 0.0, 0.15, "measured", "8.7s"),
+    ("Build P1", "Author 9 analyzer classes (dedupe/contacts/identity/signature/metrics/graph/topics/timeline/classify)", "A", "Write", "Yes", 12000, 0.45, 8.0, "estimate", ""),
+    ("Build P1", "Fix nullable + CA1859 warnings", "A", "Edit", "Yes", 1500, 0.04, 0.6, "estimate", ""),
+    ("Build P1", "Author exporters + HTML report generator + pipeline + settings + UI + module", "A", "Write", "Yes", 16000, 0.60, 9.0, "estimate", "report has embedded CSS/JS"),
+    ("Build P1", "Compile full feature (0 warnings)", "B", "dotnet build", "No", 0, 0.0, 0.1, "measured", ""),
 
-    ("Tests", "Author 4 unit-test files (Gmail + Drive logic)", "A", "Write", "Yes", 6000, 0.20, 3.0, "estimate", "233 LOC"),
-    ("Tests", "Add settings round-trips + QA private-dependency tests", "A", "Edit", "Yes", 3000, 0.10, 1.5, "estimate", ""),
-    ("Tests", "Build full solution", "B", "dotnet build", "No", 0, 0.0, 0.21, "measured", "12.5s, 0 warn"),
-    ("Tests", "Run unit tests", "B", "dotnet test", "No", 0, 0.0, 0.07, "measured", "85 pass, 4s"),
-    ("Tests", "Run QA automation", "B", "dotnet test", "No", 0, 0.0, 0.02, "measured", "17 pass, 1s"),
+    ("Tests P1", "Author 14 unit-test files + fixtures", "A", "Write", "Yes", 10000, 0.35, 6.0, "estimate", ""),
+    ("Tests P1", "Add feature reference to unit-test project", "B", "dotnet add reference", "No", 0, 0.0, 0.1, "measured", ""),
+    ("Tests P1", "Run unit tests (121)", "B", "dotnet test", "No", 0, 0.0, 0.12, "measured", "7s"),
 
-    ("Docs", "Author requirement + user-guide docs (4)", "A", "Write", "Yes", 6000, 0.20, 3.0, "estimate", ""),
-    ("Docs", "Update REQUIREMENTS / USER_GUIDE indexes", "A", "Edit", "Yes", 1500, 0.05, 1.0, "estimate", ""),
-    ("Docgen", "Edit build_excel_docs.py + check_docs.py (GML/GDR rows + ID regex)", "A", "Edit", "Yes", 5000, 0.14, 2.5, "estimate", ""),
-    ("Docgen", "Regenerate requirements + traceability xlsx", "B", "python", "No", 0, 0.0, 0.05, "measured", "56 req, 37 trace"),
-    ("Docgen", "Run docs consistency checker", "B", "python check_docs", "No", 0, 0.0, 0.05, "measured", "caught 24 expected"),
+    ("Docs", "Author FEATURE.md + user-guide doc", "A", "Write", "Yes", 4000, 0.14, 3.0, "estimate", ""),
+    ("Docgen", "Edit build_excel_docs (37 reqs + 16 trace) + check_docs EI id regex", "A", "Edit", "Yes", 8000, 0.22, 4.0, "estimate", ""),
+    ("Docgen", "Regenerate xlsx + run check_docs + secret scan", "B", "python", "No", 0, 0.0, 0.1, "measured", ""),
+    ("Gate", "Full quality gate", "B", "build.ps1 -All", "No", 0, 0.0, 0.7, "measured", "PASS, 92%"),
+    ("Gate", "Append DEVELOPMENT_JOURNAL phase", "A", "Edit", "Yes", 2500, 0.08, 1.5, "estimate", ""),
 
-    ("Manual", "Edit manual template (TOC + 2 sections) + DocShots seed", "A", "Edit", "Yes", 4000, 0.12, 2.5, "estimate", ""),
-    ("Manual", "Generate screenshots", "B", "dotnet run DocShots", "No", 0, 0.0, 0.25, "measured", "8 PNGs"),
-    ("Manual", "Build single-file HTML manual", "B", "build-user-manual.ps1", "No", 0, 0.0, 0.03, "measured", "192KB, clean"),
-    ("Manual", "Re-run consistency checker", "B", "python check_docs", "No", 0, 0.0, 0.05, "measured", "0 errors"),
+    ("Append", "Add AnalysisMode + ScanAndParse/AnalyzeCore refactor (EI-I4)", "A", "Write", "Yes", 7000, 0.25, 5.0, "estimate", "consolidate archives"),
+    ("Append", "Wire Append checkbox into the UI", "A", "Edit", "Yes", 2000, 0.06, 1.5, "estimate", ""),
+    ("Append", "Author MessageStore + append/overwrite tests", "A", "Write", "Yes", 3500, 0.12, 2.0, "estimate", ""),
+    ("Append", "Run tests (125)", "B", "dotnet test", "No", 0, 0.0, 0.1, "measured", ""),
+    ("Append", "Register EI-I4 + regenerate + gate", "B", "python/build.ps1", "No", 0, 0.0, 0.75, "measured", "PASS"),
 
-    ("Gate", "Append DEVELOPMENT_JOURNAL phase", "A", "Edit", "Yes", 2000, 0.06, 1.0, "estimate", ""),
-    ("Gate", "Full quality gate", "B", "build.ps1 -All", "No", 0, 0.0, 0.7, "measured", "PASS, 72.9% cov"),
-    ("Gate", "Fix coverage.runsettings exclusions", "A", "Edit", "Yes", 1500, 0.04, 0.5, "estimate", "exclude network classes"),
-    ("Gate", "Re-run gate with -MinCoverage 80", "B", "build.ps1 -All", "No", 0, 0.0, 0.7, "measured", "PASS, 89.9%"),
-    ("Review", "Cleanliness scan (mojibake) + git status", "B", "Grep/git", "No", 0, 0.0, 0.1, "measured", "0 mojibake"),
-    ("Commit", "Commit + pre-commit gate", "B", "git commit", "No", 0, 0.0, 0.3, "measured", "1df66a4"),
+    ("Build P3", "Author SentimentLexicon + ToneAnalyzer + LifeDataExtractor + DocumentLibrary + model fields", "A", "Write", "Yes", 9000, 0.32, 6.0, "estimate", "E2, F1-F4, F7"),
+    ("Build P3", "Wire pipeline + CSV exporters + JSON + 2 HTML tabs", "A", "Edit", "Yes", 6000, 0.20, 4.0, "estimate", ""),
+    ("Build P3", "Author 3 analyzer test files", "A", "Write", "Yes", 4000, 0.14, 3.0, "estimate", ""),
+    ("Build P3", "Run tests (147)", "B", "dotnet test", "No", 0, 0.0, 0.1, "measured", ""),
+    ("Build P3", "Register E2/F + regenerate + gate", "B", "python/build.ps1", "No", 0, 0.0, 0.75, "measured", "PASS"),
+
+    ("Build P4", "Author XlsxWriter (dependency-free OOXML) + WorkbookExporter + wire pipeline", "A", "Write", "Yes", 6000, 0.22, 4.0, "estimate", "native .xlsx"),
+    ("Build P4", "Hoist header arrays (CA1861)", "A", "Edit", "Yes", 1200, 0.03, 0.5, "estimate", ""),
+    ("Build P4", "Author XlsxWriter tests", "A", "Write", "Yes", 2500, 0.09, 1.5, "estimate", ""),
+    ("Build P4", "Validate .xlsx with openpyxl (throwaway runner)", "B", "dotnet run + python", "No", 0, 0.0, 0.4, "measured", "3 sheets, typed numbers"),
+    ("Build P4", "Register EI-H7 + regenerate + gate", "B", "python/build.ps1", "No", 0, 0.0, 0.75, "measured", "PASS, 91.9%"),
+
+    ("Commit", "Fix test fixtures to example.com (secret gate) + stage", "A", "Bash/Edit", "Yes", 1500, 0.04, 1.0, "estimate", "74 leaks -> 0"),
+    ("Commit", "Commit feature + xlsx (pre-commit gate x2)", "B", "git commit", "No", 0, 0.0, 0.6, "measured", "84d97dd, 3562b3d"),
+    ("Release", "Push main to origin", "B+C", "git push", "No", 0, 0.0, 0.1, "measured", ""),
+    ("Release", "DevEconomics + CHANGELOG + cut release", "A", "Write/Edit", "Yes", 6000, 0.20, 5.0, "estimate", "this release entry"),
 ]
 
 # Shared session overhead not attributable to one activity: the growing transcript re-sent each
-# turn, served mostly from cache (~0.1x input). Estimated; reconcile the total against /cost.
-CONTEXT_OVERHEAD_USD = 2.77
+# turn across a long multi-increment session (~100+ turns), served mostly from cache (~0.1x input).
+# Estimated; reconcile the total against /cost.
+CONTEXT_OVERHEAD_USD = 16.0
 
-# Whole-app baseline for everything built BEFORE DevEconomics tracking began (phases 1-17: the
-# re-architecture to a pluggable host, the first 4 features, and the quality/docs/CI/release infra).
-# ROUGH order-of-magnitude estimate - not logged live. Refine if real figures surface.
+# Whole-app baseline for everything built BEFORE this release: the pluggable host, the first 4
+# features, the quality/docs/CI/release infrastructure (phases 1-17, rough pre-tracking estimate),
+# and the Gmail + Google Drive downloaders (phase 18 / v2.1.0, which WERE tracked - folded in here so
+# the App Total stays correct as Email Intelligence becomes the tracked feature).
 FOUNDATION = {
-    "name": "Foundation (host + first 4 features + quality/docs/CI/release infra)",
-    "date": "2026-06-19..20", "model": "Opus (multi-session)",
-    "kloc": 1.70, "tokens": 2_000_000, "cost_est": 45.0, "time_est": 720.0,
-    "note": "ROUGH estimate - phases 1-17 predate DevEconomics tracking (not logged live).",
+    "name": "Prior releases (host + 6 features + quality/docs/CI/release infra, through v2.1.0)",
+    "date": "2026-06-19..22", "model": "Opus (multi-session)",
+    "kloc": 2.73, "tokens": 2_121_000, "cost_est": 50.50, "time_est": 768.0,
+    "note": "ROUGH estimate: phases 1-17 predate DevEconomics tracking; includes the tracked Gmail/Drive release (v2.1.0, ~$5.50).",
 }
 
 ACT_HEADERS = ["#", "Phase", "Activity", "Bucket", "Tool / Method", "LLM?",
@@ -205,7 +207,7 @@ def build_feature_summary(ws, roll):
     ws.title = "Feature Summary"
     ws.append(SUM_HEADERS)
 
-    # Row 2 - foundation baseline (rough estimate, pre-tracking). ACTUAL (L/P) blank.
+    # Row 2 - foundation baseline (rough estimate, pre-tracking + folded-in v2.1.0). ACTUAL (L/P) blank.
     ws.append([
         FOUNDATION["name"], FOUNDATION["date"], FOUNDATION["model"], None, None, None,
         FOUNDATION["kloc"], FOUNDATION["tokens"], None, None, FOUNDATION["cost_est"], None,
@@ -218,7 +220,7 @@ def build_feature_summary(ws, roll):
         PRODUCTION_KLOC, roll["tokens"], roll["direct_cost"], roll["overhead"], roll["total_est"], None,
         '=IF(ISNUMBER(L3),L3-K3,"pending /cost")', roll["local_time"], roll["total_time"], None,
         round(roll["total_est"] / PRODUCTION_KLOC, 2),
-        "Estimate; reconcile ACTUAL via /cost. Excludes the DevEconomics report + cost analysis.",
+        "Estimate; reconcile ACTUAL via /cost. Spans 3 increments (foundation+report, append, tone/life-data/docs, xlsx).",
     ])
     # Row 4 - APP TOTAL (whole-app development to date = foundation + tracked features).
     tr = DATA_ROWS + 1
@@ -306,7 +308,7 @@ def build_readme(wb, roll):
         ["Truth & estimates", "Token/cost for LLM rows are ESTIMATES (the model can't read its own "
                               "meter). Local times are MEASURED from command output where captured. "
                               "Per-feature ACTUAL cost comes from /cost (Claude Code) or the Anthropic "
-                              "Console - fill columns J/N in Feature Summary, then re-run."],
+                              "Console - fill columns L/P in Feature Summary, then re-run."],
         ["This release", f"{roll['activities']} activities ({roll['a']} LLM / {roll['bc']} local|remote); "
                          f"~${roll['total_est']} est; ~{roll['total_time']} min est "
                          f"(~{roll['local_time']} min measured local compute)."],
