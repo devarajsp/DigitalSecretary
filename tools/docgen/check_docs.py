@@ -10,6 +10,7 @@ Checks:
   5. Traceability Coverage has no Gap (all required artifact cells present).
   6. Every src/Features/<X> has a full artifact set (FEATURE.md, requirement doc, user-guide, a row).
   7. Generated text (user manual + spreadsheets) is clean (no mojibake, no unresolved tokens).
+  8. The GitHub-facing showcase (README.md + docs/index.html) lists every feature.
 
 Run:  python tools/docgen/check_docs.py
 """
@@ -26,6 +27,8 @@ ROOT = Path(__file__).resolve().parents[2]
 REQ_XLSX = ROOT / "docs/requirements/DigitalSecretary-Requirements.xlsx"
 TRACE_XLSX = ROOT / "docs/traceability/DigitalSecretary-Traceability-Matrix.xlsx"
 MANUAL = ROOT / "docs/user-guide/DigitalSecretary-User-Manual.html"
+README = ROOT / "README.md"
+SHOWCASE = ROOT / "docs/index.html"
 
 ID_RE = re.compile(r"\b(?:APP|NFR|LAU|CAL|CLP|EML|GML|GDR|EI)-[A-Z]?\d+\b")
 MOJIBAKE = ["Â", "Ã", "â"]
@@ -150,6 +153,21 @@ def main():
         if not any(f"src/Features/{d.name}/" in norm(trace_ws.cell(r, 6).value)
                    for r in range(2, trace_ws.max_row + 1)):
             err(f"Feature '{fid}' has no traceability row referencing src/Features/{d.name}/")
+
+    # 8. GitHub-facing showcase must list every feature (README table + Pages landing page).
+    readme_text = README.read_text(encoding="utf-8", errors="ignore") if README.is_file() else ""
+    showcase_text = SHOWCASE.read_text(encoding="utf-8", errors="ignore") if SHOWCASE.is_file() else ""
+    for d in sorted((ROOT / "src/Features").iterdir()):
+        pj = d / "plugin.json"
+        if not d.is_dir() or not pj.is_file():
+            continue
+        title = json.loads(pj.read_text(encoding="utf-8")).get("title", "")
+        if not title:
+            continue
+        if title not in readme_text:
+            err(f"Feature '{title}' missing from README.md (Features table) - update the GitHub showcase.")
+        if title not in showcase_text:
+            err(f"Feature '{title}' missing from docs/index.html (Pages showcase) - update the GitHub showcase.")
 
     # 7. Cleanliness of generated text
     for ch in MOJIBAKE:

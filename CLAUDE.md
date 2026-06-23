@@ -56,6 +56,12 @@ important workflow in this repo is "add a feature" — keep it mechanical and re
   enumerate the full feature catalog or architecture** in release notes; that detail lives in the
   workbook and the user manual. The release note's job is to keep the whole-app + current-release
   cost/KLOC/token/time trend front-and-centre for every reader.
+- **Keep the GitHub-facing showcase current (required, every feature/release).** Update `README.md`
+  (the **Features** table) and `docs/index.html` (the GitHub **Pages** landing: feature **cards**, the
+  **test-count + coverage badges**, and the footer version) so the public repo and site reflect the
+  latest feature — not just the release notes. This is **gated**: `tools/docgen/check_docs.py` fails the
+  build if any feature's `plugin.json` **title** is missing from `README.md` or `docs/index.html`, so the
+  showcase can never drift behind a release again.
 - **Update the product & user documentation (required, App → Feature → Sub-feature):**
   - `docs/requirements/` — product/BA view: purpose, user stories, functional requirements, acceptance
     criteria, NFRs, traceability. New feature ⇒ new `docs/requirements/features/<id>.md`.

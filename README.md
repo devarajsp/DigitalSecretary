@@ -9,7 +9,7 @@ and new features can be added without touching the core.
 [![CI](https://github.com/devarajsp/DigitalSecretary/actions/workflows/ci.yml/badge.svg)](https://github.com/devarajsp/DigitalSecretary/actions/workflows/ci.yml)
 &nbsp;**Download:** [latest release](https://github.com/devarajsp/DigitalSecretary/releases/latest) &nbsp;·&nbsp; **Showcase:** https://devarajsp.github.io/DigitalSecretary/ &nbsp;·&nbsp; **User manual:** [open it](docs/user-guide/DigitalSecretary-User-Manual.html)
 
-> **Get the app:** download `DigitalSecretary-v2.0.0-win-x64.zip` from [Releases](https://github.com/devarajsp/DigitalSecretary/releases/latest) — self-contained (no .NET install), unzip & run or use `Install.cmd`.
+> **Get the app:** download the latest `DigitalSecretary-v<version>-win-x64.zip` from [Releases](https://github.com/devarajsp/DigitalSecretary/releases/latest) — self-contained (no .NET install), unzip & run or use `Install.cmd`.
 
 ## Features included
 | Feature | Category | What it does |
@@ -18,6 +18,9 @@ and new features can be added without touching the core.
 | **Calculator** | Tools | Keypad + type-an-expression calculator. |
 | **Clipboard History** | Tools | Re-paste text you copied earlier. |
 | **Download Emails** | Communication | Download a local copy of all Yahoo Mail folders (emails as `.txt` + `.eml`, with attachments). |
+| **Download Gmail** | Communication | Download a read-only local copy of all Gmail folders/labels (`.txt` + `.eml` + attachments). |
+| **Download Google Drive** | Cloud | Mirror your Drive locally; export Google Docs/Sheets/Slides to Office + PDF. |
+| **Email Intelligence** | Insights | Turn your downloaded email archive into an **offline** people-and-life intelligence base — contacts, identity merge, relationships, timelines, a network graph, tone, life-data and a document library — in a single **HTML report** + **Excel** / CSV / JSON / vCard / GraphML. No cloud, no AI, no database. |
 
 ## How it works (1-minute version)
 - The app shell shows a **menu** (Features → Category → Feature), a **Home dashboard** of tiles,
@@ -48,7 +51,7 @@ Or use the quality-gated build (recommended):
 Every build runs **static analysis** (.NET analyzers). `build.ps1` also runs **unit tests**
 (xUnit, with coverage) and **QA automation** (loads every feature plugin exactly like the app),
 then writes [`docs/QUALITY_REPORT.md`](docs/QUALITY_REPORT.md) with the verdict, test results, and
-coverage. Current status: build clean (0 warnings), unit + QA green, ~88% logic coverage.
+coverage. Current status: build clean (0 warnings), unit + QA green (172 automated tests), ~91% logic coverage.
 
 See [`docs/CODING_STANDARDS.md`](docs/CODING_STANDARDS.md), [`docs/TESTING.md`](docs/TESTING.md),
 and [`docs/STATIC_ANALYSIS.md`](docs/STATIC_ANALYSIS.md).
