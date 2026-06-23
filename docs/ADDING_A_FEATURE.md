@@ -139,6 +139,7 @@ open the feature from the menu, and confirm its data appears under
 - [ ] Unit tests added for the logic; feature referenced from `DigitalSecretary.UnitTests`.
 - [ ] `FEATURE.md` (dev) + `docs/requirements/features/<id>.md` (product) + `docs/user-guide/features/<id>.md` (user) added.
 - [ ] User manual updated (template section + regenerated HTML with a screenshot).
+- [ ] **No real PII** — placeholder sample/seed data; DocShots seeded for this feature so its screenshot shows no real name/path (see `docs/CODING_STANDARDS.md` §9).
 - [ ] Requirements + Traceability spreadsheets regenerated; new rows show **Coverage = Complete**.
 - [ ] Project added to the solution.
 - [ ] `./build.ps1 -All` → **VERDICT: PASS** (build clean, unit + QA green, coverage on target).

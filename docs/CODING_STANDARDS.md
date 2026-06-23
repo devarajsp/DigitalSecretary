@@ -50,9 +50,28 @@ every build; this file is the full version. They are enforced by review, static 
 - Every feature has a `plugin.json` with a **unique, stable, kebab-case `id`**, correct
   `entryAssembly`/`entryType`, a `category`, and an `order`.
 
+## 9. Privacy: no real PII — use placeholder data from the start
+PII is **prevented at creation time**, not just caught at commit time. The secret scanner
+(`tools/check_secrets.py`) is a safety net, but it **cannot** see PII rendered into a **screenshot**
+(image, not text), and anything that slips through **persists in git history** — so never type real
+personal data while developing.
+- In **all code, sample/seed data, screenshots, examples, tests, requirements and docs**, use synthetic
+  **placeholders**, never real values:
+  - Names → `You` / `Jane Doe`; **OS username in paths** → `C:\Users\You\...` (never your real login).
+  - Emails → `yourname@example.com` (RFC-2606 `example.com` / `.org` / `.net`); phones → `+1 555 0100`.
+  - No real address, account/ID number, token, API key, or local absolute path.
+- **Screenshots:** feed `tools/DocShots` **seeded placeholder data** for every feature, so the manual
+  never shows a real name/path (image-baked PII is invisible to the text scanner).
+- **Never commit build caches** that embed absolute source paths — `__pycache__/`, `*.pyc`, `bin/`,
+  `obj/` are git-ignored (a `.pyc` records `C:\Users\<you>\...` as its source path = username PII).
+- Use a **generic git identity** (no real name/email in commit metadata).
+- Enforced by the secret/PII gate in the pre-commit hook + `build.ps1` (part of the VERDICT). Mark a
+  confirmed false positive with a trailing `# pragma: allowlist secret`.
+
 ## Definition of done (per change)
 - [ ] Logic in testable classes; UI thin.
 - [ ] Unit tests added/updated; `build.ps1 -All` is **PASS**.
 - [ ] No new analyzer warnings.
 - [ ] Coverage on target; quality report regenerated.
 - [ ] Docs updated (`FEATURE.md` for feature changes).
+- [ ] **No real PII** — placeholder data for names/emails/paths, DocShots seeded for screenshots, no committed build caches.

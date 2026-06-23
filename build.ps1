@@ -87,6 +87,8 @@ Write-Host @'
      src/Features + plugin.json + FEATURE.md (see docs/ADDING_A_FEATURE.md).
   5. Keep static analysis clean - fix analyzer warnings, do not blanket-suppress.
   6. Run this script before committing; keep unit + QA green and coverage on target.
+  7. No real PII - use placeholder data (names/emails/paths) and seed DocShots for screenshots;
+     the secret/PII gate enforces it. See docs/CODING_STANDARDS.md section 9.
 '@ -ForegroundColor Gray
 
 if ($All) { $Test = $true; $Qa = $true }
