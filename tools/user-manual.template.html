@@ -100,6 +100,7 @@
       <a href="#email">Download Emails</a>
       <a href="#gmail">Download Gmail</a>
       <a href="#drive">Download Google Drive</a>
+      <a href="#email-intelligence">Email Intelligence</a>
       <div class="grp">More</div>
       <a href="#data">Your data &amp; privacy</a>
       <a href="#faq">Troubleshooting / FAQ</a>
@@ -122,7 +123,7 @@
     <section class="doc" id="welcome" data-t="welcome what is digital secretary overview">
       <h2>Welcome</h2>
       <p class="lead">Digital Secretary collects handy day-to-day tools (“features”) in one window. You choose which ones to show, and new tools can be added over time.</p>
-      <p>The current version includes a <b>Launcher</b>, a <b>Calculator</b>, a <b>Clipboard History</b>, a <b>Download Emails</b> tool, a <b>Download Gmail</b> tool, and a <b>Download Google Drive</b> tool. Everything runs on your PC and works offline (except the download tools, which need the internet).</p>
+      <p>The current version includes a <b>Launcher</b>, a <b>Calculator</b>, a <b>Clipboard History</b>, a <b>Download Emails</b> tool, a <b>Download Gmail</b> tool, a <b>Download Google Drive</b> tool, and an <b>Email Intelligence</b> tool. Everything runs on your PC and works offline (except the download tools, which need the internet).</p>
     </section>
 
     <section class="doc" id="start" data-t="install run requirements dotnet exe launch start">
@@ -265,6 +266,28 @@
         <li><b>Google documents exported twice</b>: Docs → <b>.docx + .pdf</b>, Sheets → <b>.xlsx + .pdf</b>, Slides → <b>.pptx + .pdf</b>, Drawings → <b>.png + .pdf</b>.</li>
       </ul>
       <div class="call tip"><div class="h">It’s a copy — your Drive is untouched</div>The app asks only for <b>read-only</b> access. Your credentials path and folder are remembered; your sign-in token is stored securely in the feature’s own data folder, <b>never</b> in the settings file.</div>
+    </section>
+
+    <section class="doc" id="email-intelligence" data-t="email intelligence contacts relationships timeline network graph tone life data documents offline report excel csv vcard graphml append consolidate dossier insights">
+      <h2>Email Intelligence</h2>
+      <p class="lead">Turn the emails you have already downloaded into a private, searchable picture of your contacts and your life &mdash; <b>entirely on your PC</b>. No cloud, no AI.</p>
+      <figure><img src="{{email-intelligence}}" alt="Email Intelligence feature"><figcaption>Pick your downloaded-email folder and an output folder, then Analyze.</figcaption></figure>
+      <div class="call note"><div class="h">Download your mail first</div>Use <b>Download Emails</b> (Yahoo) and/or <b>Download Gmail</b> so you have a folder of <b>.eml</b> / <b>.txt</b> files with attachments &mdash; that folder is the input here.</div>
+      <h3>Run an analysis</h3>
+      <ol class="steps">
+        <li>Set <b>Email archive folder</b> to where your downloaded emails are.</li>
+        <li>Choose an <b>Output folder</b> for the results.</li>
+        <li>Optionally type <b>your email</b> so "you" is identified exactly (otherwise it is auto-detected).</li>
+        <li>Tick <b>Append</b> to merge this archive with previous results (same output folder) and consolidate several mailboxes into <b>one de-duplicated</b> contact set; leave it off to start fresh.</li>
+        <li>Click <b>Analyze</b>, watch the phased progress and log, then click <b>Open report</b>.</li>
+      </ol>
+      <h3>What you get</h3>
+      <ul>
+        <li>A self-contained <b>HTML report</b> with tabs: search <b>People</b> to open a <b>dossier</b>, a relationship <b>Timeline</b>, a network <b>Graph</b>, <b>Topics</b>, <b>Life Data</b> (purchases / subscriptions / travel / accounts) and <b>Documents</b>.</li>
+        <li>A native <b>Excel</b> workbook (<b>EmailIntelligence.xlsx</b>) plus <b>CSV</b>, <b>JSON</b>, a <b>vCard</b> to import into Gmail/Outlook, and a <b>GraphML</b> network file.</li>
+        <li><b>"Dormant"</b> flags for people you used to talk to often but have not recently &mdash; handy for reconnecting.</li>
+      </ul>
+      <div class="call tip"><div class="h">Fully offline &mdash; and only a reader</div>Nothing is uploaded and no AI service is used. It only reads the files you downloaded; tone, life-data and documents are produced by local rules, so treat them as helpful approximations and verify anything important.</div>
     </section>
 
     <section class="doc" id="data" data-t="data privacy storage appdata where files security password">
