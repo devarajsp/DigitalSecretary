@@ -248,6 +248,44 @@ coverage ~92%; requirement `EI-H7` + a traceability row registered (101 reqs / 5
 change.** `./build.ps1 -All` ⇒ **VERDICT: PASS**. _Why: the user's original ask was Excel output; CSV
 was the interim, this delivers a real multi-sheet workbook without adding a dependency._
 
+### Phase 22 - DeDupe Files (2026-10-28)
+Added the **DeDupe Files** feature (id `dedupe-files`, category *Files*, 16 `.cs` files, ~2.16 KLOC,
+**no NuGet, no host change**): it fingerprints every file under a chosen folder with a streamed MD5,
+keeps the result in `dedupe_md5_list.txt` **in that folder**, groups files by checksum to show the
+duplicate sets and the reclaimable space, and deletes the extra copies while always keeping one.
+Requirements `DDF-1`..`DDF-19` with 15 traceability rows. `./build.ps1 -All` => **VERDICT: PASS**
+(0 warnings, **316 unit + 21 QA** tests, overall coverage **92.2%**, feature **93.7%**).
+
+_Why the design is shaped this way:_
+- **The checksum list is a cache, not just an output.** A stored checksum is reused when a file's
+  size *and* last-modified time are unchanged, so a second pass over a large tree re-reads almost
+  nothing; the list is autosaved every 500 files so **Stop** keeps the work already done. That is what
+  makes the feature usable on the folders people actually want to clean (photos, downloads, backups).
+- **MD5 chooses candidates; bytes authorise deletion.** MD5 is a content fingerprint, never a security
+  claim, and two different files can share one - so `FileComparer.AreIdentical` re-reads both files
+  block by block before anything goes, and a mismatch is skipped and logged. Deleting user data on the
+  strength of a hash alone was not acceptable.
+- **Safe by default:** Dry run on, Recycle Bin on, verification on, empty files ignored, one copy of
+  every set always kept, and the confirm dialog defaults to Cancel.
+
+_How it was built (new for this repo): **parallel subagents.*** Three workstreams ran as subagents on
+**disjoint files** while the production code was written in the main session - (1) requirement doc,
+user guide, README row and Pages card, (2) the docgen data tables, id regex, user-manual section and
+DocShots seed, (3) the 12 unit-test files. A single canonical spec (the 19 requirement IDs, the 15
+traceability rows with their exact code/test paths and symbol names) was written **first** and handed
+to each agent verbatim, which is what kept the three outputs consistent with each other and with the
+gated matrix. The test agent found a real bug (below). Delegated work was read back and corrected -
+button labels were renamed to match the wording the user guide had already used.
+
+### Phase 22a - the bug the tests found (2026-10-28)
+`ScanEngine.Run` initialised its `cancelled` flag to `false` and only set it inside the per-file loop.
+If the token was **already cancelled when `Run` was entered**, `Collect` returned zero files, the loop
+never ran, the flag stayed `false` - and the prune step then compared an empty "live" set against the
+index and **deleted every entry**, silently throwing away the whole checksum list. Fixed by seeding the
+flag from the token (`var cancelled = request.Cancel.IsCancellationRequested;`). Shipped with the
+regression test `A_scan_cancelled_before_it_starts_prunes_nothing`, which was **proved to fail before
+the fix and pass after** by temporarily reverting the line.
+
 _(Append new phases here as we go.)_
 
 ---
@@ -270,6 +308,12 @@ _(Append new phases here as we go.)_
 - FluentAssertions `NotContain(lambda)` builds an expression tree — no `is`-patterns.
 - `DataTable.Compute` divides as double, returns `Infinity` on /0.
 - MimeKit `BodyBuilder` drops orphan linked resources — build MIME trees explicitly in tests.
+- A "stop" flag that is only set **inside** a loop is wrong whenever the loop can run zero times: the
+  work looks completed, and any "we saw everything, so prune the rest" step then destroys state. Seed
+  such a flag from the cancellation token, not from `false`.
+- Delegating to parallel agents only stays consistent if the **shared spec is written first** (IDs,
+  file paths, symbol names) and handed to each one verbatim; agents must work on disjoint files, and
+  their output still has to be read back - a user guide and the UI drifted on button names.
 - Stop the running app before rebuild (exe is file-locked).
 - PowerShell: `"_$($v)_"` not `"_$v_"`; wrap counts with `@(...)`; don't reuse a `[switch]` name as a
   `$variable`; build `--no-incremental` so analyzers always emit.

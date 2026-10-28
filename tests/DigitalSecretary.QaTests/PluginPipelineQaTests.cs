@@ -30,7 +30,7 @@ public sealed class PluginPipelineQaTests
         ids.Should().Contain(new[]
         {
             "launcher", "calculator", "clipboard-history", "email-downloader",
-            "gmail-downloader", "google-drive-downloader"
+            "gmail-downloader", "google-drive-downloader", "dedupe-files"
         });
     }
 

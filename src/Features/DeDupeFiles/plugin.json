@@ -1,0 +1,9 @@
+{
+  "id": "dedupe-files",
+  "title": "DeDupe Files",
+  "category": "Files",
+  "description": "Find duplicate files in a folder with an MD5 checksum list, then reclaim the space.",
+  "order": 10,
+  "entryAssembly": "DigitalSecretary.Features.DeDupeFiles.dll",
+  "entryType": "DigitalSecretary.Features.DeDupeFiles.DeDupeFilesModule"
+}

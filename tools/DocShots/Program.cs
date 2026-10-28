@@ -190,6 +190,21 @@ internal static class Program
             Append = false
         };
         File.WriteAllText(Path.Combine(emailIntel, "email_intelligence_settings.json"), JsonSerializer.Serialize(eiSettings, json));
+
+        // Seed a placeholder folder so the DeDupe Files screenshot never shows the real OS username.
+        var dedupe = Path.Combine(dataRoot, "dedupe-files");
+        Directory.CreateDirectory(dedupe);
+        var dedupeSettings = new
+        {
+            Root = @"C:\Users\You\Pictures",
+            OnExistingList = "Ask",
+            Keeper = "ShortestPath",
+            IgnoreEmptyFiles = true,
+            VerifyBeforeDelete = true,
+            RecycleBin = true,
+            DryRun = true
+        };
+        File.WriteAllText(Path.Combine(dedupe, "dedupe_settings.json"), JsonSerializer.Serialize(dedupeSettings, json));
     }
 
     private static string LocateRepoRoot()

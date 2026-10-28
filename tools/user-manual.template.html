@@ -101,6 +101,7 @@
       <a href="#gmail">Download Gmail</a>
       <a href="#drive">Download Google Drive</a>
       <a href="#email-intelligence">Email Intelligence</a>
+      <a href="#dedupe">DeDupe Files</a>
       <div class="grp">More</div>
       <a href="#data">Your data &amp; privacy</a>
       <a href="#faq">Troubleshooting / FAQ</a>
@@ -288,6 +289,31 @@
         <li><b>"Dormant"</b> flags for people you used to talk to often but have not recently &mdash; handy for reconnecting.</li>
       </ul>
       <div class="call tip"><div class="h">Fully offline &mdash; and only a reader</div>Nothing is uploaded and no AI service is used. It only reads the files you downloaded; tone, life-data and documents are produced by local rules, so treat them as helpful approximations and verify anything important.</div>
+    </section>
+
+    <section class="doc" id="dedupe" data-t="dedupe de-dupe duplicate files duplicates delete space reclaim md5 checksum folder scan analyze recycle bin dry run keep">
+      <h2>DeDupe Files</h2>
+      <p class="lead">Find identical files in a folder &mdash; wherever they are hiding &mdash; and safely delete the extra copies to <b>reclaim disk space</b>. Everything happens on your PC.</p>
+      <figure><img src="{{dedupe-files}}" alt="DeDupe Files feature"><figcaption>Pick a folder, Scan, Analyze, then review the duplicates before deleting anything.</figcaption></figure>
+      <div class="call warn"><div class="h">Safe by default</div><b>Dry run is ON</b>, so nothing is deleted until you turn it off and confirm. <b>One copy of every group is always kept</b>, each deletion is checked <b>byte-for-byte</b> against the copy being kept, and duplicates go to the <b>Recycle Bin</b> unless you choose otherwise.</div>
+      <h3>Find and remove duplicates</h3>
+      <ol class="steps">
+        <li>Choose the <b>folder</b> to check. The folder and your options are remembered next time.</li>
+        <li>Click <b>Scan</b>. The app reads every file in the folder and all its subfolders and builds a checksum list named <b>dedupe_md5_list.txt</b> inside that folder.</li>
+        <li>If that list already exists, you can <b>update</b> it (rescan, which is quick because unchanged files are not re-read) or <b>use it as-is</b> to skip scanning. Set <b>When a list exists</b> to Ask, Update or Use as-is.</li>
+        <li>Click <b>Analyze</b>. The window lists each group of identical files, marking the copy that is <b>kept</b> and the copies that would be <b>deleted</b>, with the duplicate size and <b>how much space you can reclaim</b>.</li>
+        <li>Choose your options: <b>which copy to keep</b> (shortest path, oldest, newest, or first alphabetically), <b>ignore empty files</b>, <b>verify before delete</b>, <b>Recycle Bin</b> or permanent deletion, and <b>Dry run</b>.</li>
+        <li>Click <b>Delete duplicates</b>. With Dry run on you get a report of what would happen. With it off, you are asked to confirm before any file is removed.</li>
+        <li>Use <b>Pause</b> / <b>Resume</b> or <b>Stop</b> at any time while scanning or deleting. Stopping a scan keeps the checksums already found, so it is not redone.</li>
+      </ol>
+      <h3>What you get</h3>
+      <ul>
+        <li>A clear list of <b>duplicate groups</b> showing exactly which copy stays and which would go, plus the total space you can reclaim.</li>
+        <li>A <b>results summary</b>: files deleted, skipped, failed, and space freed.</li>
+        <li>A <b>Save report</b> button that writes the groups and results to a plain-text file you can keep.</li>
+        <li>A reusable <b>dedupe_md5_list.txt</b> in your folder (checksum, size, modified time and path for each file) that makes later runs faster.</li>
+      </ul>
+      <div class="call tip"><div class="h">Nothing is deleted by surprise</div>If a file turns out to differ from the copy being kept, it is <b>skipped and logged</b> rather than deleted. Because the Recycle Bin is the default, you can still restore a file you removed by mistake. Permanent deletion is an explicit opt-in.</div>
     </section>
 
     <section class="doc" id="data" data-t="data privacy storage appdata where files security password">

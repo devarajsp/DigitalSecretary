@@ -1,0 +1,56 @@
+# Work log — Digital Secretary
+
+Newest entry on top. One entry per work session: what was done, decisions made, current state, and
+the exact **▶ NEXT** step, so any later session can resume with no extra context.
+
+---
+
+## 2026-10-28 — New feature: DeDupe Files (v2.3.0)
+
+**Done**
+- Reviewed the project's state after ~4 months idle: v2.2.0, 7 feature plugins, `main` in sync with
+  `origin/main` at `c8e5ab0`, last recorded gate PASS at 91.5% coverage.
+- Built the **DeDupe Files** feature plugin (`src/Features/DeDupeFiles/`, id `dedupe-files`,
+  category *Files*): MD5 checksum list per folder (`dedupe_md5_list.txt`), incremental rescan,
+  duplicate analysis with reclaimable space, guarded deletion, pause/resume/stop.
+  16 source files, ~2.2 KLOC, no NuGet dependencies, **no host change**.
+- Requirements **DDF-1 … DDF-19** registered; 15 traceability rows; requirement doc, user guide,
+  `FEATURE.md`, README row, Pages card, user-manual section and DocShots seed all added.
+- Added the PM trackers this machine's standard requires (`docs/pm/TASKS.md`, this file,
+  `docs/pm/STORAGE.md`).
+
+**Decisions**
+- **The checksum list is the cache.** A stored checksum is reused when a file's size *and*
+  last-modified time are unchanged, so a re-run over a large tree re-reads almost nothing. The list
+  is autosaved every 500 files, so **Stop** never discards work — that is what makes the operation
+  resumable rather than all-or-nothing.
+- **Pruning only after a completed scan.** A stopped scan has not seen every file, so it must not
+  conclude the unseen ones are gone. `ScanEngine` prunes only when it ran to the end; there is a unit
+  test pinning this.
+- **MD5 decides what to compare; bytes decide what to delete.** MD5 is a content fingerprint, not a
+  security measure, and two files can share one. `FileComparer.AreIdentical` re-reads the duplicate
+  and the kept copy block by block before anything is removed, and a mismatch is skipped and logged.
+- **Safe by default:** Dry run on, Recycle Bin on, verification on, empty files ignored, one copy of
+  every set always kept, and the confirmation dialog defaults to Cancel.
+- **Work was parallelised across subagents** (docs/showcase, docgen+manual, tests) on disjoint files
+  while the production code was written here — a first for this repo; worth repeating.
+
+**State**
+- `./build.ps1 -All` => **VERDICT: PASS** — 0 warnings, **316 unit + 21 QA** tests (was 153 + 19),
+  overall coverage **92.2%**, DeDupe Files **93.7%**, docs/traceability consistent, PII scan clean.
+- One S2 bug was found by the test suite and fixed before release: a scan entered with an
+  already-cancelled token pruned the entire checksum list. Pinned by
+  `A_scan_cancelled_before_it_starts_prunes_nothing`, proved to fail before the fix and pass after.
+- **Storage:** 654 MB -> 681.5 MB after this work (new `bin`/`obj` build output); `.git` is 805 KB and
+  tracked files 1.2 MB, so the growth is entirely regenerable. See `docs/pm/STORAGE.md` and OWN-1.
+- Committed on `main` (not pushed) as release **2.3.0**.
+
+**Known, left for the owner** (TASKS.md ⏸ Needs owner)
+- OWN-1: ~411 MB of regenerable build output (`release/` 282 MB, `artifacts/` 129 MB) — deleting the
+  owner's files needs the owner's go.
+- OWN-2: `tribeCoding.pdf` / `tribeCoding.pptx` sit untracked in the repo root and are not ignored.
+- OWN-3: run `/cost` and write the actual token spend into the DevEconomics workbook.
+
+**▶ NEXT** — Decide OWN-1 and OWN-2 (storage + stray files), then consider ENH-1 (`docs/SEQUENCE.html`
+sequence-diagram SPD) and ENH-2 (function-length audit in the gate), which are the two standing gaps
+against the machine engineering standard.

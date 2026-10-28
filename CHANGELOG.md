@@ -2,6 +2,37 @@
 
 All notable changes to Digital Secretary. Format based on [Keep a Changelog](https://keepachangelog.com).
 
+## [2.3.0] - 2026-10-28
+
+**New:** **DeDupe Files** &mdash; point it at a folder and it fingerprints every file beneath it with
+**MD5**, writes a reusable checksum list (`dedupe_md5_list.txt`) into that folder, shows every set of
+identical files with the **space you would get back**, and removes the extra copies &mdash; **always
+keeping one copy of each**. A second run re-reads only what changed, and **Pause / Stop** never throws
+away work. Safe by default: **Dry run**, **Recycle Bin**, and a **byte-for-byte** check against the copy
+being kept before anything is deleted. Added as a plugin with no change to the host.
+
+### Fixed
+- **DeDupe Files scan:** a scan entered with an already-cancelled token walked no files, so the prune
+  step ran against an empty set and discarded the whole checksum list, forcing a full re-hash next
+  time. Found by the test suite before release; pinned by a regression test
+  (`A_scan_cancelled_before_it_starts_prunes_nothing`).
+
+> &#9889; **Built with no code &mdash; DevEconomics.** Digital Secretary is built by *asking Claude*
+> (Opus 5), not by hand-writing code. We publish the cost every release; the per-activity ledger,
+> per-feature rows, and the trend live in the
+> [DevEconomics workbook](docs/deveconomics/DigitalSecretary-DevEconomics.xlsx).
+
+| Scope | Prod. KLOC | Est. tokens | Est. cost | Time |
+|---|--:|--:|--:|--:|
+| **This release** (DeDupe Files) | ~2.2 | ~485 K | **~$17** | ~88 min |
+| **Whole app to date** (est) | ~7.4 | ~2.8 M | **~$88** | ~15.9 h |
+
+_LLM cost/tokens are estimates (the model can't meter itself); the whole-app foundation predates live
+tracking. Reconcile with `/cost`. Three of this release's workstreams ran as parallel subagents, so
+the time column is work time, not wall clock._
+
+[2.3.0]: https://github.com/devarajsp/DigitalSecretary/releases/tag/v2.3.0
+
 ## [2.2.0] - 2026-06-23
 
 **New:** **Email Intelligence** &mdash; turn your downloaded email archive (`.eml`/`.txt` + attachments)

@@ -21,6 +21,7 @@ and new features can be added without touching the core.
 | **Download Gmail** | Communication | Download a read-only local copy of all Gmail folders/labels (`.txt` + `.eml` + attachments). |
 | **Download Google Drive** | Cloud | Mirror your Drive locally; export Google Docs/Sheets/Slides to Office + PDF. |
 | **Email Intelligence** | Insights | Turn your downloaded email archive into an **offline** people-and-life intelligence base — contacts, identity merge, relationships, timelines, a network graph, tone, life-data and a document library — in a single **HTML report** + **Excel** / CSV / JSON / vCard / GraphML. No cloud, no AI, no database. |
+| **DeDupe Files** | Files | Finds duplicate files in a folder tree via an MD5 checksum list and reclaims the space, keeping one copy of each. |
 
 ## How it works (1-minute version)
 - The app shell shows a **menu** (Features → Category → Feature), a **Home dashboard** of tiles,
@@ -51,7 +52,7 @@ Or use the quality-gated build (recommended):
 Every build runs **static analysis** (.NET analyzers). `build.ps1` also runs **unit tests**
 (xUnit, with coverage) and **QA automation** (loads every feature plugin exactly like the app),
 then writes [`docs/QUALITY_REPORT.md`](docs/QUALITY_REPORT.md) with the verdict, test results, and
-coverage. Current status: build clean (0 warnings), unit + QA green (172 automated tests), ~91% logic coverage.
+coverage. Current status: build clean (0 warnings), unit + QA green (337 automated tests), ~92% logic coverage.
 
 See [`docs/CODING_STANDARDS.md`](docs/CODING_STANDARDS.md), [`docs/TESTING.md`](docs/TESTING.md),
 and [`docs/STATIC_ANALYSIS.md`](docs/STATIC_ANALYSIS.md).

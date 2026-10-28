@@ -46,74 +46,60 @@ RATE = {"in": 5.0, "out": 25.0, "cache_read": 0.50, "cache_write": 6.25}
 #    (Phase, Activity, Bucket, Tool/Method, LLM?, EstTokens, EstCostUSD, TimeMin, TimeBasis, Notes)
 #    Bucket: "A" LLM tokens | "B" local compute | "C" remote | "B+C" local that pulls from network.
 # --------------------------------------------------------------------------- #
-FEATURE = "Email Intelligence"
-FEATURE_DATE = "2026-06-22"
-MODEL = "Opus 4.8"
-PRODUCTION_KLOC = 2.50  # ~2,495 lines of production C# across 25 .cs files (incl. embedded report CSS/JS)
+FEATURE = "DeDupe Files"
+FEATURE_DATE = "2026-10-28"
+MODEL = "Opus 5"
+PRODUCTION_KLOC = 2.16  # 2,162 lines of production C# across 16 .cs files
 
+# Note on time: the three subagent rows below ran CONCURRENTLY with the hand-written production
+# code, so the Time column is work time, not wall clock - elapsed time for the release was lower.
 ACTIVITIES = [
-    ("Requirements", "Brainstorm uses; draft email-intelligence requirements (Groups A-K)", "A", "Write", "Yes", 9000, 0.40, 8.0, "estimate", "BA/product doc"),
-    ("Requirements", "Add timeline / documents / progress / HTML-report requirements", "A", "Edit", "Yes", 4000, 0.15, 3.0, "estimate", ""),
+    ("Explore", "Review project status after 4 months idle: CLAUDE.md, contract, a reference feature, docgen gates, tests, build.ps1", "A", "Read", "Yes", 46000, 0.50, 9.0, "estimate", "one-time re-orientation"),
+    ("Setup", "Verify dotnet 9 SDK + python/openpyxl", "B", "Bash", "No", 0, 0.0, 0.1, "measured", ""),
 
-    ("Explore", "Read CLAUDE.md, contract, EmailDownloader, build.ps1, docgen, tests (~20 reads)", "A", "Read", "Yes", 40000, 0.45, 8.0, "estimate", "one-time pattern learning"),
-    ("Explore", "Read ADDING_A_FEATURE, check_docs, build_excel_docs, coverage.runsettings", "A", "Read", "Yes", 18000, 0.20, 4.0, "estimate", "quality gates"),
-    ("Setup", "Verify dotnet/python/nuget/git + MimeKit cache", "B", "Bash", "No", 0, 0.0, 0.3, "measured", ""),
+    ("Requirements", "Draft the canonical spec: 19 DDF requirements + 15 traceability rows from the user's brief", "A", "Write", "Yes", 11000, 0.45, 7.0, "estimate", "reused verbatim by 2 subagents"),
 
-    ("Build P1", "Author models + MailText + EmailParser + ArchiveScanner", "A", "Write", "Yes", 9000, 0.35, 6.0, "estimate", "MimeKit + .txt"),
-    ("Build P1", "Compile parsing slice", "B", "dotnet build", "No", 0, 0.0, 0.15, "measured", "8.7s"),
-    ("Build P1", "Author 9 analyzer classes (dedupe/contacts/identity/signature/metrics/graph/topics/timeline/classify)", "A", "Write", "Yes", 12000, 0.45, 8.0, "estimate", ""),
-    ("Build P1", "Fix nullable + CA1859 warnings", "A", "Edit", "Yes", 1500, 0.04, 0.6, "estimate", ""),
-    ("Build P1", "Author exporters + HTML report generator + pipeline + settings + UI + module", "A", "Write", "Yes", 16000, 0.60, 9.0, "estimate", "report has embedded CSS/JS"),
-    ("Build P1", "Compile full feature (0 warnings)", "B", "dotnet build", "No", 0, 0.0, 0.1, "measured", ""),
+    ("Build", "Author the pure core: checksum entry/list/index, MD5 hasher, byte comparer, pause gate, hex, sizes", "A", "Write", "Yes", 13000, 0.50, 8.0, "estimate", "logic kept out of the UI"),
+    ("Build", "Author ScanEngine (incremental walk, autosave, prune) + DuplicateAnalyzer (groups, keeper policy)", "A", "Write", "Yes", 11000, 0.42, 7.0, "estimate", ""),
+    ("Build", "Author DeleteEngine + deleters + report text + settings store + existing-list prompt", "A", "Write", "Yes", 11000, 0.42, 7.0, "estimate", "guarded deletion"),
+    ("Build", "Author the WinForms view (folder, options, commands, progress, duplicate grid, log)", "A", "Write", "Yes", 9000, 0.35, 6.0, "estimate", ""),
+    ("Build", "Clear 4 CA1859 warnings; match button labels to the manual; confirm-dialog default; log-pane layout", "A", "Edit", "Yes", 3000, 0.10, 2.0, "estimate", "layout fault seen in the screenshot"),
+    ("Build", "Compile the feature (0 warnings)", "B", "dotnet build", "No", 0, 0.0, 0.55, "measured", "29s then 3s"),
+    ("Build", "Add project to sln + unit-test reference + coverage exclusion", "B", "dotnet sln / python", "No", 0, 0.0, 0.2, "measured", ""),
 
-    ("Tests P1", "Author 14 unit-test files + fixtures", "A", "Write", "Yes", 10000, 0.35, 6.0, "estimate", ""),
-    ("Tests P1", "Add feature reference to unit-test project", "B", "dotnet add reference", "No", 0, 0.0, 0.1, "measured", ""),
-    ("Tests P1", "Run unit tests (121)", "B", "dotnet test", "No", 0, 0.0, 0.12, "measured", "7s"),
+    ("Docs (agent)", "Subagent in parallel: requirements doc, user guide, README row, Pages card", "A", "Agent", "Yes", 83554, 0.95, 1.3, "measured", "tokens + duration from the harness"),
+    ("Docgen (agent)", "Subagent in parallel: 19 req + 15 trace rows, id regex, manual section, DocShots seed, regenerate xlsx", "A", "Agent", "Yes", 93143, 1.05, 2.1, "measured", "tokens + duration from the harness"),
+    ("Tests (agent)", "Subagent: 12 unit-test files (144 tests) + QA id list, iterated to green", "A", "Agent", "Yes", 171867, 1.95, 14.3, "measured", "tokens + duration from the harness"),
 
-    ("Docs", "Author FEATURE.md + user-guide doc", "A", "Write", "Yes", 4000, 0.14, 3.0, "estimate", ""),
-    ("Docgen", "Edit build_excel_docs (37 reqs + 16 trace) + check_docs EI id regex", "A", "Edit", "Yes", 8000, 0.22, 4.0, "estimate", ""),
-    ("Docgen", "Regenerate xlsx + run check_docs + secret scan", "B", "python", "No", 0, 0.0, 0.1, "measured", ""),
-    ("Gate", "Full quality gate", "B", "build.ps1 -All", "No", 0, 0.0, 0.7, "measured", "PASS, 92%"),
-    ("Gate", "Append DEVELOPMENT_JOURNAL phase", "A", "Edit", "Yes", 2500, 0.08, 1.5, "estimate", ""),
+    ("Docs", "Author FEATURE.md (design decisions + file map)", "A", "Write", "Yes", 4500, 0.17, 3.0, "estimate", ""),
+    ("Review", "Read back the subagents' docs, manual section and tests; align UI labels with the guide", "A", "Read", "Yes", 12000, 0.30, 5.0, "estimate", "delegated work is verified, not trusted"),
 
-    ("Append", "Add AnalysisMode + ScanAndParse/AnalyzeCore refactor (EI-I4)", "A", "Write", "Yes", 7000, 0.25, 5.0, "estimate", "consolidate archives"),
-    ("Append", "Wire Append checkbox into the UI", "A", "Edit", "Yes", 2000, 0.06, 1.5, "estimate", ""),
-    ("Append", "Author MessageStore + append/overwrite tests", "A", "Write", "Yes", 3500, 0.12, 2.0, "estimate", ""),
-    ("Append", "Run tests (125)", "B", "dotnet test", "No", 0, 0.0, 0.1, "measured", ""),
-    ("Append", "Register EI-I4 + regenerate + gate", "B", "python/build.ps1", "No", 0, 0.0, 0.75, "measured", "PASS"),
+    ("Bugfix", "Diagnose + fix prune-on-cancel (S2) found by the test agent; add the regression test", "A", "Edit", "Yes", 5000, 0.18, 4.0, "estimate", "BUG-1; see KNOWN pitfalls"),
+    ("Bugfix", "Prove the regression test fails before the fix and passes after", "B", "dotnet build/test", "No", 0, 0.0, 0.6, "measured", "revert -> fail -> restore -> pass"),
+    ("Tests", "Solution builds + unit-test runs (316 tests)", "B", "dotnet build/test", "No", 0, 0.0, 0.5, "measured", "0.7s per run"),
 
-    ("Build P3", "Author SentimentLexicon + ToneAnalyzer + LifeDataExtractor + DocumentLibrary + model fields", "A", "Write", "Yes", 9000, 0.32, 6.0, "estimate", "E2, F1-F4, F7"),
-    ("Build P3", "Wire pipeline + CSV exporters + JSON + 2 HTML tabs", "A", "Edit", "Yes", 6000, 0.20, 4.0, "estimate", ""),
-    ("Build P3", "Author 3 analyzer test files", "A", "Write", "Yes", 4000, 0.14, 3.0, "estimate", ""),
-    ("Build P3", "Run tests (147)", "B", "dotnet test", "No", 0, 0.0, 0.1, "measured", ""),
-    ("Build P3", "Register E2/F + regenerate + gate", "B", "python/build.ps1", "No", 0, 0.0, 0.75, "measured", "PASS"),
+    ("Docgen", "Regenerate DocShots screenshots + HTML user manual (twice, after the layout fix)", "B", "dotnet run + powershell", "No", 0, 0.0, 0.65, "measured", "cleanliness check PASSED"),
+    ("Gate", "Full quality gate", "B", "build.ps1 -All", "No", 0, 0.0, 0.63, "measured", "PASS, 92.2%, 316+21 tests"),
+    ("Gate", "Storage report", "B", "node storage-report.mjs", "No", 0, 0.0, 0.2, "measured", "docs/pm/STORAGE.md"),
 
-    ("Build P4", "Author XlsxWriter (dependency-free OOXML) + WorkbookExporter + wire pipeline", "A", "Write", "Yes", 6000, 0.22, 4.0, "estimate", "native .xlsx"),
-    ("Build P4", "Hoist header arrays (CA1861)", "A", "Edit", "Yes", 1200, 0.03, 0.5, "estimate", ""),
-    ("Build P4", "Author XlsxWriter tests", "A", "Write", "Yes", 2500, 0.09, 1.5, "estimate", ""),
-    ("Build P4", "Validate .xlsx with openpyxl (throwaway runner)", "B", "dotnet run + python", "No", 0, 0.0, 0.4, "measured", "3 sheets, typed numbers"),
-    ("Build P4", "Register EI-H7 + regenerate + gate", "B", "python/build.ps1", "No", 0, 0.0, 0.75, "measured", "PASS, 91.9%"),
-
-    ("Commit", "Fix test fixtures to example.com (secret gate) + stage", "A", "Bash/Edit", "Yes", 1500, 0.04, 1.0, "estimate", "74 leaks -> 0"),
-    ("Commit", "Commit feature + xlsx (pre-commit gate x2)", "B", "git commit", "No", 0, 0.0, 0.6, "measured", "84d97dd, 3562b3d"),
-    ("Release", "Push main to origin", "B+C", "git push", "No", 0, 0.0, 0.1, "measured", ""),
-    ("Release", "DevEconomics + CHANGELOG + cut release", "A", "Write/Edit", "Yes", 6000, 0.20, 5.0, "estimate", "this release entry"),
+    ("Release", "Journal phase, CHANGELOG, DevEconomics, PM trackers (TASKS/WORKLOG/STORAGE)", "A", "Write/Edit", "Yes", 11000, 0.40, 8.0, "estimate", "this release entry"),
+    ("Commit", "Stage + commit (pre-commit gate)", "B", "git commit", "No", 0, 0.0, 0.4, "measured", ""),
 ]
 
-# Shared session overhead not attributable to one activity: the growing transcript re-sent each
-# turn across a long multi-increment session (~100+ turns), served mostly from cache (~0.1x input).
-# Estimated; reconcile the total against /cost.
-CONTEXT_OVERHEAD_USD = 16.0
+# Shared session overhead not attributable to one activity: the growing transcript re-sent each turn.
+# Lower than the previous release because three workstreams ran in subagents with their own context
+# (their tokens are counted directly in the rows above). Estimated; reconcile the total against /cost.
+CONTEXT_OVERHEAD_USD = 9.0
 
-# Whole-app baseline for everything built BEFORE this release: the pluggable host, the first 4
-# features, the quality/docs/CI/release infrastructure (phases 1-17, rough pre-tracking estimate),
-# and the Gmail + Google Drive downloaders (phase 18 / v2.1.0, which WERE tracked - folded in here so
-# the App Total stays correct as Email Intelligence becomes the tracked feature).
+# Whole-app baseline for everything built BEFORE this release: the pluggable host, the first 7
+# features, and the quality/docs/CI/release infrastructure (phases 1-21, through v2.2.0). The tracked
+# Email Intelligence release is folded in here so the App Total stays correct as DeDupe Files becomes
+# the tracked feature.
 FOUNDATION = {
-    "name": "Prior releases (host + 6 features + quality/docs/CI/release infra, through v2.1.0)",
-    "date": "2026-06-19..22", "model": "Opus (multi-session)",
-    "kloc": 2.73, "tokens": 2_121_000, "cost_est": 50.50, "time_est": 768.0,
-    "note": "ROUGH estimate: phases 1-17 predate DevEconomics tracking; includes the tracked Gmail/Drive release (v2.1.0, ~$5.50).",
+    "name": "Prior releases (host + 7 features + quality/docs/CI/release infra, through v2.2.0)",
+    "date": "2026-06-19..23", "model": "Opus (multi-session)",
+    "kloc": 5.23, "tokens": 2_303_700, "cost_est": 71.60, "time_est": 867.7,
+    "note": "Phases 1-17 predate DevEconomics tracking (rough estimate); includes the tracked v2.1.0 and v2.2.0 releases.",
 }
 
 ACT_HEADERS = ["#", "Phase", "Activity", "Bucket", "Tool / Method", "LLM?",
