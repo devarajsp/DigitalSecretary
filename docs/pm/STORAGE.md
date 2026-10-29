@@ -6,16 +6,16 @@
 ## Now (2026-10-29)
 | Measure | Size |
 |---|---|
-| Total on disk | **468.6 MB** |
-| .git (history) | 1.2 MB |
-| Tracked files (checkout) | 1.5 MB |
-| Untracked / ignored (caches, builds) | 465.9 MB |
+| Total on disk | **335.5 MB** |
+| .git (history) | 1.7 MB |
+| Tracked files (checkout) | 1.7 MB |
+| Untracked / ignored (caches, builds) | 332.1 MB |
 | Largest tracked file | `docs/user-guide/DigitalSecretary-User-Manual.html` 338 KB |
-| Heaviest ignored folders | `src/DigitalSecretary.App/bin` 181.0 MB · `release/DigitalSecretary-v2.3.0-win-x64` 134.5 MB · `release/DigitalSecretary-v2.3.0-win-x64.zip` 57.0 MB |
-| Flags | untracked/ignored 465.9 MB > 200 MB (largest: src/DigitalSecretary.App/bin 181.0 MB) |
+| Heaviest ignored folders | `src/DigitalSecretary.App/bin` 181.1 MB · `release/DigitalSecretary-v2.4.0-win-x64.zip` 57.1 MB · `tests/DigitalSecretary.UnitTests/bin` 29.5 MB |
+| Flags | untracked/ignored 332.1 MB > 200 MB (largest: src/DigitalSecretary.App/bin 181.1 MB) |
 
 ## History
 | Date | Total | .git | Tracked | Untracked/ignored |
 |---|---|---|---|---|
 | 2026-10-28 | 681.5 MB | 805 KB | 1.2 MB | 679.6 MB |
-| 2026-10-29 | 468.6 MB | 1.2 MB | 1.5 MB | 465.9 MB |
+| 2026-10-29 | 335.5 MB | 1.7 MB | 1.7 MB | 332.1 MB |

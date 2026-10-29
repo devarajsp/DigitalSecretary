@@ -32,11 +32,13 @@ the exact **▶ NEXT** step, so any later session can resume with no extra conte
 **State**
 - `./build.ps1 -All` => **VERDICT: PASS** - 0 warnings, **444 unit + 24 QA**, overall coverage
   **93.8%**, Storage Studio **98.3%**, docs/traceability consistent, PII scan clean.
+- Committed `0734639`, pushed, tagged `v2.4.0` and published the GitHub release with
+  `DigitalSecretary-v2.4.0-win-x64.zip` (54.5 MB, self-contained). Release staging folder deleted.
 - Not yet done: a manual run of the real app against a real folder (the view was verified via the
-  rendered screenshot and the QA click test). Not committed; no release zip built or tag created.
+  rendered screenshot and the QA click test).
 
-**▶ NEXT** — Owner tries Storage Studio on a real folder; then commit + (if wanted) release v2.4.0.
-After that, ENH-9 (Similar Pictures, P1).
+**▶ NEXT** — Owner tries Storage Studio on a real folder and reports anything off; then ENH-9
+(Similar Pictures, P1).
 
 ---
 
