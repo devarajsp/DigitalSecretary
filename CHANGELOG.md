@@ -2,6 +2,34 @@
 
 All notable changes to Digital Secretary. Format based on [Keep a Changelog](https://keepachangelog.com).
 
+## [2.4.0] - 2026-10-29
+
+**New:** **Storage Studio** &mdash; see **what is using the space** in any folder, as a picture. A
+clickable, colour-coded **size map** (every folder and file is a rectangle sized by the space it takes),
+space **by type** and **by age**, the **largest files and folders**, **clean-up candidates** with a
+reason for each, and **what grew since your last scan**. Click a folder to drill in; right-click for
+Explorer. **Read-only** &mdash; nothing is deleted, moved or uploaded. Added as a plugin with no change to
+the host; phase 1 of the Storage Studio plan (similar pictures and videos come next).
+
+### Fixed
+- **Docs:** the requirements and user-guide index pages had stopped listing new features (Email
+  Intelligence, DeDupe Files) - both hubs now list every feature, including Storage Studio.
+
+> &#9889; **Built with no code &mdash; DevEconomics.** Digital Secretary is built by *asking Claude*
+> (Opus 5.5), not by hand-writing code. We publish the cost every release; the per-activity ledger,
+> per-feature rows, and the trend live in the
+> [DevEconomics workbook](docs/deveconomics/DigitalSecretary-DevEconomics.xlsx).
+
+| Scope | Prod. KLOC | Est. tokens | Est. cost | Time |
+|---|--:|--:|--:|--:|
+| **This release** (Storage Studio) | ~2.3 | ~207 K | **~$18** | ~100 min |
+| **Whole app to date** (est) | ~9.7 | ~3.0 M | **~$106** | ~17.6 h |
+
+_LLM cost/tokens are estimates (the model can't meter itself); the whole-app foundation predates live
+tracking. Reconcile with `/cost`._
+
+[2.4.0]: https://github.com/devarajsp/DigitalSecretary/releases/tag/v2.4.0
+
 ## [2.3.0] - 2026-10-28
 
 **New:** **DeDupe Files** &mdash; point it at a folder and it fingerprints every file beneath it with

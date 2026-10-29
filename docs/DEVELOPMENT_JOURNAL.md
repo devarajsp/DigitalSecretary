@@ -286,6 +286,34 @@ flag from the token (`var cancelled = request.Cancel.IsCancellationRequested;`).
 regression test `A_scan_cancelled_before_it_starts_prunes_nothing`, which was **proved to fail before
 the fix and pass after** by temporarily reverting the line.
 
+### Phase 23 - Storage Studio, phase 1: Space Map (2026-10-29)
+The owner asked for a visual way to understand and optimise disk use, with similar-picture and
+similar-video clean-up to follow. The agreed plan is one **Storage Studio** plugin, built in phases;
+this phase is the **audit**: id `storage-studio`, category *Files*, 17 `.cs` files, ~2.28 KLOC, **no
+NuGet, no host change**. Requirements `SST-1`..`SST-17`, 13 traceability rows. `./build.ps1 -All` =>
+**VERDICT: PASS** (0 warnings, **444 unit + 24 QA**, overall coverage **93.8%**, feature **98.3%**).
+
+_Why the design is shaped this way:_
+- **Metadata only.** A space map needs sizes and dates, which the directory listing already returns,
+  so no file is opened: the scan is fast, cannot be blocked by locked files, and is safe anywhere.
+- **Totals roll up on insert.** Adding a file updates every ancestor once, so every folder's size,
+  counts and bytes-per-type are exact at all times - a stopped scan is still a correct partial picture,
+  and the "by type" chart for any folder is read straight off its node.
+- **Squarified treemap** (Bruls, Huizing & van Wijk) keeps tiles near-square so sizes compare by eye;
+  the 200 largest children get tiles and the rest fold into one "smaller items" tile.
+- **Report, do not act.** Phase 1 never deletes. Clean-up cards are conservative (`bin` only beside an
+  `obj`, `.exe` only inside Downloads, each file in at most one card) and say *why*.
+- **"What grew" from a gzip snapshot** of folder sizes four levels deep, stored per root under a
+  hashed file name - small, local, and no path text in file names.
+- **Screenshots never scan a real folder.** `SampleSpaceTree` is a deterministic, placeholder-only tree
+  that DocShots and the QA test show via `ShowTree`, so no user name or path can be baked into an image.
+
+_Process notes:_ the baseline gate was run first (green apart from the new, still-undocumented
+plugin). `ByteSize` and `PauseToken` are copied from DeDupe Files because features may not reference
+each other; a shared helper kit remains a recorded option. Reading the generated screenshot found two
+layout faults the tests could not - the map was squeezed by a fixed-height list pane, and an `&` in
+"Installers & disk images" was drawn as a keyboard mnemonic.
+
 _(Append new phases here as we go.)_
 
 ---
@@ -314,6 +342,10 @@ _(Append new phases here as we go.)_
 - Delegating to parallel agents only stays consistent if the **shared spec is written first** (IDs,
   file paths, symbol names) and handed to each one verbatim; agents must work on disjoint files, and
   their output still has to be read back - a user guide and the UI drifted on button names.
+- `TextRenderer.DrawText` treats `&` as a mnemonic prefix - pass `TextFormatFlags.NoPrefix` for any
+  label that is data rather than a menu caption.
+- WinForms analyzers (WFO1000) fail the build for public properties on a custom control unless they
+  are marked `[DesignerSerializationVisibility(Hidden)]`.
 - Stop the running app before rebuild (exe is file-locked).
 - PowerShell: `"_$($v)_"` not `"_$v_"`; wrap counts with `@(...)`; don't reuse a `[switch]` name as a
   `$variable`; build `--no-incremental` so analyzers always emit.

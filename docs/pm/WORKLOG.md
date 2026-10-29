@@ -5,6 +5,41 @@ the exact **▶ NEXT** step, so any later session can resume with no extra conte
 
 ---
 
+## 2026-10-29 — New feature: Storage Studio, phase 1 Space Map (v2.4.0)
+
+**Done**
+- Agreed the Storage Studio strategy with the owner: one plugin, phased - (1) Space Map audit,
+  (2) Similar Pictures, (3) Similar Videos, (4) optional semantic similarity. Owner: "first understand
+  and audit and view what is consuming more", then improve.
+- Built **Storage Studio** (`src/Features/StorageStudio/`, id `storage-studio`, category *Files*):
+  read-only metadata scan, clickable squarified size map coloured by type, space by type / by age,
+  largest files and folders, report-only clean-up candidates, changes since the last scan (gzip
+  snapshot per root), pause/resume/stop, Explorer actions, text report. 17 `.cs` files, ~2.28 KLOC,
+  no NuGet, **no host change**. Requirements SST-1 … SST-17, 13 traceability rows.
+- Tests: 14 unit-test files + the scan → snapshot → rescan integration test + a QA test that loads the
+  real plugin and clicks a map tile. Screenshot via a placeholder-only `SampleSpaceTree`.
+- Docs: FEATURE.md, requirement doc, user guide, manual section, README row, Pages card, xlsx
+  regenerated, CHANGELOG 2.4.0, journal phase 23, DevEconomics row + narrative.
+- Fixed BUG-2 (S3): the requirements and user-guide hubs were missing Email Intelligence and DeDupe
+  Files. Recorded BUG-1 (the 2.3.0 prune-on-cancel bug) in TASKS, which had been left out.
+
+**Decisions**
+- **Read-only first.** Phase 1 never deletes; clean-up cards point and explain. Deletion stays with
+  DeDupe Files (exact) and later phases (similar media, default "move to review folder").
+- **Metadata only, totals roll up on insert** - fast, safe, and a stopped scan is still correct.
+- **No real paths in images:** DocShots and QA show `SampleSpaceTree` via `ShowTree`.
+
+**State**
+- `./build.ps1 -All` => **VERDICT: PASS** - 0 warnings, **444 unit + 24 QA**, overall coverage
+  **93.8%**, Storage Studio **98.3%**, docs/traceability consistent, PII scan clean.
+- Not yet done: a manual run of the real app against a real folder (the view was verified via the
+  rendered screenshot and the QA click test). Not committed; no release zip built or tag created.
+
+**▶ NEXT** — Owner tries Storage Studio on a real folder; then commit + (if wanted) release v2.4.0.
+After that, ENH-9 (Similar Pictures, P1).
+
+---
+
 ## 2026-10-29 — Owner decisions OWN-1 / OWN-2 (storage + stray files)
 
 **Done**

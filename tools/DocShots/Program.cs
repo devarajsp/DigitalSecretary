@@ -48,6 +48,9 @@ internal static class Program
                 if (tb is not null) tb.Text = "(12 + 5) * 3 / 2";
             }
 
+            if (f.Manifest.Id == "storage-studio")
+                ShowSampleTree(view);
+
             if (f.Manifest.Id == "clipboard-history")
                 CaptureClipboard(view, path);
             else
@@ -121,6 +124,19 @@ internal static class Program
         host.Controls.Remove(view);
 
         if (original is not null) TrySetClipboard(original);
+    }
+
+    /// <summary>
+    /// Fills the Storage Studio view with its built-in placeholder tree (no real folder is scanned,
+    /// so no real path can appear in the screenshot). Reflection, because DocShots never references
+    /// a feature assembly directly.
+    /// </summary>
+    private static void ShowSampleTree(Control view)
+    {
+        var sample = view.GetType().Assembly.GetType("DigitalSecretary.Features.StorageStudio.SampleSpaceTree")
+            ?.GetMethod("Build")?.Invoke(null, [DateTime.UtcNow]);
+        if (sample is not null)
+            view.GetType().GetMethod("ShowTree")?.Invoke(view, [sample]);
     }
 
     private static TextBox? FindFirstTextBox(Control root)
@@ -205,6 +221,12 @@ internal static class Program
             DryRun = true
         };
         File.WriteAllText(Path.Combine(dedupe, "dedupe_settings.json"), JsonSerializer.Serialize(dedupeSettings, json));
+
+        // Seed a placeholder folder for Storage Studio too (the screenshot then shows a sample tree).
+        var storage = Path.Combine(dataRoot, "storage-studio");
+        Directory.CreateDirectory(storage);
+        var storageSettings = new { Root = @"C:\Users\You\Documents", MapDepth = 2 };
+        File.WriteAllText(Path.Combine(storage, "storage_studio_settings.json"), JsonSerializer.Serialize(storageSettings, json));
     }
 
     private static string LocateRepoRoot()

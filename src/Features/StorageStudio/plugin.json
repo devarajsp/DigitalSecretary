@@ -1,0 +1,9 @@
+{
+  "id": "storage-studio",
+  "title": "Storage Studio",
+  "category": "Files",
+  "description": "See what is using the space in a folder: a clickable size map, breakdowns by type and age, the biggest files and folders, clean-up candidates and what grew since last time.",
+  "order": 20,
+  "entryAssembly": "DigitalSecretary.Features.StorageStudio.dll",
+  "entryType": "DigitalSecretary.Features.StorageStudio.StorageStudioModule"
+}

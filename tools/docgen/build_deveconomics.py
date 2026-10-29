@@ -46,60 +46,48 @@ RATE = {"in": 5.0, "out": 25.0, "cache_read": 0.50, "cache_write": 6.25}
 #    (Phase, Activity, Bucket, Tool/Method, LLM?, EstTokens, EstCostUSD, TimeMin, TimeBasis, Notes)
 #    Bucket: "A" LLM tokens | "B" local compute | "C" remote | "B+C" local that pulls from network.
 # --------------------------------------------------------------------------- #
-FEATURE = "DeDupe Files"
-FEATURE_DATE = "2026-10-28"
-MODEL = "Opus 5"
-PRODUCTION_KLOC = 2.16  # 2,162 lines of production C# across 16 .cs files
+FEATURE = "Storage Studio (Space Map)"
+FEATURE_DATE = "2026-10-29"
+MODEL = "Opus 5.5"
+PRODUCTION_KLOC = 2.28  # 2,276 lines of production C# across 17 .cs files
 
-# Note on time: the three subagent rows below ran CONCURRENTLY with the hand-written production
-# code, so the Time column is work time, not wall clock - elapsed time for the release was lower.
+# One session, no subagents: strategy, code, tests and docs were all authored in the main session.
 ACTIVITIES = [
-    ("Explore", "Review project status after 4 months idle: CLAUDE.md, contract, a reference feature, docgen gates, tests, build.ps1", "A", "Read", "Yes", 46000, 0.50, 9.0, "estimate", "one-time re-orientation"),
-    ("Setup", "Verify dotnet 9 SDK + python/openpyxl", "B", "Bash", "No", 0, 0.0, 0.1, "measured", ""),
-
-    ("Requirements", "Draft the canonical spec: 19 DDF requirements + 15 traceability rows from the user's brief", "A", "Write", "Yes", 11000, 0.45, 7.0, "estimate", "reused verbatim by 2 subagents"),
-
-    ("Build", "Author the pure core: checksum entry/list/index, MD5 hasher, byte comparer, pause gate, hex, sizes", "A", "Write", "Yes", 13000, 0.50, 8.0, "estimate", "logic kept out of the UI"),
-    ("Build", "Author ScanEngine (incremental walk, autosave, prune) + DuplicateAnalyzer (groups, keeper policy)", "A", "Write", "Yes", 11000, 0.42, 7.0, "estimate", ""),
-    ("Build", "Author DeleteEngine + deleters + report text + settings store + existing-list prompt", "A", "Write", "Yes", 11000, 0.42, 7.0, "estimate", "guarded deletion"),
-    ("Build", "Author the WinForms view (folder, options, commands, progress, duplicate grid, log)", "A", "Write", "Yes", 9000, 0.35, 6.0, "estimate", ""),
-    ("Build", "Clear 4 CA1859 warnings; match button labels to the manual; confirm-dialog default; log-pane layout", "A", "Edit", "Yes", 3000, 0.10, 2.0, "estimate", "layout fault seen in the screenshot"),
-    ("Build", "Compile the feature (0 warnings)", "B", "dotnet build", "No", 0, 0.0, 0.55, "measured", "29s then 3s"),
-    ("Build", "Add project to sln + unit-test reference + coverage exclusion", "B", "dotnet sln / python", "No", 0, 0.0, 0.2, "measured", ""),
-
-    ("Docs (agent)", "Subagent in parallel: requirements doc, user guide, README row, Pages card", "A", "Agent", "Yes", 83554, 0.95, 1.3, "measured", "tokens + duration from the harness"),
-    ("Docgen (agent)", "Subagent in parallel: 19 req + 15 trace rows, id regex, manual section, DocShots seed, regenerate xlsx", "A", "Agent", "Yes", 93143, 1.05, 2.1, "measured", "tokens + duration from the harness"),
-    ("Tests (agent)", "Subagent: 12 unit-test files (144 tests) + QA id list, iterated to green", "A", "Agent", "Yes", 171867, 1.95, 14.3, "measured", "tokens + duration from the harness"),
-
-    ("Docs", "Author FEATURE.md (design decisions + file map)", "A", "Write", "Yes", 4500, 0.17, 3.0, "estimate", ""),
-    ("Review", "Read back the subagents' docs, manual section and tests; align UI labels with the guide", "A", "Read", "Yes", 12000, 0.30, 5.0, "estimate", "delegated work is verified, not trusted"),
-
-    ("Bugfix", "Diagnose + fix prune-on-cancel (S2) found by the test agent; add the regression test", "A", "Edit", "Yes", 5000, 0.18, 4.0, "estimate", "BUG-1; see KNOWN pitfalls"),
-    ("Bugfix", "Prove the regression test fails before the fix and passes after", "B", "dotnet build/test", "No", 0, 0.0, 0.6, "measured", "revert -> fail -> restore -> pass"),
-    ("Tests", "Solution builds + unit-test runs (316 tests)", "B", "dotnet build/test", "No", 0, 0.0, 0.5, "measured", "0.7s per run"),
-
-    ("Docgen", "Regenerate DocShots screenshots + HTML user manual (twice, after the layout fix)", "B", "dotnet run + powershell", "No", 0, 0.0, 0.65, "measured", "cleanliness check PASSED"),
-    ("Gate", "Full quality gate", "B", "build.ps1 -All", "No", 0, 0.0, 0.63, "measured", "PASS, 92.2%, 316+21 tests"),
+    ("Explore", "Read WORKLOG/TASKS/git state; summarise latest updates + pending items", "A", "Read", "Yes", 30000, 0.40, 5.0, "estimate", "session start"),
+    ("Owner", "Resolve OWN-1/OWN-2: verify release zips on GitHub, prune old build output, move stray decks", "B+C", "bash / gh", "No", 0, 0.0, 0.5, "measured", "681.5 MB -> 309.2 MB"),
+    ("Strategy", "Deep strategy: Storage Studio (space map, similar pictures, similar videos), phasing, risks", "A", "Write", "Yes", 12000, 0.45, 6.0, "estimate", "owner chose phase 1 first"),
+    ("Explore", "Study the add-a-feature recipe, DeDupe Files as a model, docgen tables, DocShots, QA harness", "A", "Read", "Yes", 40000, 0.45, 8.0, "estimate", ""),
+    ("Gate", "Baseline full quality gate before any change", "B", "build.ps1 -All", "No", 0, 0.0, 0.7, "measured", "316 + 21 green"),
+    ("Build", "Author the pure engine: SpaceNode, SpaceScanner, SpaceAnalyzer, CleanupFinder, TreemapLayout (squarified), snapshot/growth/store, report, settings, palette", "A", "Write", "Yes", 28000, 1.05, 18.0, "estimate", "logic kept out of the UI"),
+    ("Build", "Author the UI: TreemapControl, BarChartControl, StorageStudioControl", "A", "Write", "Yes", 16000, 0.60, 10.0, "estimate", ""),
+    ("Build", "Fix 4 WFO1000 + 2 CA warnings (designer serialization, return type, naming)", "A", "Edit", "Yes", 2000, 0.08, 1.0, "estimate", ""),
+    ("Build", "Add project to sln + test reference; compile (0 warnings)", "B", "dotnet sln / build", "No", 0, 0.0, 0.6, "measured", ""),
+    ("Tests", "Author 14 unit-test files (89 test methods) incl. the scan -> snapshot -> rescan integration test", "A", "Write", "Yes", 26000, 1.00, 14.0, "estimate", "green on first full run"),
+    ("Tests", "QA test (real plugin, sample tree, simulated click) + DocShots sample hook + SampleSpaceTree", "A", "Write", "Yes", 8000, 0.30, 6.0, "estimate", "no real path in any screenshot"),
+    ("Tests", "Unit + QA runs", "B", "dotnet test", "No", 0, 0.0, 0.4, "measured", "444 unit + 24 QA"),
+    ("Review", "Read the rendered screenshot; fix map height, '&' mnemonic, bar width", "A", "Read/Edit", "Yes", 4000, 0.12, 3.0, "estimate", "seen in the screenshot"),
+    ("Docgen", "Regenerate DocShots screenshots (twice)", "B", "dotnet run", "No", 0, 0.0, 0.6, "measured", ""),
+    ("Docs", "FEATURE.md, requirement doc (SST-1..17), user guide, manual section, hubs, README row, Pages card", "A", "Write", "Yes", 22000, 0.85, 12.0, "estimate", "also fixed hub drift (BUG-1)"),
+    ("Docgen", "17 requirement + 13 traceability rows, SST id in check_docs regex", "A", "Write", "Yes", 9000, 0.35, 5.0, "estimate", ""),
+    ("Docgen", "Regenerate requirements/traceability xlsx + HTML user manual; docs check", "B", "python + powershell", "No", 0, 0.0, 0.4, "measured", "cleanliness check PASSED"),
+    ("Gate", "Full quality gate", "B", "build.ps1 -All", "No", 0, 0.0, 0.7, "measured", "PASS, 468 tests"),
+    ("Release", "CHANGELOG 2.4.0, journal phase 23, DevEconomics, PM trackers", "A", "Write/Edit", "Yes", 10000, 0.40, 8.0, "estimate", "this release entry"),
     ("Gate", "Storage report", "B", "node storage-report.mjs", "No", 0, 0.0, 0.2, "measured", "docs/pm/STORAGE.md"),
-
-    ("Release", "Journal phase, CHANGELOG, DevEconomics, PM trackers (TASKS/WORKLOG/STORAGE)", "A", "Write/Edit", "Yes", 11000, 0.40, 8.0, "estimate", "this release entry"),
-    ("Commit", "Stage + commit (pre-commit gate)", "B", "git commit", "No", 0, 0.0, 0.4, "measured", ""),
 ]
 
-# Shared session overhead not attributable to one activity: the growing transcript re-sent each turn.
-# Lower than the previous release because three workstreams ran in subagents with their own context
-# (their tokens are counted directly in the rows above). Estimated; reconcile the total against /cost.
-CONTEXT_OVERHEAD_USD = 9.0
+# Shared session overhead: a long single session (no subagents) re-sends a large transcript each turn.
+# Estimated; reconcile the total against /cost.
+CONTEXT_OVERHEAD_USD = 12.0
 
-# Whole-app baseline for everything built BEFORE this release: the pluggable host, the first 7
-# features, and the quality/docs/CI/release infrastructure (phases 1-21, through v2.2.0). The tracked
-# Email Intelligence release is folded in here so the App Total stays correct as DeDupe Files becomes
-# the tracked feature.
+# Whole-app baseline for everything built BEFORE this release: the pluggable host, the first 8
+# features, and the quality/docs/CI/release infrastructure (phases 1-22, through v2.3.0). The tracked
+# DeDupe Files release (2.16 KLOC, 485,064 tokens, $16.74, 87.5 min) is folded in here so the App
+# Total stays correct as Storage Studio becomes the tracked feature.
 FOUNDATION = {
-    "name": "Prior releases (host + 7 features + quality/docs/CI/release infra, through v2.2.0)",
-    "date": "2026-06-19..23", "model": "Opus (multi-session)",
-    "kloc": 5.23, "tokens": 2_303_700, "cost_est": 71.60, "time_est": 867.7,
-    "note": "Phases 1-17 predate DevEconomics tracking (rough estimate); includes the tracked v2.1.0 and v2.2.0 releases.",
+    "name": "Prior releases (host + 8 features + quality/docs/CI/release infra, through v2.3.0)",
+    "date": "2026-06-19..10-28", "model": "Opus (multi-session)",
+    "kloc": 7.39, "tokens": 2_788_764, "cost_est": 88.34, "time_est": 955.2,
+    "note": "Phases 1-17 predate DevEconomics tracking (rough estimate); includes the tracked v2.1.0, v2.2.0 and v2.3.0 releases.",
 }
 
 ACT_HEADERS = ["#", "Phase", "Activity", "Bucket", "Tool / Method", "LLM?",
@@ -206,7 +194,7 @@ def build_feature_summary(ws, roll):
         PRODUCTION_KLOC, roll["tokens"], roll["direct_cost"], roll["overhead"], roll["total_est"], None,
         '=IF(ISNUMBER(L3),L3-K3,"pending /cost")', roll["local_time"], roll["total_time"], None,
         round(roll["total_est"] / PRODUCTION_KLOC, 2),
-        "Estimate; reconcile ACTUAL via /cost. Spans 3 increments (foundation+report, append, tone/life-data/docs, xlsx).",
+        "Estimate; reconcile ACTUAL via /cost. Phase 1 of Storage Studio (space map); single session.",
     ])
     # Row 4 - APP TOTAL (whole-app development to date = foundation + tracked features).
     tr = DATA_ROWS + 1

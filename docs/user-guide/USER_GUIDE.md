@@ -41,6 +41,9 @@ DigitalSecretary is your personal toolbox for Windows. It collects handy day-to-
 | Download Emails | Save a local copy of your Yahoo Mail | [Open guide](features/email-downloader.md) |
 | Download Gmail | Save a local copy of your Gmail | [Open guide](features/gmail-downloader.md) |
 | Download Google Drive | Save a local copy of your Google Drive (Docs exported to Office + PDF) | [Open guide](features/google-drive-downloader.md) |
+| Email Intelligence | Turn your downloaded email into an offline people-and-life report | [Open guide](features/email-intelligence.md) |
+| DeDupe Files | Find duplicate files and reclaim the space, keeping one copy of each | [Open guide](features/dedupe-files.md) |
+| Storage Studio | See what is using the space in a folder, as a clickable size map | [Open guide](features/storage-studio.md) |
 
 ## Where your data is stored
 Everything stays on your PC under **`%APPDATA%\DigitalSecretary\`**:

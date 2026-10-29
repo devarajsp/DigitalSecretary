@@ -102,6 +102,7 @@
       <a href="#drive">Download Google Drive</a>
       <a href="#email-intelligence">Email Intelligence</a>
       <a href="#dedupe">DeDupe Files</a>
+      <a href="#storage">Storage Studio</a>
       <div class="grp">More</div>
       <a href="#data">Your data &amp; privacy</a>
       <a href="#faq">Troubleshooting / FAQ</a>
@@ -314,6 +315,32 @@
         <li>A reusable <b>dedupe_md5_list.txt</b> in your folder (checksum, size, modified time and path for each file) that makes later runs faster.</li>
       </ul>
       <div class="call tip"><div class="h">Nothing is deleted by surprise</div>If a file turns out to differ from the copy being kept, it is <b>skipped and logged</b> rather than deleted. Because the Recycle Bin is the default, you can still restore a file you removed by mistake. Permanent deletion is an explicit opt-in.</div>
+    </section>
+
+    <section class="doc" id="storage" data-t="storage studio space disk full size map treemap folder biggest largest files folders type age clean up cleanup node_modules installers temp grew growth changes report explorer">
+      <h2>Storage Studio</h2>
+      <p class="lead">See <b>what is using the space</b> in a folder &mdash; as a picture. Every folder and file is a rectangle sized by how much it takes and coloured by its type, so the biggest space users are the biggest rectangles.</p>
+      <figure><img src="{{storage-studio}}" alt="Storage Studio feature"><figcaption>The size map of a folder, space by type (also the colour key), and the largest files underneath.</figcaption></figure>
+      <div class="call tip"><div class="h">It only looks</div>Storage Studio <b>never deletes, moves or changes anything</b> and does not open your files &mdash; it reads only names, sizes and dates. Nothing leaves your PC.</div>
+      <h3>Find what is taking the space</h3>
+      <ol class="steps">
+        <li>Click <b>Browse...</b>, choose a folder (or a whole drive), then click <b>Scan</b>. Use <b>Pause</b> / <b>Resume</b> or <b>Stop</b> at any time &mdash; a stopped scan still shows what it found.</li>
+        <li>Read the <b>size map</b>: bigger rectangle = more space; colour = type of file. The <b>Space by type</b> chart is the colour key. Hover any rectangle for its size, share, type, date and full path.</li>
+        <li><b>Click a folder</b> to open it. The breadcrumb and <b>Up</b> take you back. The charts and lists always follow the folder you are in.</li>
+        <li>Check <b>Space by age</b> to see how much has sat untouched for years.</li>
+        <li>Use the tabs underneath: <b>Largest files</b>, <b>Largest folders</b>, <b>Clean-up candidates</b> and <b>Changes since last scan</b>. Double-click a row to open its folder; right-click for <b>Show in Explorer</b> or <b>Copy path</b>.</li>
+        <li><b>Save report...</b> writes everything for the current folder to a plain-text file.</li>
+      </ol>
+      <h3>Clean-up candidates</h3>
+      <ul>
+        <li><b>Build &amp; package folders</b> &mdash; <kbd>node_modules</kbd>, <kbd>obj</kbd>, <kbd>bin</kbd> next to an <kbd>obj</kbd>, <kbd>__pycache__</kbd>: rebuilt by their tools when needed.</li>
+        <li><b>Temporary &amp; partial files</b> &mdash; <kbd>.tmp</kbd>, unfinished downloads, crash dumps, backup copies, Office lock files.</li>
+        <li><b>Installers &amp; disk images</b> &mdash; <kbd>.msi</kbd>, <kbd>.iso</kbd> anywhere, and <kbd>.exe</kbd> in a Downloads folder.</li>
+        <li><b>Large files not changed in years</b> &mdash; 1 GB or more, untouched for 2 years: candidates to archive.</li>
+      </ul>
+      <div class="call warn"><div class="h">Pointers, not actions</div>Clean-up cards tell you <b>where to look and why</b>; nothing is removed for you. For exact duplicates use <b>DeDupe Files</b>.</div>
+      <h3>What grew lately</h3>
+      <p>Scan the <b>same folder</b> again later and <b>Changes since last scan</b> lists the folders that grew or shrank by 1 MB or more, biggest change first. Each complete scan is remembered as a small compressed snapshot under <kbd>%APPDATA%\DigitalSecretary\data\storage-studio\</kbd>.</p>
     </section>
 
     <section class="doc" id="data" data-t="data privacy storage appdata where files security password">
