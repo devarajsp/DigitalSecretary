@@ -3,7 +3,7 @@
 Bugs and enhancements are tracked **separately** (machine rule §8). IDs are never reused.
 Open items first, then the history. Keep this current **as** work happens, not after.
 
-**Counts:** 0 open bugs · 5 open enhancements (0 P1) · 3 items need the owner.
+**Counts:** 0 open bugs · 5 open enhancements (0 P1) · 1 item needs the owner.
 
 ---
 
@@ -43,6 +43,11 @@ the regression test that pins it._
 
 | ID | Area | What is needed | Why |
 |----|------|----------------|-----|
-| OWN-1 | Storage | Decide whether to delete the regenerable build output: `release/` (282 MB — v2.0.0/v2.1.0/v2.2.0 zips plus an unpacked v2.2.0 tree) and `artifacts/` (129 MB). | The repo folder is ~654 MB, of which ~411 MB is regenerable. This trips the machine standard's >200 MB untracked/ignored flag (§9). Release zips are also attached to the GitHub releases, so local copies are a convenience. Deleting the owner's files needs the owner's go (§2, §9.4). |
-| OWN-2 | Repo hygiene | Decide what to do with `tribeCoding.pdf` and `tribeCoding.pptx` in the repo root (untracked, dated 2026-09-06): move them out, or add them to `.gitignore`. | They are unrelated to the app and are not git-ignored, so a `git add .` would commit them — and a slide deck may carry identity that the PII gate cannot read out of a binary. |
 | OWN-3 | DevEconomics | Run `/cost` and write the figure into the workbook's `Total cost ACTUAL` column for the 2.3.0 row, then re-run `python tools/docgen/build_deveconomics.py`. | Only the harness knows the real token spend; the workbook currently holds the estimate, and the EST-vs-ACTUAL trend chart needs the actual (CLAUDE.md, DevEconomics step 2). |
+
+### Resolved by owner
+
+| ID | Area | Decision | Date |
+|----|------|----------|------|
+| OWN-1 | Storage | Keep the latest release only. Deleted the v2.0.0/v2.1.0/v2.2.0 zips, the unpacked v2.2.0 tree, `artifacts/coverage` and `artifacts/release-stage` (all four zips verified on GitHub releases first). Kept `release/DigitalSecretary-v2.3.0-win-x64.zip`, `release/README.md` and `artifacts/quality-state.json` (the gate's last snapshot, read by `build.ps1`). 681.5 MB → 309.2 MB. The >200 MB flag remains from `bin`/`obj` build output (~250 MB), which is regenerable working output, not release clutter. | 2026-10-29 |
+| OWN-2 | Repo hygiene | Moved `tribeCoding.pdf` / `tribeCoding.pptx` out of the repo to `D:\DevFolder\Projects\Claude\PersonalTools\_docs\`. Working tree is now clean of untracked files. | 2026-10-29 |

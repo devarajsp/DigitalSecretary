@@ -5,6 +5,27 @@ the exact **▶ NEXT** step, so any later session can resume with no extra conte
 
 ---
 
+## 2026-10-29 — Owner decisions OWN-1 / OWN-2 (storage + stray files)
+
+**Done**
+- **OWN-1 → keep latest release only.** Verified all four release zips are attached to their GitHub
+  releases, then deleted the v2.0.0/v2.1.0/v2.2.0 zips, the unpacked v2.2.0 tree,
+  `artifacts/coverage` and `artifacts/release-stage`. Kept the v2.3.0 zip, `release/README.md`
+  (tracked) and `artifacts/quality-state.json` (2.5 KB gate snapshot that `build.ps1` reads).
+- **OWN-2 → moved out.** `tribeCoding.pdf` / `tribeCoding.pptx` moved to
+  `D:\DevFolder\Projects\Claude\PersonalTools\_docs\`.
+- Refreshed `docs/pm/STORAGE.md`; corrected the stale note below — v2.3.0 *is* pushed and tagged.
+
+**State**
+- Storage **681.5 MB → 309.2 MB** (−372 MB). The >200 MB flag still trips on `bin`/`obj`
+  (~250 MB), which `dotnet build` regenerates; left as working output.
+- Only OWN-3 (actual `/cost` into DevEconomics) still needs the owner.
+
+**▶ NEXT** — ENH-1 (`docs/SEQUENCE.html` sequence-diagram SPD), then ENH-2 (function-length audit in
+the gate).
+
+---
+
 ## 2026-10-28 — New feature: DeDupe Files (v2.3.0)
 
 **Done**
@@ -43,7 +64,7 @@ the exact **▶ NEXT** step, so any later session can resume with no extra conte
   `A_scan_cancelled_before_it_starts_prunes_nothing`, proved to fail before the fix and pass after.
 - **Storage:** 654 MB -> 681.5 MB after this work (new `bin`/`obj` build output); `.git` is 805 KB and
   tracked files 1.2 MB, so the growth is entirely regenerable. See `docs/pm/STORAGE.md` and OWN-1.
-- Committed on `main` (not pushed) as release **2.3.0**.
+- Committed on `main` as release **2.3.0** (since pushed and tagged `v2.3.0`).
 
 **Known, left for the owner** (TASKS.md ⏸ Needs owner)
 - OWN-1: ~411 MB of regenerable build output (`release/` 282 MB, `artifacts/` 129 MB) — deleting the
