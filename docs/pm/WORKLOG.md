@@ -29,11 +29,13 @@ the exact **▶ NEXT** step, so any later session can resume with no extra conte
 **State**
 - `./build.ps1 -All` => **VERDICT: PASS** - 0 warnings, **584 unit + 27 QA**, overall coverage
   **94.2%**, Similar Pictures **95.3%**, docs consistent, PII scan clean.
+- Committed `0039ca6`, pushed (CI green), tagged `v2.5.0` and published the GitHub release with
+  `DigitalSecretary-v2.5.0-win-x64.zip` (54.6 MB, self-contained). Release staging folder deleted.
 - Not done: a run on a real photo folder in the app (verified via the generated sample, the QA click
-  test and the real-file pipeline test). Not committed, not released.
+  test and the real-file pipeline test).
 
-**▶ NEXT** — Owner tries Similar Pictures on a real photo folder; then commit and (if wanted) release
-v2.5.0. After that: ENH-14 (faster grouping for huge collections) or ENH-10 (Similar Videos).
+**▶ NEXT** — Owner tries Similar Pictures on a real photo folder and reports anything off; decide
+ENH-12 (shared helper kit). Then ENH-14 (faster grouping for huge collections) or ENH-10 (Similar Videos).
 
 ---
 
