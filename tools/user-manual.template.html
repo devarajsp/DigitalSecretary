@@ -103,6 +103,7 @@
       <a href="#email-intelligence">Email Intelligence</a>
       <a href="#dedupe">DeDupe Files</a>
       <a href="#storage">Storage Studio</a>
+      <a href="#similar">Similar Pictures</a>
       <div class="grp">More</div>
       <a href="#data">Your data &amp; privacy</a>
       <a href="#faq">Troubleshooting / FAQ</a>
@@ -341,6 +342,28 @@
       <div class="call warn"><div class="h">Pointers, not actions</div>Clean-up cards tell you <b>where to look and why</b>; nothing is removed for you. For exact duplicates use <b>DeDupe Files</b>.</div>
       <h3>What grew lately</h3>
       <p>Scan the <b>same folder</b> again later and <b>Changes since last scan</b> lists the folders that grew or shrank by 1 MB or more, biggest change first. Each complete scan is remembered as a small compressed snapshot under <kbd>%APPDATA%\DigitalSecretary\data\storage-studio\</kbd>.</p>
+    </section>
+
+    <section class="doc" id="similar" data-t="similar pictures photos images duplicates look alike same picture resized re-saved rotated turned mirrored burst heic raw webp review folder undo keep move recycle">
+      <h2>Similar Pictures</h2>
+      <p class="lead">Find pictures that <b>look the same</b> &mdash; exact copies, the same photo re-saved or shrunk by a chat app, <b>turned or mirrored</b> copies, and <b>burst shots</b> &mdash; review each group side by side, and move the extras to a review folder you can undo.</p>
+      <figure><img src="{{similar-pictures}}" alt="Similar Pictures feature"><figcaption>Groups on the left; the selected group's pictures side by side with KEEP and MOVE badges. Here a mirrored and a turned copy of the same photo are marked to move.</figcaption></figure>
+      <div class="call warn"><div class="h">Safe by default</div>Nothing moves until you click <b>Move marked</b> and confirm. The <b>KEEP</b> picture of every group never moves. Moved pictures go to <kbd>_Similar pictures - review</kbd> inside your folder, and <b>Undo last move</b> puts them back. <b>Similar - check</b> groups are never pre-marked.</div>
+      <h3>Find and review look-alikes</h3>
+      <ol class="steps">
+        <li>Choose your pictures <b>folder</b> and click <b>Scan</b>. JPEG, PNG, GIF, BMP and TIFF are always read; <b>HEIC</b>, <b>WebP</b> and <b>camera RAW</b> too when Windows has the codec. Later scans only read new or changed pictures.</li>
+        <li>Pick the <b>Matching</b> level (<i>Strict</i>, <i>Balanced</i>, <i>Loose</i>) and whether to include <b>turned / mirrored copies</b> and <b>similar scenes and bursts</b>. Changes regroup instantly.</li>
+        <li>Click a group on the left. Its pictures appear side by side with their size, dimensions, date, sharpness and how they match.</li>
+        <li><b>Click a picture</b> to switch it between <b>MOVE</b> and <b>keep</b>. Right-click for <b>Keep this one instead</b>, <b>Open</b> or <b>Show in Explorer</b>. Use <b>Mark all but the keeper</b> or <b>Keep all in this group</b> for the whole group.</li>
+        <li>Click <b>Move marked</b> and confirm. Use <b>Open review folder</b> to check them, then delete that folder yourself when you are happy &mdash; or <b>Undo last move</b>.</li>
+      </ol>
+      <h3>What the matches mean</h3>
+      <ul>
+        <li><b>Exact copy</b> &mdash; the very same file, byte for byte. Pre-marked.</li>
+        <li><b>Same picture</b> &mdash; re-saved, resized, compressed, lightly edited, turned or mirrored. Pre-marked.</li>
+        <li><b>Similar - check</b> &mdash; almost the same scene, often a burst or retake. Never pre-marked: you choose.</li>
+      </ul>
+      <div class="call tip"><div class="h">How it sees pictures</div>Each picture gets a visual <b>fingerprint</b> (two small hashes of its shapes and tones, in all 8 turns and mirror images) and a sharpness score. Pictures whose fingerprints are close are grouped; the biggest, sharpest one is suggested as the keeper. Everything happens on your PC &mdash; no AI service, nothing uploaded.</div>
     </section>
 
     <section class="doc" id="data" data-t="data privacy storage appdata where files security password">

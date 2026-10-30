@@ -44,6 +44,7 @@ DigitalSecretary is your personal toolbox for Windows. It collects handy day-to-
 | Email Intelligence | Turn your downloaded email into an offline people-and-life report | [Open guide](features/email-intelligence.md) |
 | DeDupe Files | Find duplicate files and reclaim the space, keeping one copy of each | [Open guide](features/dedupe-files.md) |
 | Storage Studio | See what is using the space in a folder, as a clickable size map | [Open guide](features/storage-studio.md) |
+| Similar Pictures | Find look-alike pictures (copies, re-saved, turned, bursts) and move the extras to an undo-able review folder | [Open guide](features/similar-pictures.md) |
 
 ## Where your data is stored
 Everything stays on your PC under **`%APPDATA%\DigitalSecretary\`**:

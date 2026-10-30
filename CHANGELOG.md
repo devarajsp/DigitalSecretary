@@ -2,6 +2,35 @@
 
 All notable changes to Digital Secretary. Format based on [Keep a Changelog](https://keepachangelog.com).
 
+## [2.5.0] - 2026-10-30
+
+**New:** **Similar Pictures** &mdash; finds pictures that **look** the same: exact copies, the same photo
+re-saved or shrunk by a chat app, **turned or mirrored** copies and **burst shots**, in JPEG, PNG and &mdash;
+when Windows has the codec &mdash; **HEIC, WebP and camera RAW**. Each group is shown side by side with the
+best picture marked **KEEP**; exact and re-saved copies are pre-marked, near-identical scenes are left for
+you to check. Marked pictures move to a **review folder you can undo**. Added as a plugin with no change
+to the host; phase 2 of the Storage Studio plan.
+
+### Fixed
+- **Documentation screenshots:** the screenshot tool drew each window with its title bar into a bitmap the
+  size of the window's inner area, so the bottom ~30 px of every feature screenshot was cut off. It now
+  crops exactly the inner area.
+
+> &#9889; **Built with no code &mdash; DevEconomics.** Digital Secretary is built by *asking Claude*
+> (Opus 5.5), not by hand-writing code. We publish the cost every release; the per-activity ledger,
+> per-feature rows, and the trend live in the
+> [DevEconomics workbook](docs/deveconomics/DigitalSecretary-DevEconomics.xlsx).
+
+| Scope | Prod. KLOC | Est. tokens | Est. cost | Time |
+|---|--:|--:|--:|--:|
+| **This release** (Similar Pictures) | ~2.7 | ~166 K | **~$20** | ~107 min |
+| **Whole app to date** (est) | ~12.3 | ~3.2 M | **~$127** | ~19.4 h |
+
+_LLM cost/tokens are estimates (the model can't meter itself); the whole-app foundation predates live
+tracking. Reconcile with `/cost`._
+
+[2.5.0]: https://github.com/devarajsp/DigitalSecretary/releases/tag/v2.5.0
+
 ## [2.4.0] - 2026-10-29
 
 **New:** **Storage Studio** &mdash; see **what is using the space** in any folder, as a picture. A

@@ -1,0 +1,9 @@
+{
+  "id": "similar-pictures",
+  "title": "Similar Pictures",
+  "category": "Files",
+  "description": "Find pictures that look the same - copies, re-saved or resized versions, rotated or mirrored ones and burst shots - review them side by side and move the extras to a review folder.",
+  "order": 30,
+  "entryAssembly": "DigitalSecretary.Features.SimilarPictures.dll",
+  "entryType": "DigitalSecretary.Features.SimilarPictures.SimilarPicturesModule"
+}

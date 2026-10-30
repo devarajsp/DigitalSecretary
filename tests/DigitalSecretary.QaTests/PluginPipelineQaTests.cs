@@ -30,7 +30,8 @@ public sealed class PluginPipelineQaTests
         ids.Should().Contain(new[]
         {
             "launcher", "calculator", "clipboard-history", "email-downloader",
-            "gmail-downloader", "google-drive-downloader", "dedupe-files", "storage-studio"
+            "gmail-downloader", "google-drive-downloader", "dedupe-files", "storage-studio",
+            "similar-pictures"
         });
     }
 
@@ -145,6 +146,60 @@ public sealed class PluginPipelineQaTests
 
             Prop(map, "FocusNode").Should().BeSameAs(Prop(folderCell, "Node"), "clicking a folder tile drills into it");
         });
+    }
+
+    [Fact]
+    public void Similar_Pictures_groups_the_sample_and_a_click_toggles_a_pictures_mark()
+    {
+        var m = QaEnvironment.Manifests().First(x => x.Id == "similar-pictures");
+
+        Sta.Run(() =>
+        {
+            var asmPath = Path.Combine(m.Directory, m.EntryAssembly);
+            var asm = new PluginLoadContext(asmPath).LoadFromAssemblyPath(asmPath);
+            var module = (IFeatureModule)Activator.CreateInstance(asm.GetType(m.EntryType)!)!;
+            using var view = module.CreateView(new QaContext(m.Id));
+            view.Size = new System.Drawing.Size(1200, 800);
+
+            // Show the placeholder sample set (generated pictures), as DocShots does.
+            var sampleType = asm.GetType("DigitalSecretary.Features.SimilarPictures.SamplePictureSet")!;
+            var built = sampleType.GetMethod("Build")!.Invoke(null, [DateTime.UtcNow])!;
+            var records = built.GetType().GetField("Item1")!.GetValue(built)!;
+            var thumbs = (Dictionary<string, System.Drawing.Bitmap>)built.GetType().GetField("Item2")!.GetValue(built)!;
+            Func<string, System.Drawing.Bitmap?> source = p => thumbs.TryGetValue(p, out var b) ? new System.Drawing.Bitmap(b) : null;
+            var root = (string)sampleType.GetField("RootPath")!.GetValue(null)!;
+            view.GetType().GetMethod("ShowRecords")!.Invoke(view, [root, records, source]);
+
+            // Grouping runs in the background; pump messages until the first group's cards appear.
+            var cards = WaitFor(() => Descendants(view).Where(c => c.GetType().Name == "PictureCardControl").ToList(), l => l.Count >= 2);
+            cards.Count.Should().BeGreaterThanOrEqualTo(2, "the first group shows its keeper and at least one other picture");
+
+            var marked = (System.Collections.Generic.ICollection<string>)view.GetType()
+                .GetField("_marked", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(view)!;
+            var before = marked.Count;
+            var other = cards[1];
+            other.GetType().GetMethod("OnAnyClick", BindingFlags.NonPublic | BindingFlags.Instance)!
+                .Invoke(other, [other, new MouseEventArgs(MouseButtons.Left, 1, 5, 5, 0)]);
+
+            marked.Count.Should().NotBe(before, "clicking a picture that is not the keeper toggles whether it moves");
+            foreach (var bmp in thumbs.Values)
+            {
+                bmp.Dispose();
+            }
+        });
+    }
+
+    private static T WaitFor<T>(Func<T> read, Func<T, bool> done)
+    {
+        var until = DateTime.UtcNow.AddSeconds(10);
+        var value = read();
+        while (!done(value) && DateTime.UtcNow < until)
+        {
+            Application.DoEvents();
+            Thread.Sleep(20);
+            value = read();
+        }
+        return value;
     }
 
     private static object? Prop(object target, string name) => target.GetType().GetProperty(name)!.GetValue(target);

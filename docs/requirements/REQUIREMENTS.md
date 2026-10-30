@@ -65,6 +65,7 @@ private by default, and easy to extend.
 | Email Intelligence | Insights | [features/email-intelligence.md](features/email-intelligence.md) | [user guide](../user-guide/features/email-intelligence.md) |
 | DeDupe Files | Files | [features/dedupe-files.md](features/dedupe-files.md) | [user guide](../user-guide/features/dedupe-files.md) |
 | Storage Studio | Files | [features/storage-studio.md](features/storage-studio.md) | [user guide](../user-guide/features/storage-studio.md) |
+| Similar Pictures | Files | [features/similar-pictures.md](features/similar-pictures.md) | [user guide](../user-guide/features/similar-pictures.md) |
 
 ## 8. Glossary
 - **Feature / plugin:** an independent capability, shipped as its own module/DLL.

@@ -51,8 +51,13 @@ internal static class Program
             if (f.Manifest.Id == "storage-studio")
                 ShowSampleTree(view);
 
+            if (f.Manifest.Id == "similar-pictures")
+                ShowSamplePictures(view);
+
             if (f.Manifest.Id == "clipboard-history")
                 CaptureClipboard(view, path);
+            else if (f.Manifest.Id == "similar-pictures")
+                CaptureControl(view, 1100, 780, path);   // the review screen needs room for whole picture cards
             else
                 CaptureControl(view, 980, 560, path);
         }
@@ -86,8 +91,13 @@ internal static class Program
         host.Controls.Add(view);
         host.Show();
         Pump(450);
-        using var bmp = new Bitmap(w, h);
-        host.DrawToBitmap(bmp, new Rectangle(0, 0, w, h));
+        // DrawToBitmap paints the whole window, title bar and borders included, so render it at full
+        // window size and cut out just the client area - otherwise the bottom of every view is lost.
+        using var full = new Bitmap(host.Width, host.Height);
+        host.DrawToBitmap(full, new Rectangle(0, 0, host.Width, host.Height));
+        var client = host.PointToScreen(Point.Empty);
+        var offset = new Point(client.X - host.Left, client.Y - host.Top);
+        using var bmp = full.Clone(new Rectangle(offset, new Size(w, h)), full.PixelFormat);
         bmp.Save(path, ImageFormat.Png);
         host.Hide();
         host.Controls.Remove(view);
@@ -131,6 +141,24 @@ internal static class Program
     /// so no real path can appear in the screenshot). Reflection, because DocShots never references
     /// a feature assembly directly.
     /// </summary>
+    /// <summary>
+    /// Fills the Similar Pictures view with its generated sample pictures under a placeholder folder
+    /// (no real photo, name or path can appear in the screenshot). Reflection, as above.
+    /// </summary>
+    private static void ShowSamplePictures(Control view)
+    {
+        var type = view.GetType().Assembly.GetType("DigitalSecretary.Features.SimilarPictures.SamplePictureSet");
+        var built = type?.GetMethod("Build")?.Invoke(null, [DateTime.UtcNow]);
+        if (type is null || built is null)
+            return;
+        var records = built.GetType().GetField("Item1")!.GetValue(built)!;
+        var thumbs = (Dictionary<string, Bitmap>)built.GetType().GetField("Item2")!.GetValue(built)!;
+        Func<string, Bitmap?> source = p => thumbs.TryGetValue(p, out var b) ? new Bitmap(b) : null;
+        var root = (string)type.GetField("RootPath")!.GetValue(null)!;
+        view.GetType().GetMethod("ShowRecords")?.Invoke(view, [root, records, source]);
+        Pump(600);
+    }
+
     private static void ShowSampleTree(Control view)
     {
         var sample = view.GetType().Assembly.GetType("DigitalSecretary.Features.StorageStudio.SampleSpaceTree")
@@ -221,6 +249,12 @@ internal static class Program
             DryRun = true
         };
         File.WriteAllText(Path.Combine(dedupe, "dedupe_settings.json"), JsonSerializer.Serialize(dedupeSettings, json));
+
+        // Placeholder folder for Similar Pictures (its screenshot shows generated sample pictures).
+        var similar = Path.Combine(dataRoot, "similar-pictures");
+        Directory.CreateDirectory(similar);
+        var similarSettings = new { Root = @"C:\Users\You\Pictures", Sensitivity = "Balanced", IncludeRotated = true, IncludeSimilar = true, Action = "ReviewFolder" };
+        File.WriteAllText(Path.Combine(similar, "similar_pictures_settings.json"), JsonSerializer.Serialize(similarSettings, json));
 
         // Seed a placeholder folder for Storage Studio too (the screenshot then shows a sample tree).
         var storage = Path.Combine(dataRoot, "storage-studio");

@@ -5,6 +5,38 @@ the exact **▶ NEXT** step, so any later session can resume with no extra conte
 
 ---
 
+## 2026-10-30 — New feature: Similar Pictures (v2.5.0)
+
+**Done**
+- Put four design questions to the owner; answers: **separate plugin**, **review folder** (undo-able),
+  match **exact, re-saved, bursts and turned/mirrored**, with near-identical scenes **left for manual
+  verification**, read **every format Windows can preview**.
+- Built **Similar Pictures** (`src/Features/SimilarPictures/`, id `similar-pictures`, category *Files*):
+  Shell thumbnails + GDI+ fallback, EXIF size/time/sub-seconds/rotation, pHash + dHash in 8
+  orientations, Exact / Same picture / Similar tiers, star grouping with a ranked keeper, side-by-side
+  review cards, move to `_Similar pictures - review` or the Recycle Bin, Undo last move, gzip cache,
+  pause/stop, text report. 17 `.cs` files, ~2.66 KLOC, no NuGet, **no host change**. SIM-1 … SIM-18.
+- Calibrated thresholds from measured distances; tests caught an overflow bug that stopped every match.
+- Fixed BUG-3: DocShots cropped the bottom of every feature screenshot.
+- Docs: FEATURE.md, requirement doc, user guide, manual section, README row, Pages card, xlsx, CHANGELOG
+  2.5.0, journal phase 24, DevEconomics row + narrative.
+
+**Decisions**
+- "Same picture" needs both hashes within tight limits **and** not two different EXIF moments; "Similar"
+  is judged as-is only (turned matching is for copies); "Similar" is never pre-marked.
+- ENH-12 (shared helper kit) has hit its "third copy" trigger; raised to P2, needs the owner's go.
+
+**State**
+- `./build.ps1 -All` => **VERDICT: PASS** - 0 warnings, **584 unit + 27 QA**, overall coverage
+  **94.2%**, Similar Pictures **95.3%**, docs consistent, PII scan clean.
+- Not done: a run on a real photo folder in the app (verified via the generated sample, the QA click
+  test and the real-file pipeline test). Not committed, not released.
+
+**▶ NEXT** — Owner tries Similar Pictures on a real photo folder; then commit and (if wanted) release
+v2.5.0. After that: ENH-14 (faster grouping for huge collections) or ENH-10 (Similar Videos).
+
+---
+
 ## 2026-10-29 — New feature: Storage Studio, phase 1 Space Map (v2.4.0)
 
 **Done**

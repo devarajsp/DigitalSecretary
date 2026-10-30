@@ -314,7 +314,38 @@ each other; a shared helper kit remains a recorded option. Reading the generated
 layout faults the tests could not - the map was squeezed by a fixed-height list pane, and an `&` in
 "Installers & disk images" was drawn as a keyboard mnemonic.
 
-_(Append new phases here as we go.)_
+### Phase 24 - Similar Pictures (2026-10-30)
+Phase 2 of the Storage Studio plan, built as **its own plugin** at the owner's choice: id
+`similar-pictures`, category *Files*, 17 `.cs` files, ~2.66 KLOC, **no NuGet, no host change**.
+Requirements `SIM-1`..`SIM-18`, 13 traceability rows. `./build.ps1 -All` => **VERDICT: PASS**
+(0 warnings, **584 unit + 27 QA**, overall coverage **94.2%**, feature **95.3%**).
+
+_Owner decisions (asked up front):_ separate plugin; removed pictures go to an undo-able **review folder**
+(Recycle Bin optional); match exact, re-saved, burst **and** turned/mirrored copies, with near-identical
+scenes left for **manual verification**; read every format **Windows can preview** (Shell thumbnails).
+
+_Why the design is shaped this way:_
+- **Two hashes must agree** (DCT pHash + dHash), each computed for all **8 orientations**. Limits came
+  from a calibration probe: resize / JPEG 40 / +15% brightness / 3% crop stay within pHash 0-4,
+  dHash <= 7; a turned copy matches at 0 once turned back; unrelated pictures sit >= 12 bits apart as-is.
+- **Turning only for copies.** Orientation search runs at the tight "Same picture" limits; "Similar" is
+  judged as-is, because eight tries at loose limits multiply false matches by eight.
+- **Two moments are never "the same picture".** Bursts hash as close as re-saved copies, so when both
+  EXIF capture times exist (with sub-seconds) and differ, the pair is only ever "Similar - check" and is
+  never pre-marked.
+- **Star grouping, keeper first**, so a chain A~B~C cannot pull an unlike C into A's group.
+- **Reversible by default:** review folder inside the scanned folder (never scanned), saved last batch
+  for Undo across restarts, keepers never move, changed files skipped, no overwrites, Cancel by default.
+- **Shell thumbnails, GDI+ fallback:** the Windows thumbnail engine reads HEIC/WebP/RAW whenever a
+  codec is installed and is fast thanks to Windows' cache; GDI+ covers headless runs and tests.
+
+_What the tests caught:_ the best-orientation search started from `int.MaxValue` for both distances,
+so `p + d < best.P + best.D` compared against an overflowed negative sum and **no pair ever matched**;
+the "burst" tolerance was being granted from files' *modified* times; the sample set gave copies
+different capture times; and one test asserted that two generated scenes were unlike - rendered side by
+side they plainly were alike, so the test was corrected, not the engine. The screenshot tool turned out
+to crop the bottom ~30 px of every feature screenshot (BUG-3), fixed in the same change.
+
 
 ---
 
@@ -346,6 +377,11 @@ _(Append new phases here as we go.)_
   label that is data rather than a menu caption.
 - WinForms analyzers (WFO1000) fail the build for public properties on a custom control unless they
   are marked `[DesignerSerializationVisibility(Hidden)]`.
+- Never seed a "best so far" with `int.MaxValue` when the comparison adds two of them: the sum overflows
+  to a negative number and nothing ever beats it. Seed with a value just above the real maximum.
+- A shell command that reads stdin (`cat > file` with no heredoc) blocks a background shell forever;
+  write files with the editor tool instead.
+- `Control.DrawToBitmap` on a Form paints the title bar too - render at window size and crop the client area.
 - Stop the running app before rebuild (exe is file-locked).
 - PowerShell: `"_$($v)_"` not `"_$v_"`; wrap counts with `@(...)`; don't reuse a `[switch]` name as a
   `$variable`; build `--no-incremental` so analyzers always emit.
