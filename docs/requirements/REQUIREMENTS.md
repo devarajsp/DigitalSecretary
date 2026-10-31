@@ -66,6 +66,7 @@ private by default, and easy to extend.
 | DeDupe Files | Files | [features/dedupe-files.md](features/dedupe-files.md) | [user guide](../user-guide/features/dedupe-files.md) |
 | Storage Studio | Files | [features/storage-studio.md](features/storage-studio.md) | [user guide](../user-guide/features/storage-studio.md) |
 | Similar Pictures | Files | [features/similar-pictures.md](features/similar-pictures.md) | [user guide](../user-guide/features/similar-pictures.md) |
+| Similar Videos | Files | [features/similar-videos.md](features/similar-videos.md) | [user guide](../user-guide/features/similar-videos.md) |
 
 ## 8. Glossary
 - **Feature / plugin:** an independent capability, shipped as its own module/DLL.

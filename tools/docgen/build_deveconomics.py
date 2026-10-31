@@ -46,49 +46,51 @@ RATE = {"in": 5.0, "out": 25.0, "cache_read": 0.50, "cache_write": 6.25}
 #    (Phase, Activity, Bucket, Tool/Method, LLM?, EstTokens, EstCostUSD, TimeMin, TimeBasis, Notes)
 #    Bucket: "A" LLM tokens | "B" local compute | "C" remote | "B+C" local that pulls from network.
 # --------------------------------------------------------------------------- #
-FEATURE = "Similar Pictures"
-FEATURE_DATE = "2026-10-30"
+FEATURE = "Similar Videos (+ shared helper kit)"
+FEATURE_DATE = "2026-10-31"
 MODEL = "Opus 5.5"
-PRODUCTION_KLOC = 2.66  # 2,658 lines of production C# across 17 .cs files
+PRODUCTION_KLOC = 2.60  # 2,536 lines of new feature C# (16 .cs files) + ~65 net-new kit lines; ~0.8 KLOC moved into the kit, ~0.25 KLOC of duplicates deleted
 
-# One session, no subagents. Thresholds were set from a measured calibration probe, not guessed.
+# One session, no subagents. Strategy first, then the owner said "use defaults" (kit first, no trimmed
+# clips, no ffmpeg, skip Live Photos). Thresholds were set from a measured probe on real H.264 round trips.
 ACTIVITIES = [
-    ("Explore", "Check repo + CI after v2.4.0; frame the four design decisions for the owner", "A", "Read/Ask", "Yes", 6000, 0.25, 3.0, "estimate", "owner chose: separate plugin, review folder, all match kinds, Windows codecs"),
-    ("Build", "Author the pure engine: GrayImage (resize, 8 transforms, sharpness), ImageHasher (pHash DCT + dHash), SimilarityFinder (tiers, star grouping), KeeperRanking", "A", "Write", "Yes", 22000, 0.85, 12.0, "estimate", ""),
-    ("Build", "Author I/O edges: Shell thumbnail COM interop + GDI+ fallback, EXIF date/sub-seconds/rotation, cache (gzip), scanner (bounded parallel), ReviewMover (move/recycle/undo), FileBytes", "A", "Write", "Yes", 20000, 0.75, 11.0, "estimate", ""),
-    ("Build", "Author the review UI: PictureCardControl + SimilarPicturesControl; settings, report, sample set", "A", "Write", "Yes", 16000, 0.60, 10.0, "estimate", ""),
-    ("Build", "Rename Orientation -> PictureOrientation (WinForms name clash); add project to sln + tests", "A", "Edit", "Yes", 3000, 0.10, 2.0, "estimate", ""),
-    ("Build", "Compile the feature (0 warnings)", "B", "dotnet build", "No", 0, 0.0, 0.6, "measured", ""),
-    ("Calibrate", "Probe: measure pHash/dHash distances for resize, JPEG, brightness, crop, turns, bursts, unrelated scenes", "A", "Write", "Yes", 5000, 0.18, 3.0, "estimate", "thresholds set from data"),
-    ("Calibrate", "Run the probe", "B", "dotnet test", "No", 0, 0.0, 0.3, "measured", ""),
-    ("Tests", "Author 12 unit-test files incl. the scan -> group -> move -> rescan -> undo integration test", "A", "Write", "Yes", 30000, 1.15, 16.0, "estimate", ""),
-    ("Bugfix", "Fix the int.MaxValue overflow (no pair ever matched), sample capture times, burst bonus on mtime, as-is-only Similar, test inputs", "A", "Edit", "Yes", 12000, 0.45, 8.0, "estimate", "found by the tests before release"),
-    ("Review", "Render two near-matching generated scenes and judge them by eye", "A", "Read", "Yes", 3000, 0.10, 2.0, "estimate", "they do look alike - test, not code, was wrong"),
-    ("Tests", "Unit + QA runs", "B", "dotnet test", "No", 0, 0.0, 1.0, "measured", "584 unit + 27 QA"),
-    ("Tooling", "A stray `cat` blocked a shell for 5 minutes until stopped", "B", "bash", "No", 0, 0.0, 5.0, "measured", "waste - see journal pitfall"),
-    ("Tests", "QA test (real plugin, sample set, simulated click) + DocShots hook; fix DocShots cropping the bottom of every view", "A", "Write/Edit", "Yes", 9000, 0.33, 6.0, "estimate", "BUG-3"),
-    ("Docgen", "Regenerate DocShots screenshots (three times)", "B", "dotnet run", "No", 0, 0.0, 1.2, "measured", ""),
-    ("Docs", "FEATURE.md, requirement doc (SIM-1..18), user guide, manual section, hubs, README row, Pages card", "A", "Write", "Yes", 22000, 0.85, 12.0, "estimate", ""),
-    ("Docgen", "18 requirement + 13 traceability rows, SIM id in check_docs regex", "A", "Write", "Yes", 8000, 0.30, 4.0, "estimate", ""),
+    ("Explore", "Locate the project; read Similar Pictures end to end; write the Similar Videos strategy and four decisions for the owner", "A", "Read/Write", "Yes", 15000, 0.60, 6.0, "estimate", "owner: use the recommended defaults"),
+    ("Gate", "Baseline quality gate before any change", "B", "build.ps1 -All", "No", 0, 0.0, 1.7, "measured", "PASS, 584 unit + 27 QA"),
+    ("Refactor", "ENH-12 kit: move ByteSize/PauseToken/FileBytes/GrayImage/ImageHasher, generic ReviewFolder; UseKit opt-in; golden rule 1 + architecture docs", "A", "Write/Edit", "Yes", 18000, 0.70, 10.0, "estimate", "3 copies + 4 duplicate test files removed"),
+    ("Gate", "Pre-commit gate on the kit commit", "B", "build.ps1 -NoPrompt", "No", 0, 0.0, 0.5, "measured", ""),
+    ("Refactor", "Kit part 2: FileRecordCache, IncrementalScanner, FileNames, Ranking, SampleScene; Similar Pictures delegates (API unchanged)", "A", "Write/Edit", "Yes", 16000, 0.60, 9.0, "estimate", "picture tests unchanged and green"),
+    ("Bugfix", "CA1000 static-on-generic, ScanProgress name clash, three shell-escaping slips on a backslash literal", "A", "Edit", "Yes", 6000, 0.22, 4.0, "estimate", "waste - see journal pitfall"),
+    ("Build", "Hand-written Media Foundation interop: Source Reader, Sample, Buffer, Attributes, Sink Writer (no NuGet)", "A", "Write", "Yes", 14000, 0.55, 8.0, "estimate", "worked first time"),
+    ("Build", "Engine: VideoDecoder/ReaderSession (exact seek, stride, rotation), record + cache, scanner (Live Photos), matcher, keeper ranking, mover, settings, report, sample set", "A", "Write", "Yes", 34000, 1.30, 18.0, "estimate", ""),
+    ("Tests", "TestVideoWriter (encode MP4s at test time) + Media Foundation round-trip tests", "A", "Write", "Yes", 9000, 0.35, 5.0, "estimate", "no binary test files"),
+    ("Calibrate", "Probe: per-frame distances across re-encodes; found codec padding (160x88 decoded as 160x96) and brittle per-frame dHash", "A", "Write/Edit", "Yes", 14000, 0.50, 9.0, "estimate", "-> crop to aperture; judge dHash on the mean"),
+    ("Calibrate", "Run the probes", "B", "dotnet test", "No", 0, 0.0, 1.0, "measured", ""),
+    ("Build", "Review UI: VideoCardControl (film strip) + SimilarVideosControl", "A", "Write", "Yes", 22000, 0.85, 10.0, "estimate", ""),
+    ("Tests", "8 unit-test files + the scan -> group -> move -> rescan -> undo pipeline test + kit helper tests", "A", "Write", "Yes", 30000, 1.15, 15.0, "estimate", "all 622 green on the first run"),
+    ("Tests", "Unit + QA runs", "B", "dotnet test", "No", 0, 0.0, 1.0, "measured", "622 unit + 30 QA"),
+    ("Tests", "QA test (real plugin, sample, click) + DocShots hook; card layout fix after looking at the screenshot", "A", "Write/Edit", "Yes", 8000, 0.30, 5.0, "estimate", ""),
+    ("Docgen", "Regenerate DocShots screenshots (twice)", "B", "dotnet run", "No", 0, 0.0, 0.8, "measured", ""),
+    ("Docs", "FEATURE.md, requirement doc (SVD-1..20), user guide, manual section, hubs, README row, Pages card, kit README", "A", "Write", "Yes", 24000, 0.90, 12.0, "estimate", ""),
+    ("Docgen", "20 requirement + 11 traceability rows, SVD id in check_docs regex", "A", "Write", "Yes", 9000, 0.35, 4.0, "estimate", ""),
     ("Docgen", "Regenerate requirements/traceability xlsx + HTML user manual; docs check", "B", "python + powershell", "No", 0, 0.0, 0.4, "measured", "cleanliness check PASSED"),
-    ("Gate", "Full quality gate", "B", "build.ps1 -All", "No", 0, 0.0, 1.0, "measured", "PASS, 611 tests, 94.2%"),
-    ("Release", "CHANGELOG 2.5.0, journal phase 24, DevEconomics, PM trackers", "A", "Write/Edit", "Yes", 10000, 0.40, 8.0, "estimate", "this release entry"),
+    ("Gate", "Full quality gate", "B", "build.ps1 -All", "No", 0, 0.0, 1.7, "measured", "PASS, 652 tests, 93.9%"),
+    ("Release", "CHANGELOG 2.6.0, journal phase 25, DevEconomics, PM trackers, memory note", "A", "Write/Edit", "Yes", 12000, 0.45, 8.0, "estimate", "this release entry"),
     ("Gate", "Storage report", "B", "node storage-report.mjs", "No", 0, 0.0, 0.2, "measured", "docs/pm/STORAGE.md"),
 ]
 
-# Shared session overhead: one long session (no subagents) re-sends a large transcript each turn.
-# Estimated; reconcile the total against /cost.
-CONTEXT_OVERHEAD_USD = 14.0
+# Shared session overhead: one long session (no subagents) re-sends a large transcript each turn; this one
+# was longer than the last (a refactor plus a feature). Estimated; reconcile the total against /cost.
+CONTEXT_OVERHEAD_USD = 22.0
 
-# Whole-app baseline for everything built BEFORE this release: the pluggable host, the first 9
-# features, and the quality/docs/CI/release infrastructure (phases 1-23, through v2.4.0). The tracked
-# Storage Studio release (2.28 KLOC, 207,000 tokens, $18.05, 100.1 min) is folded in here so the App
-# Total stays correct as Similar Pictures becomes the tracked feature.
+# Whole-app baseline for everything built BEFORE this release: the pluggable host, the first 10
+# features, and the quality/docs/CI/release infrastructure (phases 1-24, through v2.5.0). The tracked
+# Similar Pictures release (2.66 KLOC, 166,000 tokens, $20.31, 106.7 min) is folded in here so the App
+# Total stays correct as Similar Videos becomes the tracked feature.
 FOUNDATION = {
-    "name": "Prior releases (host + 9 features + quality/docs/CI/release infra, through v2.4.0)",
-    "date": "2026-06-19..10-29", "model": "Opus (multi-session)",
-    "kloc": 9.67, "tokens": 2_995_764, "cost_est": 106.39, "time_est": 1055.3,
-    "note": "Phases 1-17 predate DevEconomics tracking (rough estimate); includes the tracked v2.1.0-v2.4.0 releases.",
+    "name": "Prior releases (host + 10 features + quality/docs/CI/release infra, through v2.5.0)",
+    "date": "2026-06-19..10-30", "model": "Opus (multi-session)",
+    "kloc": 12.33, "tokens": 3_161_764, "cost_est": 126.70, "time_est": 1162.0,
+    "note": "Phases 1-17 predate DevEconomics tracking (rough estimate); includes the tracked v2.1.0-v2.5.0 releases.",
 }
 
 ACT_HEADERS = ["#", "Phase", "Activity", "Bucket", "Tool / Method", "LLM?",
@@ -195,7 +197,7 @@ def build_feature_summary(ws, roll):
         PRODUCTION_KLOC, roll["tokens"], roll["direct_cost"], roll["overhead"], roll["total_est"], None,
         '=IF(ISNUMBER(L3),L3-K3,"pending /cost")', roll["local_time"], roll["total_time"], None,
         round(roll["total_est"] / PRODUCTION_KLOC, 2),
-        "Estimate; reconcile ACTUAL via /cost. Phase 2 of the Storage Studio plan, own plugin; single session.",
+        "Estimate; reconcile ACTUAL via /cost. Phase 3 of the Storage Studio plan, own plugin, plus the ENH-12 helper kit; single session.",
     ])
     # Row 4 - APP TOTAL (whole-app development to date = foundation + tracked features).
     tr = DATA_ROWS + 1

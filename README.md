@@ -24,6 +24,7 @@ and new features can be added without touching the core.
 | **DeDupe Files** | Files | Finds duplicate files in a folder tree via an MD5 checksum list and reclaims the space, keeping one copy of each. |
 | **Storage Studio** | Files | See what is using the space in a folder: a clickable, colour-coded **size map**, space by type and by age, the largest files and folders, clean-up candidates and what grew since the last scan. Read-only. |
 | **Similar Pictures** | Files | Finds pictures that **look** the same - copies, re-saved or resized versions, turned or mirrored ones and burst shots (HEIC/RAW too) - shows them side by side, and moves the extras you choose to an **undo-able review folder**. |
+| **Similar Videos** | Files | Finds videos that are the **same** - copies, re-encoded or resized versions (e.g. from a chat app), turned or mirrored ones - shows each group as **film strips**, and moves the extras you choose to an **undo-able review folder**. Uses the Windows video engine; leaves iPhone Live Photos alone. |
 
 ## How it works (1-minute version)
 - The app shell shows a **menu** (Features → Category → Feature), a **Home dashboard** of tiles,

@@ -2,6 +2,35 @@
 
 All notable changes to Digital Secretary. Format based on [Keep a Changelog](https://keepachangelog.com).
 
+## [2.6.0] - 2026-10-31
+
+**New:** **Similar Videos** &mdash; finds videos that are **the same**: exact copies, the same clip
+**re-encoded or shrunk** by a chat app or an editor, and **turned or mirrored** copies, in every format the
+Windows video engine plays (MP4, MOV, MKV, AVI, WMV, ...). Each group is shown as **film strips** with the
+best version marked **KEEP**; copies are pre-marked, other takes of the same scene are left for you to
+check, and iPhone **Live Photo** clips are left alone. Marked videos move to a **review folder you can
+undo**. Added as a plugin with no change to the host; phase 3 of the Storage Studio plan.
+
+### Changed
+- **Shared helper kit:** helpers that several features copied (byte sizes, pause/resume, picture hashing,
+  the undo-able review folder, the incremental scan and its cache) now live in one small library that
+  ships inside each plugin. Similar Pictures behaves exactly as before.
+
+> &#9889; **Built with no code &mdash; DevEconomics.** Digital Secretary is built by *asking Claude*
+> (Opus 5.5), not by hand-writing code. We publish the cost every release; the per-activity ledger,
+> per-feature rows, and the trend live in the
+> [DevEconomics workbook](docs/deveconomics/DigitalSecretary-DevEconomics.xlsx).
+
+| Scope | Prod. KLOC | Est. tokens | Est. cost | Time |
+|---|--:|--:|--:|--:|
+| **This release** (Similar Videos + helper kit) | ~2.6 | ~231 K | **~$31** | ~130 min |
+| **Whole app to date** (est) | ~14.9 | ~3.4 M | **~$158** | ~21.5 h |
+
+_LLM cost/tokens are estimates (the model can't meter itself); the whole-app foundation predates live
+tracking. Reconcile with `/cost`._
+
+[2.6.0]: https://github.com/devarajsp/DigitalSecretary/releases/tag/v2.6.0
+
 ## [2.5.0] - 2026-10-30
 
 **New:** **Similar Pictures** &mdash; finds pictures that **look** the same: exact copies, the same photo

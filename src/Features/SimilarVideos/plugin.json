@@ -1,0 +1,9 @@
+{
+  "id": "similar-videos",
+  "title": "Similar Videos",
+  "category": "Files",
+  "description": "Find videos that are the same - copies, re-encoded or resized versions, turned or mirrored ones - review them side by side as film strips and move the extras to a review folder.",
+  "order": 31,
+  "entryAssembly": "DigitalSecretary.Features.SimilarVideos.dll",
+  "entryType": "DigitalSecretary.Features.SimilarVideos.SimilarVideosModule"
+}

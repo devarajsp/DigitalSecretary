@@ -5,6 +5,46 @@ the exact **▶ NEXT** step, so any later session can resume with no extra conte
 
 ---
 
+## 2026-10-31 — New feature: Similar Videos + shared helper kit (v2.6.0, branch `feature/similar-videos`)
+
+**Done**
+- Wrote the Similar Videos strategy; owner: **"use defaults"** - kit first (ENH-12), no trimmed clips,
+  no ffmpeg fallback, skip Live Photo clips, separate plugin, review folder.
+- **ENH-12 helper kit** `src/DigitalSecretary.Kit` (commit `279328c`): ByteSize, PauseToken, FileBytes,
+  GrayImage/ImageHasher, ReviewFolder; then FileRecordCache, IncrementalScanner, FileNames, Ranking,
+  SampleScene. Opt-in `<UseKit>true</UseKit>`; the DLL ships in each plugin folder. Golden rule 1,
+  coding standards and architecture doc amended. Similar Pictures API and tests unchanged.
+- **Similar Videos** (`src/Features/SimilarVideos/`, id `similar-videos`, category *Files*): hand-written
+  Media Foundation interop, exact-time seek, codec-padding crop, rotation tag, 10 frames x (pHash + dHash
+  x 8 orientations), flat frames out, length gate, Exact / Same video / Similar tiers, star grouping,
+  film-strip review, Live Photo skip, review folder + Undo, gzip cache. 16 `.cs`, ~2.54 KLOC, no NuGet,
+  **no host change**. SVD-1 … SVD-20.
+- Real-video tests without binaries: `TestVideoWriter` encodes MP4s at test time.
+- Docs: FEATURE.md, requirement doc, user guide, manual section, hubs, README row, Pages card + badges,
+  xlsx, CHANGELOG 2.6.0, journal phase 25 (+2 pitfalls), DevEconomics row + narrative, TESTING.md.
+
+**Decisions**
+- Per-frame match on **pHash**; **dHash judged on the mean** (measured: gradients make per-frame dHash
+  jump 13-21 under compression). Thresholds Balanced: pHash <= 8 on >= 80% of frames, mean dHash <= 16.
+- Frames are cropped to the display aperture / first-announced size (1080p is coded as 1088).
+- Exact-copy byte checks are memoised in the window so regrouping never re-reads gigabytes.
+- New **ENH-15** (P3): trimmed clips, left out of v1 by the owner.
+
+**State**
+- `./build.ps1 -All` => **VERDICT: PASS** - 0 warnings, **622 unit + 30 QA**, overall coverage
+  **93.9%**, Similar Videos **92.9%**, kit **96.1%**, docs consistent, PII scan clean.
+- Two commits on `feature/similar-videos` (kit, then feature); **not pushed, not merged, no tag/release**.
+- Storage (§9): tracked 2.2 MB (+~0.1 MB: code, docs, one 60 KB screenshot); ignored build output now
+  471.5 MB (two new projects' `bin`/`obj`, all regenerable). No video files are committed - test videos
+  are made at test time in a temp folder and deleted.
+- Not done: a run on a real video folder in the app (verified with real MP4s made at test time, the QA
+  click test and the generated sample).
+
+**▶ NEXT** — Owner reviews the branch, tries Similar Videos on a real videos folder, then decides:
+merge + tag `v2.6.0` + publish the release. Reconcile DevEconomics ACTUAL via `/cost` (OWN-3).
+
+---
+
 ## 2026-10-30 — New feature: Similar Pictures (v2.5.0)
 
 **Done**

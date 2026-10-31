@@ -132,6 +132,16 @@ public sealed class GrayImage
     public double Mean() => _pixels.Average(p => (double)p);
 
     /// <summary>
+    /// Standard deviation of brightness, 0 - 127.5. Near 0 for a flat frame (black, white, one colour)
+    /// whose hashes would be noise - video frames below a small limit are left out of comparisons.
+    /// </summary>
+    public double StandardDeviation()
+    {
+        var mean = Mean();
+        return Math.Sqrt(_pixels.Average(p => (p - mean) * (p - mean)));
+    }
+
+    /// <summary>
     /// Variance of the 4-neighbour Laplacian - a standard focus measure. Sharp pictures have strong
     /// edges and score high; blurred or shaken shots score low. 0 for pictures under 3 x 3.
     /// </summary>

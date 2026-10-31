@@ -104,6 +104,7 @@
       <a href="#dedupe">DeDupe Files</a>
       <a href="#storage">Storage Studio</a>
       <a href="#similar">Similar Pictures</a>
+      <a href="#videos">Similar Videos</a>
       <div class="grp">More</div>
       <a href="#data">Your data &amp; privacy</a>
       <a href="#faq">Troubleshooting / FAQ</a>
@@ -364,6 +365,28 @@
         <li><b>Similar - check</b> &mdash; almost the same scene, often a burst or retake. Never pre-marked: you choose.</li>
       </ul>
       <div class="call tip"><div class="h">How it sees pictures</div>Each picture gets a visual <b>fingerprint</b> (two small hashes of its shapes and tones, in all 8 turns and mirror images) and a sharpness score. Pictures whose fingerprints are close are grouped; the biggest, sharpest one is suggested as the keeper. Everything happens on your PC &mdash; no AI service, nothing uploaded.</div>
+    </section>
+
+    <section class="doc" id="videos" data-t="similar videos video duplicates same video copies re-encoded resized compressed whatsapp rotated turned mirrored mp4 mov mkv film strip live photo review folder undo keep move recycle">
+      <h2>Similar Videos</h2>
+      <p class="lead">Find videos that are <b>the same</b> &mdash; exact copies, the same clip <b>re-encoded or shrunk</b> by a chat app or an editor, and <b>turned or mirrored</b> copies &mdash; review each group as film strips, and move the extras to a review folder you can undo.</p>
+      <figure><img src="{{similar-videos}}" alt="Similar Videos feature"><figcaption>Groups on the left; the selected group's videos as film strips with KEEP and MOVE badges. Here a portrait (turned) copy matches on 10 of 10 frames and is marked to move; another take is left for you to check.</figcaption></figure>
+      <div class="call warn"><div class="h">Safe by default</div>Nothing moves until you click <b>Move marked</b> and confirm. The <b>KEEP</b> video of every group never moves. Moved videos go to <kbd>_Similar videos - review</kbd> inside your folder, and <b>Undo last move</b> puts them back. <b>Similar - check</b> groups are never pre-marked, and iPhone <b>Live Photo</b> clips are skipped.</div>
+      <h3>Find and review matching videos</h3>
+      <ol class="steps">
+        <li>Choose your videos <b>folder</b> and click <b>Scan</b>. MP4, MOV, M4V, AVI, WMV, MKV, WebM, 3GP, MTS and MPEG are read with the Windows video engine (formats Windows cannot play are listed as unreadable). Later scans only look at new or changed videos.</li>
+        <li>Pick the <b>Matching</b> level (<i>Strict</i>, <i>Balanced</i>, <i>Loose</i>) and whether to include <b>turned / mirrored copies</b> and <b>similar takes</b>. Changes regroup instantly.</li>
+        <li>Click a group on the left. Its videos appear as four-frame film strips with length, picture size, bit rate, file size and how many frames matched.</li>
+        <li><b>Click a video</b> to switch it between <b>MOVE</b> and <b>keep</b>; <b>double-click</b> to play it. Right-click for <b>Keep this one instead</b> or <b>Show in Explorer</b>.</li>
+        <li>Click <b>Move marked</b> and confirm. Use <b>Open review folder</b> to check them, then delete that folder yourself when you are happy &mdash; or <b>Undo last move</b>.</li>
+      </ol>
+      <h3>What the matches mean</h3>
+      <ul>
+        <li><b>Exact copy</b> &mdash; the very same file, byte for byte. Pre-marked.</li>
+        <li><b>Same video</b> &mdash; re-encoded, resized, compressed, turned or mirrored. Pre-marked.</li>
+        <li><b>Similar - check</b> &mdash; the same scene but not the same video, often another take. Never pre-marked: play them and choose.</li>
+      </ul>
+      <div class="call tip"><div class="h">How it sees videos</div>The app looks at <b>ten frames</b> spread over each video and gives every frame a visual <b>fingerprint</b>. Two videos of about the same length whose frames match one by one are grouped; the largest, best-quality one is suggested as the keeper. A short clip cut out of a longer video is not matched. Everything happens on your PC &mdash; no AI service, nothing uploaded.</div>
     </section>
 
     <section class="doc" id="data" data-t="data privacy storage appdata where files security password">

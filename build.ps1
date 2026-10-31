@@ -82,8 +82,8 @@ Write-Section 'Coding standards  (full text: docs/CODING_STANDARDS.md)'
 Write-Host @'
   1. Logic lives in plain, testable classes - NOT inside WinForms controls.
   2. Every logic method ships with unit tests (xUnit + FluentAssertions).
-  3. Features are independent: depend only on Abstractions; persist only under
-     IFeatureContext.DataDirectory; never reference another feature.
+  3. Features are independent: depend only on Abstractions (+ the opt-in helper kit); persist only
+     under IFeatureContext.DataDirectory; never reference another feature.
   4. The host never references a feature. New feature = new project under
      src/Features + plugin.json + FEATURE.md (see docs/ADDING_A_FEATURE.md).
   5. Keep static analysis clean - fix analyzer warnings, do not blanket-suppress.

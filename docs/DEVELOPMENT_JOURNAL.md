@@ -349,6 +349,40 @@ to crop the bottom ~30 px of every feature screenshot (BUG-3), fixed in the same
 
 ---
 
+### Phase 25 - Similar Videos + the shared helper kit (2026-10-31)
+Phase 3 of the Storage Studio plan, again **its own plugin**: id `similar-videos`, category *Files*,
+16 `.cs` files, ~2.54 KLOC, **no NuGet, no host change**. Requirements `SVD-1`..`SVD-20`, 11 traceability
+rows. `./build.ps1 -All` => **VERDICT: PASS** (0 warnings, **622 unit + 30 QA**, overall coverage
+**93.9%**, feature **92.9%**, kit **96.1%**).
+
+_Strategy first, then the owner's go ("use defaults"):_ build the **helper kit first** (ENH-12), leave
+**trimmed clips** for later, **no ffmpeg** fallback, **skip Live Photo** clips by default.
+
+_The kit (ENH-12, golden rule 1 amended):_ `src/DigitalSecretary.Kit` holds pure helpers - `ByteSize`,
+`PauseToken`, `FileBytes`, `GrayImage`/`ImageHasher`, the undo-able `ReviewFolder`, `FileRecordCache`,
+`IncrementalScanner`, `FileNames`, `Ranking`, `SampleScene`. A feature opts in with `<UseKit>true</UseKit>`;
+the DLL ships **inside each plugin folder** and loads in that plugin's own `PluginLoadContext`, so the host
+never references it and no kit type crosses the boundary. Three copies of `ByteSize`/`PauseToken` and four
+duplicate test files went; Similar Pictures kept its public API and its tests passed unchanged.
+
+_Why the video design is shaped this way:_
+- **Ten frames at fixed fractions, compared in order**, behind a **length gate** (2% or 1 s): two encodes
+  of one video have the same length, so frame *i* matches frame *i* - and most pairs are never compared.
+- **Exact-time seeking:** the reader decodes forward from the key frame, because two encodes put key
+  frames in different places.
+- **pHash decides per frame, dHash only on the mean.** The probe on real H.264 round trips showed pHash
+  0 - 2 bits for a half-size, 4x lower-bit-rate re-encode, but dHash 13 - 21 on gradient frames; different
+  videos sit at pHash 20 - 36.
+- **Codec padding.** The probe also showed a 160x88 video decoding as 160x96 with a flat bar at the bottom -
+  the same thing happens to every 1080p video (coded as 1088). Frames are cropped to the display aperture or
+  the first-announced size.
+- **Real videos in tests without binary files:** `TestVideoWriter` encodes tiny MP4s with the Media
+  Foundation Sink Writer at test time; the round-trip tests decode them for real.
+
+_What went wrong:_ the test writer forgot to start Media Foundation (passed only when another test ran
+first - the probe found it); and three attempts to write a `'\\'` literal through shell/Python heredocs
+produced a form-feed and broken code until the Edit tool was used instead (pitfall below).
+
 ## Key decisions & rationale
 - **Plugin architecture over a monolith** — features must be independent, lazy, and addable without
   touching the host.
@@ -385,6 +419,12 @@ to crop the bottom ~30 px of every feature screenshot (BUG-3), fixed in the same
 - Stop the running app before rebuild (exe is file-locked).
 - PowerShell: `"_$($v)_"` not `"_$v_"`; wrap counts with `@(...)`; don't reuse a `[switch]` name as a
   `$variable`; build `--no-incremental` so analyzers always emit.
+
+- **Never write backslash-heavy C# through a shell heredoc or a Python string.** `\f` in a doc comment
+  became a form feed and `'\\'` lost a backslash three times in a row (2026-10-31). Use the Edit/Write
+  tools for any text with backslashes; keep shell edits for plain ASCII.
+- **Decoders pad frames.** Media Foundation returns frames padded to a multiple of 16 (1080p -> 1088);
+  hashing the padding wrecks matching. Crop to the display aperture / announced size (2026-10-31).
 
 ## How Claude maintains this journal
 On each session/change: add a Timeline entry (date + what + why), record any new decision or pitfall,

@@ -28,19 +28,20 @@ _None known._
 | ID | Type | Priority | Area | Summary | Status |
 |----|------|----------|------|---------|--------|
 | ENH-14 | Feature | P1 | Similar Pictures | Speed up grouping beyond ~100,000 pictures (index the hashes, e.g. a BK-tree or multi-index hashing, instead of comparing all pairs). | Open |
-| ENH-10 | Feature | P2 | Storage Studio | **Phase 3 - Similar Videos:** group by duration (+-2%), then ~10 sampled-frame hashes compared in order (with shift for trimmed copies) via Windows Media Foundation; optional user-installed ffmpeg as fallback. | Open |
 | ENH-1 | Test gap | P2 | Quality | No sequence-diagram SPD (`docs/SEQUENCE.html`, mermaid, high→low drill-down) as the machine standard §5.6 requires. The architecture doc covers the plugin lifecycle in prose only. | Open |
 | ENH-2 | Tech debt | P2 | Build | No function-length audit in the regression gate (§5.3, ≤100 lines per function). Functions are kept short by review alone; nothing enforces it for C#. | Open |
 | ENH-3 | Docs | P3 | Showcase | The test count and coverage figures in `README.md` and `docs/index.html` are hand-maintained, so they drift between releases. `check_docs.py` gates feature *titles* but not these numbers - nor the two hub tables (see BUG-2). | Open |
 | ENH-4 | Improvement | P3 | DeDupe Files | Duplicate grid is capped at 5,000 rows for responsiveness; the full set is only in the saved report. Virtual-mode `ListView` would lift the cap. | Open |
 | ENH-5 | Feature | P3 | DeDupe Files | Deduplicate *across* two folders (compare folder A against folder B, delete only in B) — currently one tree at a time. | Open |
 | ENH-11 | Improvement | P3 | Storage Studio | Show *size on disk* (compression, cluster slack) next to the logical size. | Open |
+| ENH-15 | Feature | P3 | Similar Videos | Find **trimmed clips** - a short clip cut from a longer video (time-based frame sampling plus a sliding alignment instead of the length gate). Left out of v1 by the owner's choice. | Open |
 | ENH-13 | Feature | P3 | Storage Studio | **Phase 4 (optional):** "similar in meaning" pictures via a local ONNX image-embedding model, off by default (~150 MB download). | Open |
 
 ### Done
 
 | ID | Type | Area | Summary | Version | Commit |
 |----|------|------|---------|---------|--------|
+| ENH-10 | Feature | Similar Videos | **Phase 3 of the Storage Studio plan, own plugin:** Media Foundation decoding (exact-time seek, codec padding cropped, rotation tag), 10 frame fingerprints (pHash + dHash x 8 orientations, flat frames out), length gate, Exact / Same video / Similar tiers, star grouping with a ranked keeper, film-strip review, Live Photo clips skipped, undo-able review folder or Recycle Bin, incremental gzip cache. 20 requirements SVD-1...SVD-20. | 2.6.0 | branch `feature/similar-videos` |
 | ENH-12 | Tech debt | Features | **Shared helper kit** `src/DigitalSecretary.Kit` (owner's go 2026-10-31): `ByteSize`, `PauseToken`, `FileBytes`, `GrayImage`/`ImageHasher`, and the undo-able `ReviewFolder` mover. Features opt in with `<UseKit>true</UseKit>` and ship their own copy of the kit DLL; the host never references it. Removed 3 copies of `ByteSize`/`PauseToken` and their 4 duplicate test files; golden rule 1 updated. | 2.6.0 | branch `feature/similar-videos` |
 | ENH-9 | Feature | Similar Pictures | **Phase 2 of the Storage Studio plan, own plugin:** Shell-thumbnail reading (HEIC/WebP/RAW with codecs), pHash + dHash in 8 orientations, Exact / Same picture / Similar tiers, EXIF-moment rule for bursts, star grouping with a ranked keeper, side-by-side review with manual verification, move to an undo-able review folder or Recycle Bin, incremental gzip cache. 18 requirements SIM-1…SIM-18. | 2.5.0 | see tag `v2.5.0` |
 | ENH-8 | Feature | Storage Studio | **Phase 1 - Space Map:** read-only metadata scan, clickable squarified size map coloured by type (1-3 levels), space by type and by age, largest files/folders, report-only clean-up candidates, "changes since last scan" from a gzip snapshot, pause/stop, Explorer actions, text report. 17 requirements SST-1…SST-17. | 2.4.0 | see tag `v2.4.0` |

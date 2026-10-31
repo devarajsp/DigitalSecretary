@@ -31,7 +31,7 @@ public sealed class PluginPipelineQaTests
         {
             "launcher", "calculator", "clipboard-history", "email-downloader",
             "gmail-downloader", "google-drive-downloader", "dedupe-files", "storage-studio",
-            "similar-pictures"
+            "similar-pictures", "similar-videos"
         });
     }
 
@@ -183,6 +183,46 @@ public sealed class PluginPipelineQaTests
 
             marked.Count.Should().NotBe(before, "clicking a picture that is not the keeper toggles whether it moves");
             foreach (var bmp in thumbs.Values)
+            {
+                bmp.Dispose();
+            }
+        });
+    }
+
+    [Fact]
+    public void Similar_Videos_groups_the_sample_and_a_click_toggles_a_videos_mark()
+    {
+        var m = QaEnvironment.Manifests().First(x => x.Id == "similar-videos");
+
+        Sta.Run(() =>
+        {
+            var asmPath = Path.Combine(m.Directory, m.EntryAssembly);
+            var asm = new PluginLoadContext(asmPath).LoadFromAssemblyPath(asmPath);
+            var module = (IFeatureModule)Activator.CreateInstance(asm.GetType(m.EntryType)!)!;
+            using var view = module.CreateView(new QaContext(m.Id));
+            view.Size = new System.Drawing.Size(1200, 800);
+
+            // Show the placeholder sample set (generated frames, placeholder paths), as DocShots does.
+            var sampleType = asm.GetType("DigitalSecretary.Features.SimilarVideos.SampleVideoSet")!;
+            var built = sampleType.GetMethod("Build")!.Invoke(null, [DateTime.UtcNow])!;
+            var records = built.GetType().GetField("Item1")!.GetValue(built)!;
+            var strips = (Dictionary<string, System.Drawing.Bitmap>)built.GetType().GetField("Item2")!.GetValue(built)!;
+            Func<string, System.Drawing.Bitmap?> source = p => strips.TryGetValue(p, out var b) ? new System.Drawing.Bitmap(b) : null;
+            var root = (string)sampleType.GetField("RootPath")!.GetValue(null)!;
+            view.GetType().GetMethod("ShowRecords")!.Invoke(view, [root, records, source]);
+
+            var cards = WaitFor(() => Descendants(view).Where(c => c.GetType().Name == "VideoCardControl").ToList(), l => l.Count >= 2);
+            cards.Count.Should().BeGreaterThanOrEqualTo(2, "the first group shows its keeper and at least one other video");
+
+            var marked = (System.Collections.Generic.ICollection<string>)view.GetType()
+                .GetField("_marked", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(view)!;
+            var before = marked.Count;
+            var other = cards[1];
+            other.GetType().GetMethod("OnAnyClick", BindingFlags.NonPublic | BindingFlags.Instance)!
+                .Invoke(other, [other, new MouseEventArgs(MouseButtons.Left, 1, 5, 5, 0)]);
+
+            marked.Count.Should().NotBe(before, "clicking a video that is not the keeper toggles whether it moves");
+            foreach (var bmp in strips.Values)
             {
                 bmp.Dispose();
             }

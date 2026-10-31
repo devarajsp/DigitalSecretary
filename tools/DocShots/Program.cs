@@ -54,10 +54,13 @@ internal static class Program
             if (f.Manifest.Id == "similar-pictures")
                 ShowSamplePictures(view);
 
+            if (f.Manifest.Id == "similar-videos")
+                ShowSampleVideos(view);
+
             if (f.Manifest.Id == "clipboard-history")
                 CaptureClipboard(view, path);
-            else if (f.Manifest.Id == "similar-pictures")
-                CaptureControl(view, 1100, 780, path);   // the review screen needs room for whole picture cards
+            else if (f.Manifest.Id is "similar-pictures" or "similar-videos")
+                CaptureControl(view, 1100, 780, path);   // the review screen needs room for whole cards
             else
                 CaptureControl(view, 980, 560, path);
         }
@@ -159,6 +162,24 @@ internal static class Program
         Pump(600);
     }
 
+    /// <summary>
+    /// Fills the Similar Videos view with its generated sample videos (painted frames, placeholder folder),
+    /// so no real video, name or path can appear in the screenshot. Reflection, as above.
+    /// </summary>
+    private static void ShowSampleVideos(Control view)
+    {
+        var type = view.GetType().Assembly.GetType("DigitalSecretary.Features.SimilarVideos.SampleVideoSet");
+        var built = type?.GetMethod("Build")?.Invoke(null, [DateTime.UtcNow]);
+        if (type is null || built is null)
+            return;
+        var records = built.GetType().GetField("Item1")!.GetValue(built)!;
+        var strips = (Dictionary<string, Bitmap>)built.GetType().GetField("Item2")!.GetValue(built)!;
+        Func<string, Bitmap?> source = p => strips.TryGetValue(p, out var b) ? new Bitmap(b) : null;
+        var root = (string)type.GetField("RootPath")!.GetValue(null)!;
+        view.GetType().GetMethod("ShowRecords")?.Invoke(view, [root, records, source]);
+        Pump(600);
+    }
+
     private static void ShowSampleTree(Control view)
     {
         var sample = view.GetType().Assembly.GetType("DigitalSecretary.Features.StorageStudio.SampleSpaceTree")
@@ -255,6 +276,12 @@ internal static class Program
         Directory.CreateDirectory(similar);
         var similarSettings = new { Root = @"C:\Users\You\Pictures", Sensitivity = "Balanced", IncludeRotated = true, IncludeSimilar = true, Action = "ReviewFolder" };
         File.WriteAllText(Path.Combine(similar, "similar_pictures_settings.json"), JsonSerializer.Serialize(similarSettings, json));
+
+        // Placeholder folder for Similar Videos (its screenshot shows generated sample videos).
+        var videos = Path.Combine(dataRoot, "similar-videos");
+        Directory.CreateDirectory(videos);
+        var videoSettings = new { Root = @"C:\Users\You\Videos", Sensitivity = "Balanced", IncludeRotated = true, IncludeSimilar = true, SkipLivePhotos = true, Action = "ReviewFolder" };
+        File.WriteAllText(Path.Combine(videos, "similar_videos_settings.json"), JsonSerializer.Serialize(videoSettings, json));
 
         // Seed a placeholder folder for Storage Studio too (the screenshot then shows a sample tree).
         var storage = Path.Combine(dataRoot, "storage-studio");

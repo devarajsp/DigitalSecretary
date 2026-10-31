@@ -1,15 +1,10 @@
-using System.IO.Compression;
-using System.Security.Cryptography;
-using System.Text;
-using System.Text.Json;
-
 namespace DigitalSecretary.Features.SimilarPictures;
 
 /// <summary>
 /// Everything known about one picture after a scan. <see cref="Matches"/> says whether a stored record
 /// still describes the file on disk (same size and modified time), which is what makes rescans cheap.
 /// </summary>
-public sealed record PictureRecord
+public sealed record PictureRecord : IFileRecord
 {
     public required string Path { get; init; }
     public long Size { get; init; }
@@ -53,81 +48,19 @@ public sealed record PictureRecord
 }
 
 /// <summary>
-/// The fingerprint cache for one scanned folder: path -> <see cref="PictureRecord"/>, kept in memory
-/// during a scan and saved gzip-compressed under the feature's data folder (one file per folder, named
-/// by a hash of the folder path). A picture is only read and hashed again when it changed.
+/// The fingerprint cache for one scanned folder (path -> <see cref="PictureRecord"/>), saved gzip-compressed
+/// under the feature's data folder. All the mechanics are the kit's <see cref="FileRecordCache{T}"/>; this
+/// type only adds the typed <see cref="Load"/> that rejects records without eight hashes per kind.
 /// </summary>
-public sealed class PictureCache
+public sealed class PictureCache : FileRecordCache<PictureRecord>
 {
-    private static readonly JsonSerializerOptions JsonOpts = new() { WriteIndented = false };
-
-    private readonly Dictionary<string, PictureRecord> _records = new(StringComparer.OrdinalIgnoreCase);
-
-    public int Count => _records.Count;
-
-    public IEnumerable<PictureRecord> Records => _records.Values;
-
-    /// <summary>The stored record for <paramref name="path"/> if it still matches the file.</summary>
-    public PictureRecord? FindValid(string path, long size, DateTime modifiedUtc)
-        => _records.TryGetValue(path, out var r) && r.Matches(size, modifiedUtc) ? r : null;
-
-    public void Put(PictureRecord record) => _records[record.Path] = record;
-
-    public bool Remove(string path) => _records.Remove(path);
-
-    /// <summary>Drops every record whose path is not in <paramref name="live"/>; returns how many went.</summary>
-    public int RetainOnly(ISet<string> live)
-    {
-        var stale = _records.Keys.Where(k => !live.Contains(k)).ToList();
-        foreach (var key in stale)
-        {
-            _records.Remove(key);
-        }
-        return stale.Count;
-    }
-
     /// <summary>The cache file for a scanned folder under <paramref name="dataDirectory"/>.</summary>
-    public static string PathFor(string dataDirectory, string root)
-    {
-        var key = System.IO.Path.GetFullPath(root).TrimEnd('\\', '/').ToUpperInvariant();
-        var hash = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(key)))[..16].ToLowerInvariant();
-        return System.IO.Path.Combine(dataDirectory, "fingerprints", hash + ".json.gz");
-    }
+    public static string PathFor(string dataDirectory, string root) => CacheFiles.PathFor(dataDirectory, root);
 
     /// <summary>Loads a saved cache; an empty one when missing or unreadable.</summary>
     public static PictureCache Load(string file)
     {
         var cache = new PictureCache();
-        try
-        {
-            if (File.Exists(file))
-            {
-                using var stream = new GZipStream(File.OpenRead(file), CompressionMode.Decompress);
-                foreach (var record in JsonSerializer.Deserialize<List<PictureRecord>>(stream, JsonOpts) ?? [])
-                {
-                    if (record.PHashes is { Length: 8 } && record.DHashes is { Length: 8 })
-                    {
-                        cache.Put(record);
-                    }
-                }
-            }
-        }
-        catch (Exception ex) when (ex is IOException or JsonException or InvalidDataException or UnauthorizedAccessException)
-        {
-            return new PictureCache();
-        }
-        return cache;
-    }
-
-    /// <summary>Saves atomically (write to a temp file, then replace).</summary>
-    public void Save(string file)
-    {
-        Directory.CreateDirectory(System.IO.Path.GetDirectoryName(file)!);
-        var temp = file + ".tmp";
-        using (var stream = new GZipStream(File.Create(temp), CompressionLevel.SmallestSize))
-        {
-            JsonSerializer.Serialize(stream, _records.Values.ToList(), JsonOpts);
-        }
-        File.Move(temp, file, overwrite: true);
+        return TryLoadInto(cache, file, r => r.PHashes is { Length: 8 } && r.DHashes is { Length: 8 }) ? cache : new PictureCache();
     }
 }

@@ -21,6 +21,12 @@ Tooling: **xUnit** + **FluentAssertions**; coverage via **coverlet** (`coverage.
 Or directly: `dotnet test DigitalSecretary.sln`. (QA needs the solution built first so the
 `plugins/` folder exists — `build.ps1` always builds first.)
 
+## Real videos without video files (Similar Videos)
+`MediaFoundationRoundTripTests` encodes tiny MP4s **at test time** with the Media Foundation Sink Writer
+(`TestVideoWriter`) and decodes them with the real `VideoDecoder` - so the seam between the feature and
+Windows (seeking, RGB32 conversion, stride, codec padding, length) is tested without committing any binary
+file. On a machine without Media Foundation (some Windows Server / "N" editions) those tests return early.
+
 ## Coverage policy
 - The metric tracks **testable logic**. WinForms views/forms, `Program`, the plugin loader, and the
   IMAP `EmailDownloader` networking class are excluded in `tests/coverage.runsettings` because they

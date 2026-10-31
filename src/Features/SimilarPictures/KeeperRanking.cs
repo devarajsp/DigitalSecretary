@@ -1,5 +1,3 @@
-using System.Text.RegularExpressions;
-
 namespace DigitalSecretary.Features.SimilarPictures;
 
 /// <summary>
@@ -13,7 +11,7 @@ namespace DigitalSecretary.Features.SimilarPictures;
 /// <item>shorter path, then alphabetical - so ties are always broken the same way.</item>
 /// </list>
 /// </summary>
-public sealed partial class KeeperRanking : IComparer<PictureRecord>
+public sealed class KeeperRanking : IComparer<PictureRecord>
 {
     public static readonly KeeperRanking Instance = new();
 
@@ -54,19 +52,7 @@ public sealed partial class KeeperRanking : IComparer<PictureRecord>
     }
 
     /// <summary>True when a file name looks like a duplicate made by copying ("IMG_1 (2).jpg", "x - Copy.jpg").</summary>
-    public static bool LooksLikeCopy(string path) => CopyName().IsMatch(Path.GetFileNameWithoutExtension(path));
+    public static bool LooksLikeCopy(string path) => FileNames.LooksLikeCopy(path);
 
-    /// <summary>-1 when <paramref name="a"/> is larger by more than <paramref name="margin"/>, 1 when smaller, else 0.</summary>
-    private static int Better(double a, double b, double margin)
-    {
-        var top = Math.Max(a, b);
-        if (top <= 0 || Math.Abs(a - b) <= top * margin)
-        {
-            return 0;
-        }
-        return a > b ? -1 : 1;
-    }
-
-    [GeneratedRegex(@"(\(\d+\)$)|([ _-]+copy( \(\d+\))?$)|(^copy of )", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
-    private static partial Regex CopyName();
+    private static int Better(double a, double b, double margin) => Ranking.PreferLarger(a, b, margin);
 }
