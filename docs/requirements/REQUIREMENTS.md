@@ -67,6 +67,8 @@ private by default, and easy to extend.
 | Storage Studio | Files | [features/storage-studio.md](features/storage-studio.md) | [user guide](../user-guide/features/storage-studio.md) |
 | Similar Pictures | Files | [features/similar-pictures.md](features/similar-pictures.md) | [user guide](../user-guide/features/similar-pictures.md) |
 | Similar Videos | Files | [features/similar-videos.md](features/similar-videos.md) | [user guide](../user-guide/features/similar-videos.md) |
+| Reduce Size - Videos | Files | [features/reduce-size-videos.md](features/reduce-size-videos.md) | [user guide](../user-guide/features/reduce-size-videos.md) |
+| Reduce Size - Images | Files | [features/reduce-size-images.md](features/reduce-size-images.md) | [user guide](../user-guide/features/reduce-size-images.md) |
 
 ## 8. Glossary
 - **Feature / plugin:** an independent capability, shipped as its own module/DLL.

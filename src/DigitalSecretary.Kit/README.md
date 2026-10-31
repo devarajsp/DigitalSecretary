@@ -12,6 +12,11 @@ was reached with Similar Pictures and Similar Videos would have made a fourth.
 | `GrayImage`, `PictureOrientation`, `Orientations` | greyscale pixels, area-average resize, 8 turns/mirrors, sharpness | Similar Pictures, Similar Videos |
 | `ImageHasher`, `Fingerprint` | pHash (DCT) + dHash, in 8 orientations | Similar Pictures, Similar Videos |
 | `ReviewFolder`, `MoveJob`, `MoveBatch`, `RemoveAction` | move files to an undo-able review folder or the Recycle Bin; undo; last-batch file | Similar Pictures, Similar Videos |
+| `MF`, `MFNative`, `IMFSourceReader`, `IMFSinkWriter`, ... (`MediaFoundation.cs`) | hand-written Windows Media Foundation interop (decode / encode), moved out of Similar Videos in v2.7.0 (ENH-18) | Similar Videos, Reduce Size - Videos |
+| `FfmpegLocator`, `MediaToolPaths`, `ToolRunner`, `ToolResult` | find an installed ffmpeg/ffprobe (never downloads it); run a tool window-less at low priority, stream or collect output, kill on stop | Reduce Size - Videos, Reduce Size - Images |
+| `ShrinkSwap`, `SwapRequest`, `SwapEntry`, `SwapBatch` | replace a file by its verified smaller copy (temp beside it, original to the review folder or Recycle Bin, dates kept), undo, leftover clean-up | Reduce Size - Videos, Reduce Size - Images |
+| `SavingsLedger`, `SavingRecord`, `SavingsTotal` | append-only savings history (`history.jsonl`) and totals | Reduce Size - Videos, Reduce Size - Images |
+| `Verdict`, `FileOutcome`, `FileOutcomeKind`, `SyncProgress<T>` | the shared advice / outcome vocabulary of the Reduce Size features | Reduce Size - Videos, Reduce Size - Images |
 
 ## Rules
 - **Not part of the plugin contract.** The host never references the kit, and no kit type crosses the

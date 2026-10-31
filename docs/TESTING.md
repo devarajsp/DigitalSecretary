@@ -27,6 +27,16 @@ Or directly: `dotnet test DigitalSecretary.sln`. (QA needs the solution built fi
 Windows (seeking, RGB32 conversion, stride, codec padding, length) is tested without committing any binary
 file. On a machine without Media Foundation (some Windows Server / "N" editions) those tests return early.
 
+## Real videos and pictures for Reduce Size
+`RealVideos` (Reduce Size - Videos) makes a silent H.264 MP4 with the Windows Sink Writer and - when ffmpeg is
+installed on the machine - a noisy 720p H.264 MP4 with a 48 kHz AAC tone from ffmpeg's test sources. The ffmpeg
+tests (ffprobe facts, x265 encode + SSIM, the Windows engine keeping sound) **return early** where ffmpeg is
+missing (CI), so they pass there without proving anything; run `./build.ps1 -All` on a machine with ffmpeg
+(`winget install --id Gyan.FFmpeg -e`) before a release. `TestPictures` (Reduce Size - Images) paints photo-like
+and graphic pictures with GDI+ and saves them as JPEG (any quality, with a date-taken and orientation tag), PNG or
+BMP. Nothing binary is committed. Note: GDI+ saves "quality 90" with the standard table of quality 89, so
+quality read-back tests allow one step.
+
 ## Coverage policy
 - The metric tracks **testable logic**. WinForms views/forms, `Program`, the plugin loader, and the
   IMAP `EmailDownloader` networking class are excluded in `tests/coverage.runsettings` because they

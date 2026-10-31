@@ -1,6 +1,7 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
+using DigitalSecretary.Kit;
 using DigitalSecretary.Features.SimilarVideos;
 
 namespace DigitalSecretary.UnitTests.Features.SimilarVideos;
@@ -21,7 +22,7 @@ internal static class TestVideoWriter
         {
             throw new InvalidOperationException("Media Foundation is not available on this machine.");
         }
-        MF.Check(NativeMethods.MFCreateSinkWriterFromURL(path, IntPtr.Zero, null, out var writer), "create sink writer");
+        MF.Check(MFNative.MFCreateSinkWriterFromURL(path, IntPtr.Zero, null, out var writer), "create sink writer");
         try
         {
             var stream = AddStream(writer, w, h, fps, bitrate);
@@ -46,8 +47,8 @@ internal static class TestVideoWriter
 
     private static int AddStream(IMFSinkWriter writer, int w, int h, int fps, int bitrate)
     {
-        MF.Check(NativeMethods.MFCreateMediaType(out var output), "create output type");
-        MF.Check(NativeMethods.MFCreateMediaType(out var input), "create input type");
+        MF.Check(MFNative.MFCreateMediaType(out var output), "create output type");
+        MF.Check(MFNative.MFCreateMediaType(out var input), "create input type");
         try
         {
             Describe(output, MF.FormatH264, w, h, fps);
@@ -77,8 +78,8 @@ internal static class TestVideoWriter
 
     private static void WriteFrame(IMFSinkWriter writer, int stream, byte[] bytes, long time, long duration)
     {
-        MF.Check(NativeMethods.MFCreateMemoryBuffer(bytes.Length, out var buffer), "create buffer");
-        MF.Check(NativeMethods.MFCreateSample(out var sample), "create sample");
+        MF.Check(MFNative.MFCreateMemoryBuffer(bytes.Length, out var buffer), "create buffer");
+        MF.Check(MFNative.MFCreateSample(out var sample), "create sample");
         try
         {
             MF.Check(buffer.Lock(out var data, out _, out _), "lock buffer");

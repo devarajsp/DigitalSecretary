@@ -25,6 +25,8 @@ and new features can be added without touching the core.
 | **Storage Studio** | Files | See what is using the space in a folder: a clickable, colour-coded **size map**, space by type and by age, the largest files and folders, clean-up candidates and what grew since the last scan. Read-only. |
 | **Similar Pictures** | Files | Finds pictures that **look** the same - copies, re-saved or resized versions, turned or mirrored ones and burst shots (HEIC/RAW too) - shows them side by side, and moves the extras you choose to an **undo-able review folder**. |
 | **Similar Videos** | Files | Finds videos that are the **same** - copies, re-encoded or resized versions (e.g. from a chat app), turned or mirrored ones - shows each group as **film strips**, and moves the extras you choose to an **undo-able review folder**. Uses the Windows video engine; leaves iPhone Live Photos alone. |
+| **Reduce Size - Videos** | Files | Shows which videos take far more space than their picture needs and **how much a smaller copy would save**, then re-encodes the ones you pick to **HEVC** (ffmpeg x265 or the graphics card, or Windows' own encoder) - each copy **verified** (length, sound, size, SSIM) before it takes the original's name and dates; originals kept in an **undo-able folder**; savings history. |
+| **Reduce Size - Images** | Files | Re-saves camera **JPEGs** (quality read from the file) and turns photos kept as **PNG/BMP/TIFF** into JPEGs with **no visible change** - camera details kept, every copy **quality-checked** (PSNR); graphics only ever become lossless PNG; optional downscale and WebP/AVIF; originals in an undo-able folder. |
 
 ## How it works (1-minute version)
 - The app shell shows a **menu** (Features → Category → Feature), a **Home dashboard** of tiles,
@@ -55,7 +57,7 @@ Or use the quality-gated build (recommended):
 Every build runs **static analysis** (.NET analyzers). `build.ps1` also runs **unit tests**
 (xUnit, with coverage) and **QA automation** (loads every feature plugin exactly like the app),
 then writes [`docs/QUALITY_REPORT.md`](docs/QUALITY_REPORT.md) with the verdict, test results, and
-coverage. Current status: build clean (0 warnings), unit + QA green (611 automated tests), ~94% logic coverage.
+coverage. Current status: build clean (0 warnings), unit + QA green (799 automated tests), ~93% logic coverage.
 
 See [`docs/CODING_STANDARDS.md`](docs/CODING_STANDARDS.md), [`docs/TESTING.md`](docs/TESTING.md),
 and [`docs/STATIC_ANALYSIS.md`](docs/STATIC_ANALYSIS.md).

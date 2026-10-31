@@ -3,7 +3,7 @@
 Bugs and enhancements are tracked **separately** (machine rule §8). IDs are never reused.
 Open items first, then the history. Keep this current **as** work happens, not after.
 
-**Counts:** 0 open bugs · 9 open enhancements (1 P1) · 1 item needs the owner.
+**Counts:** 0 open bugs · 10 open enhancements (1 P1) · 1 item needs the owner.
 
 ---
 
@@ -27,6 +27,7 @@ _None known._
 
 | ID | Type | Priority | Area | Summary | Status |
 |----|------|----------|------|---------|--------|
+| ENH-39 | Test gap | P3 | Reduce Size | CI has no ffmpeg, so the ffmpeg tests (ffprobe facts, x265 + SSIM, sound kept by the Windows engine, WebP/AVIF) return early there and only prove themselves on a machine with ffmpeg. Install ffmpeg in `.github/workflows/ci.yml` (e.g. a pinned static build) so CI runs them too. | Open |
 | ENH-14 | Feature | P1 | Similar Pictures | Speed up grouping beyond ~100,000 pictures (index the hashes, e.g. a BK-tree or multi-index hashing, instead of comparing all pairs). | Open |
 | ENH-1 | Test gap | P2 | Quality | No sequence-diagram SPD (`docs/SEQUENCE.html`, mermaid, high→low drill-down) as the machine standard §5.6 requires. The architecture doc covers the plugin lifecycle in prose only. | Open |
 | ENH-2 | Tech debt | P2 | Build | No function-length audit in the regression gate (§5.3, ≤100 lines per function). Functions are kept short by review alone; nothing enforces it for C#. | Open |
@@ -41,6 +42,9 @@ _None known._
 
 | ID | Type | Area | Summary | Version | Commit |
 |----|------|------|---------|---------|--------|
+| ENH-16 | Feature | Reduce Size - Videos | **New plugin:** scan videos (ffprobe or Windows), advise per video from bits per pixel (Recommended / Your call / Skip with reason and estimate), re-encode to HEVC with ffmpeg x265 (default), the graphics card or Windows' own encoder, verify (length, sound, saving, SSIM), swap in with dates kept, originals to an undo-able folder or the Recycle Bin, savings history. 16 requirements RVD-1...RVD-16. | 2.7.0 | see tag `v2.7.0` |
+| ENH-17 | Feature | Reduce Size - Images | **New plugin:** JPEG quality read from the file's tables, photo/graphic check, re-save big JPEGs, photo PNG/BMP/TIFF to JPEG, lossless BMP/TIFF to PNG, optional downscale and WebP/AVIF (ffmpeg), EXIF kept, PSNR guard, same swap/undo/history. HEIC output not offered (needs the paid HEVC extension; ffmpeg has no HEIF muxer). 16 requirements RIM-1...RIM-16. | 2.7.0 | see tag `v2.7.0` |
+| ENH-18 | Tech debt | Kit | Media Foundation interop moved from Similar Videos into the kit (second user); new kit `FfmpegLocator`/`ToolRunner`, `ShrinkSwap`, `SavingsLedger`, shared `Verdict`/`FileOutcome`/`SyncProgress`. | 2.7.0 | see tag `v2.7.0` |
 | ENH-10 | Feature | Similar Videos | **Phase 3 of the Storage Studio plan, own plugin:** Media Foundation decoding (exact-time seek, codec padding cropped, rotation tag), 10 frame fingerprints (pHash + dHash x 8 orientations, flat frames out), length gate, Exact / Same video / Similar tiers, star grouping with a ranked keeper, film-strip review, Live Photo clips skipped, undo-able review folder or Recycle Bin, incremental gzip cache. 20 requirements SVD-1...SVD-20. | 2.6.0 | see tag `v2.6.0` |
 | ENH-12 | Tech debt | Features | **Shared helper kit** `src/DigitalSecretary.Kit` (owner's go 2026-10-31): `ByteSize`, `PauseToken`, `FileBytes`, `GrayImage`/`ImageHasher`, and the undo-able `ReviewFolder` mover. Features opt in with `<UseKit>true</UseKit>` and ship their own copy of the kit DLL; the host never references it. Removed 3 copies of `ByteSize`/`PauseToken` and their 4 duplicate test files; golden rule 1 updated. | 2.6.0 | see tag `v2.6.0` |
 | ENH-9 | Feature | Similar Pictures | **Phase 2 of the Storage Studio plan, own plugin:** Shell-thumbnail reading (HEIC/WebP/RAW with codecs), pHash + dHash in 8 orientations, Exact / Same picture / Similar tiers, EXIF-moment rule for bursts, star grouping with a ranked keeper, side-by-side review with manual verification, move to an undo-able review folder or Recycle Bin, incremental gzip cache. 18 requirements SIM-1…SIM-18. | 2.5.0 | see tag `v2.5.0` |

@@ -105,6 +105,8 @@
       <a href="#storage">Storage Studio</a>
       <a href="#similar">Similar Pictures</a>
       <a href="#videos">Similar Videos</a>
+      <a href="#reduce-videos">Reduce Size - Videos</a>
+      <a href="#reduce-images">Reduce Size - Images</a>
       <div class="grp">More</div>
       <a href="#data">Your data &amp; privacy</a>
       <a href="#faq">Troubleshooting / FAQ</a>
@@ -387,6 +389,44 @@
         <li><b>Similar - check</b> &mdash; the same scene but not the same video, often another take. Never pre-marked: play them and choose.</li>
       </ul>
       <div class="call tip"><div class="h">How it sees videos</div>The app looks at <b>ten frames</b> spread over each video and gives every frame a visual <b>fingerprint</b>. Two videos of about the same length whose frames match one by one are grouped; the largest, best-quality one is suggested as the keeper. A short clip cut out of a longer video is not matched. Everything happens on your PC &mdash; no AI service, nothing uploaded.</div>
+    </section>
+
+    <section class="doc" id="reduce-videos" data-t="reduce size videos shrink compress smaller space save hevc h265 x265 ffmpeg gpu graphics card windows encoder quality visually lossless ssim mp4 mov phone camera originals review folder undo recycle history">
+      <h2>Reduce Size - Videos</h2>
+      <p class="lead">Phones and cameras record far more data than the picture needs - a few minutes can take hundreds of MB. This feature shows <b>which videos can shrink with no visible difference, and by how much</b>, then makes them smaller, checks every copy, and keeps the originals until you delete them.</p>
+      <figure><img src="{{reduce-size-videos}}" alt="Reduce Size - Videos feature"><figcaption>After a scan every video gets advice: <b>Recommended</b> (ticked), <b>Your call</b>, or <b>Skip</b> - with the estimated new size, the saving and the reason in plain words.</figcaption></figure>
+      <div class="call warn"><div class="h">Safe by default</div>Nothing changes until you click <b>Reduce selected</b> and confirm. Each copy is made beside the original and must pass every check - same length, sound kept, really smaller and (with ffmpeg) a picture-quality score - before it takes the original's name and dates. Originals go to <kbd>_Reduced - originals</kbd> inside your folder (or the Recycle Bin, if you choose), and <b>Undo last run</b> puts them back. Space is freed when you delete that folder.</div>
+      <h3>Make videos smaller</h3>
+      <ol class="steps">
+        <li>Choose your videos <b>folder</b> and click <b>Scan</b>. Later scans only read new or changed videos.</li>
+        <li>Pick the <b>Engine</b> and <b>Quality</b> - the blue help line explains each choice. Changes re-advise instantly.</li>
+        <li>Check the list. <b>Recommended</b> videos are ticked; tick <b>Your call</b> ones if you like. <b>Skip</b> rows cannot be ticked. Double-click a video to play it.</li>
+        <li>Click <b>Reduce selected</b>. It can run for a long time (about real time for 1080p with the recommended engine) - <b>Pause</b> and <b>Stop</b> work at any point.</li>
+        <li>Open the originals folder, play a few copies, then delete the folder to free the space - or click <b>Undo last run</b>.</li>
+      </ol>
+      <h3>Which engine?</h3>
+      <ul>
+        <li><b>ffmpeg - best quality per MB (recommended)</b>: the smallest files for the same look; sound and camera details are copied untouched; every copy is quality-checked (SSIM). Needs ffmpeg, installed once: <kbd>winget install --id Gyan.FFmpeg -e</kbd> (the <b>How to install</b> button copies it).</li>
+        <li><b>ffmpeg - fast, uses the graphics card</b>: several times faster, files about 30% bigger. Good for a big backlog.</li>
+        <li><b>Windows built-in</b>: nothing to install. Bigger files than ffmpeg, the sound is re-encoded, camera details such as location are not kept, and no quality score is measured.</li>
+      </ul>
+      <div class="call tip"><div class="h">How it decides</div>It measures how many <b>bits each pixel of each frame</b> uses. Phones record H.264 at about 0.2-0.4; HEVC looks the same at about 0.05-0.08. What a video spends above that is space you can save. HDR videos are left alone by default (their colours need special care), and videos already in HEVC or AV1 are only offered when they are still very generous. Everything happens on your PC - nothing is uploaded.</div>
+    </section>
+
+    <section class="doc" id="reduce-images" data-t="reduce size images pictures photos shrink compress smaller space save jpeg quality png bmp tiff webp avif downscale resize exif date taken psnr originals review folder undo recycle history">
+      <h2>Reduce Size - Images</h2>
+      <p class="lead">Cameras save JPEGs at very high quality, and scans or screenshots of photos are often kept uncompressed. This feature shows <b>which pictures can shrink with no visible change</b> and makes them smaller, keeping the camera details (date taken, camera, location) and the originals until you delete them.</p>
+      <figure><img src="{{reduce-size-images}}" alt="Reduce Size - Images feature"><figcaption>Each picture's format, the JPEG quality it was saved at, the suggested change, the estimated saving and why.</figcaption></figure>
+      <div class="call warn"><div class="h">Safe by default</div>Every copy must open, be really smaller and - when it keeps its size - score high enough on a pixel-by-pixel quality check (PSNR) before it replaces the original. Originals go to <kbd>_Reduced - originals</kbd> (or the Recycle Bin); <b>Undo last run</b> puts them back. Screenshots, drawings and see-through pictures are never turned into JPEGs; 16-bit, CMYK and multi-page files are never touched.</div>
+      <h3>The options</h3>
+      <ul>
+        <li><b>Re-compress big JPEGs</b> (on): a camera JPEG saved at quality 92-98 is re-saved at 90 - no visible change, often 30-60% smaller. JPEGs already at about 85 or below are left alone, because saving them again would only add loss.</li>
+        <li><b>Photos in PNG/BMP/TIFF to JPEG</b> (on): photos stored without compression become JPEGs - typically 80-95% smaller.</li>
+        <li><b>BMP/TIFF graphics to PNG</b> (on): no loss at all, every pixel kept.</li>
+        <li><b>Shrink pictures larger than ... px</b> (off): fine for screens, but it removes detail for big prints or crops - never pre-selected.</li>
+        <li><b>Convert photos to WebP / AVIF</b> (off): smaller still, but camera details are not kept and some programs cannot open them - never pre-selected. Needs ffmpeg.</li>
+      </ul>
+      <div class="call tip"><div class="h">How it decides</div>A JPEG's quality is read from the file itself (its quantisation tables). Lossless pictures are looked at in miniature to tell photos (many colours, smooth) from graphics (few colours, sharp edges). Everything happens on your PC - nothing is uploaded.</div>
     </section>
 
     <section class="doc" id="data" data-t="data privacy storage appdata where files security password">

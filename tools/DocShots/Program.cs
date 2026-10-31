@@ -57,9 +57,15 @@ internal static class Program
             if (f.Manifest.Id == "similar-videos")
                 ShowSampleVideos(view);
 
+            if (f.Manifest.Id == "reduce-size-videos")
+                ShowSampleFacts(view, "DigitalSecretary.Features.ReduceVideos.SampleVideoFacts");
+
+            if (f.Manifest.Id == "reduce-size-images")
+                ShowSampleFacts(view, "DigitalSecretary.Features.ReduceImages.SampleImageFacts");
+
             if (f.Manifest.Id == "clipboard-history")
                 CaptureClipboard(view, path);
-            else if (f.Manifest.Id is "similar-pictures" or "similar-videos")
+            else if (f.Manifest.Id is "similar-pictures" or "similar-videos" or "reduce-size-videos" or "reduce-size-images")
                 CaptureControl(view, 1100, 780, path);   // the review screen needs room for whole cards
             else
                 CaptureControl(view, 980, 560, path);
@@ -180,6 +186,21 @@ internal static class Program
         Pump(600);
     }
 
+    /// <summary>
+    /// Fills a Reduce Size view with its made-up sample facts (placeholder folder and names, no real files),
+    /// so the advice list shows without scanning anything real. Reflection, as above.
+    /// </summary>
+    private static void ShowSampleFacts(Control view, string sampleTypeName)
+    {
+        var type = view.GetType().Assembly.GetType(sampleTypeName);
+        var facts = type?.GetMethod("Create")?.Invoke(null, null);
+        if (type is null || facts is null)
+            return;
+        var root = (string)type.GetField("Root")!.GetValue(null)!;
+        view.GetType().GetMethod("ShowFacts")?.Invoke(view, [root, facts]);
+        Pump(400);
+    }
+
     private static void ShowSampleTree(Control view)
     {
         var sample = view.GetType().Assembly.GetType("DigitalSecretary.Features.StorageStudio.SampleSpaceTree")
@@ -282,6 +303,14 @@ internal static class Program
         Directory.CreateDirectory(videos);
         var videoSettings = new { Root = @"C:\Users\You\Videos", Sensitivity = "Balanced", IncludeRotated = true, IncludeSimilar = true, SkipLivePhotos = true, Action = "ReviewFolder" };
         File.WriteAllText(Path.Combine(videos, "similar_videos_settings.json"), JsonSerializer.Serialize(videoSettings, json));
+
+        // Placeholder folders for the two Reduce Size features (their screenshots show made-up sample facts).
+        var reduceVideos = Path.Combine(dataRoot, "reduce-size-videos");
+        Directory.CreateDirectory(reduceVideos);
+        File.WriteAllText(Path.Combine(reduceVideos, "reduce_videos_settings.json"), JsonSerializer.Serialize(new { Root = @"C:\Users\You\Videos" }, json));
+        var reduceImages = Path.Combine(dataRoot, "reduce-size-images");
+        Directory.CreateDirectory(reduceImages);
+        File.WriteAllText(Path.Combine(reduceImages, "reduce_images_settings.json"), JsonSerializer.Serialize(new { Root = @"C:\Users\You\Pictures" }, json));
 
         // Seed a placeholder folder for Storage Studio too (the screenshot then shows a sample tree).
         var storage = Path.Combine(dataRoot, "storage-studio");

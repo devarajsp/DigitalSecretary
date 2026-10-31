@@ -5,6 +5,49 @@ the exact **▶ NEXT** step, so any later session can resume with no extra conte
 
 ---
 
+## 2026-11-01 — New features: Reduce Size - Videos + Reduce Size - Images (v2.7.0)
+
+**Done**
+- Owner's decisions: ffmpeg as the default engine **and** a Windows engine, with guidance; originals to the review
+  folder **or** the Recycle Bin; images get **all four** options, guided so quality is not lost; "finish it".
+  ffmpeg 9.0.2 installed with `winget install --id Gyan.FFmpeg -e` at the owner's request (the app never downloads it).
+- **ENH-18 kit:** `MediaFoundation.cs` moved from Similar Videos into the kit (public; `MFNative` wrappers over private
+  P/Invokes for CA1401); new `MediaTools.cs` (`FfmpegLocator`, `ToolRunner`), `ShrinkSwap.cs`, `SavingsLedger.cs`,
+  `ShrinkOutcome.cs` (`Verdict`, `FileOutcome`, `SyncProgress`).
+- **ENH-16 Reduce Size - Videos** (`src/Features/ReduceVideos/`, id `reduce-size-videos`, order 32): ffprobe / MF probe,
+  bits-per-pixel advisor, ffmpeg x265 / GPU (`hevc_amf` here) / Windows `MfTranscoder`, verify (length, sound, saving,
+  SSIM), safe swap + undo, history. 16 `.cs`, ~2.43 KLOC. RVD-1 … RVD-16.
+- **ENH-17 Reduce Size - Images** (`src/Features/ReduceImages/`, id `reduce-size-images`, order 33): JPEG quality from DQT,
+  photo/graphic check, re-save / to JPEG / to PNG / downscale / WebP-AVIF, EXIF kept, PSNR guard. 16 `.cs`, ~1.96 KLOC.
+  RIM-1 … RIM-16.
+- Tests: real videos and pictures made at test time; QA test for both views; DocShots samples. Docs: 2 FEATURE.md,
+  2 requirement docs, 2 user guides, 2 manual sections, hubs, README rows, Pages cards + badges, xlsx, CHANGELOG 2.7.0,
+  journal phase 26, DevEconomics row + narrative, TESTING.md, kit README, CLAUDE.md kit list.
+
+**Decisions**
+- Advice from bits per pixel per frame (video) and from the JPEG's own saved quality (pictures); every copy verified
+  before the swap; graphics never become JPEG; downscale and WebP/AVIF are never pre-selected.
+- One originals folder for both features: `_Reduced - originals`.
+- HEIC output not offered (needs the paid HEVC Video Extensions; ffmpeg has no HEIF muxer).
+- New **ENH-39** (P3): install ffmpeg in CI so the ffmpeg tests run there too.
+
+**State**
+- `./build.ps1 -All` => **VERDICT: PASS** - 0 warnings, **763 unit + 36 QA**, overall coverage **93.3%**, Reduce Videos
+  **92.1%**, Reduce Images **93.6%**, kit **93.1%**, docs consistent.
+- Committed on `main` (owner chose the current branch). **Not pushed, not tagged, no GitHub release** - those are
+  outward steps for the owner to approve.
+- Storage (§9): tracked 2.7 MB (+0.5 MB: code, docs, two ~60 KB screenshots); ignored build output ~477 MB (regenerable).
+  No media files committed - test media are made at test time and deleted.
+- Not done: a run on a real videos / pictures folder in the app (verified with real files made at test time, QA and the
+  sample screens). Another session's uncommitted MakeItLively work (`docs/strategy/`, ENH-19..38, OWN-4) was left
+  uncommitted for that session.
+
+**▶ NEXT** — Owner tries both features on a real folder (start with a copy of a few videos / pictures). Then, on the
+owner's go: push `main`, tag `v2.7.0`, package and publish the release (`tools/package-release.ps1 -Version 2.7.0`).
+Reconcile DevEconomics ACTUAL via `/cost` (OWN-3).
+
+---
+
 ## 2026-10-31 — New feature: Similar Videos + shared helper kit (v2.6.0)
 
 **Done**

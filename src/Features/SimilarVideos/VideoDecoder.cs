@@ -245,7 +245,7 @@ internal sealed class ReaderSession : IDisposable
         {
             return null;
         }
-        if (NativeMethods.MFCreateAttributes(out var attributes, 1) < 0)
+        if (MFNative.MFCreateAttributes(out var attributes, 1) < 0)
         {
             return null;
         }
@@ -253,7 +253,7 @@ internal sealed class ReaderSession : IDisposable
         try
         {
             attributes.SetUINT32(MF.EnableVideoProcessing, 1);
-            if (NativeMethods.MFCreateSourceReaderFromURL(path, attributes, out reader) < 0)
+            if (MFNative.MFCreateSourceReaderFromURL(path, attributes, out reader) < 0)
             {
                 return null;
             }
@@ -348,7 +348,7 @@ internal sealed class ReaderSession : IDisposable
                 return false;
             }
             Rotation = ReadRotation();
-            MF.Check(NativeMethods.MFCreateMediaType(out var wanted), "create media type");
+            MF.Check(MFNative.MFCreateMediaType(out var wanted), "create media type");
             try
             {
                 wanted.SetGUID(MF.MajorType, MF.MediaTypeVideo);

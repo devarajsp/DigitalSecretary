@@ -46,6 +46,8 @@ DigitalSecretary is your personal toolbox for Windows. It collects handy day-to-
 | Storage Studio | See what is using the space in a folder, as a clickable size map | [Open guide](features/storage-studio.md) |
 | Similar Pictures | Find look-alike pictures (copies, re-saved, turned, bursts) and move the extras to an undo-able review folder | [Open guide](features/similar-pictures.md) |
 | Similar Videos | Find matching videos (copies, re-encoded, resized, turned) and move the extras to an undo-able review folder | [Open guide](features/similar-videos.md) |
+| Reduce Size - Videos | See which videos can shrink without a visible difference and make them smaller - checked, originals kept, undo-able | [Open guide](features/reduce-size-videos.md) |
+| Reduce Size - Images | Re-compress big JPEGs and uncompressed photos with no visible change, camera details kept, originals kept | [Open guide](features/reduce-size-images.md) |
 
 ## Where your data is stored
 Everything stays on your PC under **`%APPDATA%\DigitalSecretary\`**:

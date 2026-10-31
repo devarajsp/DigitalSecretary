@@ -1,0 +1,9 @@
+{
+  "id": "reduce-size-videos",
+  "title": "Reduce Size - Videos",
+  "category": "Files",
+  "description": "Find videos that take far more space than they need, see which can shrink without a visible difference, and make them smaller - verified, with the originals kept in an undo-able folder.",
+  "order": 32,
+  "entryAssembly": "DigitalSecretary.Features.ReduceVideos.dll",
+  "entryType": "DigitalSecretary.Features.ReduceVideos.ReduceVideosModule"
+}

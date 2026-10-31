@@ -1,0 +1,9 @@
+{
+  "id": "reduce-size-images",
+  "title": "Reduce Size - Images",
+  "category": "Files",
+  "description": "Find pictures that take more space than they need - camera JPEGs saved at very high quality, photos kept as PNG/BMP/TIFF - and make them smaller with no visible change, camera details kept and originals in an undo-able folder.",
+  "order": 33,
+  "entryAssembly": "DigitalSecretary.Features.ReduceImages.dll",
+  "entryType": "DigitalSecretary.Features.ReduceImages.ReduceImagesModule"
+}

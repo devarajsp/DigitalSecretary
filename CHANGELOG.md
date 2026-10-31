@@ -2,6 +2,35 @@
 
 All notable changes to Digital Secretary. Format based on [Keep a Changelog](https://keepachangelog.com).
 
+## [2.7.0] - 2026-11-01
+
+**New:** **Reduce Size - Videos** and **Reduce Size - Images** &mdash; see which videos and pictures take far
+more space than they need, **how much a smaller copy would save and why**, and shrink the ones you pick with
+**no visible difference**. Videos are re-encoded to HEVC with **ffmpeg** (recommended; installed once with
+`winget install --id Gyan.FFmpeg -e`) or **Windows' own encoder**; pictures are re-saved (camera JPEGs, photos
+kept as PNG/BMP/TIFF) with their **camera details kept**, and screenshots only ever become lossless PNG. Every
+copy is **checked** (length, sound, size, picture quality) before it takes the original's name and dates, the
+originals go to an **undo-able folder** (or the Recycle Bin), and a **savings history** adds up what you saved.
+Added as two plugins with no change to the host.
+
+### Changed
+- **Shared kit:** the Windows video interop moved from Similar Videos into the kit, which also gained finding /
+  running ffmpeg, the safe "swap in the smaller copy" step with undo, and the savings history. Similar Videos
+  behaves exactly as before.
+
+> &#9889; **Built with no code &mdash; DevEconomics.** Digital Secretary is built by *asking Claude*
+> (Opus 5.5), not by hand-writing code. We publish the cost every release; the per-activity ledger,
+> per-feature rows, and the trend live in the
+> [DevEconomics workbook](docs/deveconomics/DigitalSecretary-DevEconomics.xlsx).
+
+| Scope | Prod. KLOC | Est. tokens | Est. cost | Time |
+|---|--:|--:|--:|--:|
+| **This release** (Reduce Size - Videos + Images + media kit) | ~4.9 | ~286 K | **~$45** | ~164 min |
+| **Whole app to date** (est) | ~19.9 | ~3.7 M | **~$203** | ~24.3 h |
+
+_LLM cost/tokens are estimates (the model can't meter itself); the whole-app foundation predates live
+tracking. Reconcile with `/cost`._
+
 ## [2.6.0] - 2026-10-31
 
 **New:** **Similar Videos** &mdash; finds videos that are **the same**: exact copies, the same clip

@@ -1,15 +1,15 @@
 using System.Runtime.InteropServices;
 
-namespace DigitalSecretary.Features.SimilarVideos;
+namespace DigitalSecretary.Kit;
 
 /// <summary>
-/// The slice of Windows Media Foundation (mfplat / mfreadwrite) this feature needs, declared by hand so
+/// The slice of Windows Media Foundation (mfplat / mfreadwrite) the video features need, declared by hand so
 /// no NuGet package is required: the Source Reader (decode frames at a time position, converted to RGB32
 /// by Windows) and - for the tests only - the Sink Writer (encode tiny test videos at run time).
 /// Every method keeps its HRESULT (<c>PreserveSig</c>); callers check it. Interface members follow the
 /// native vtable order exactly - do not reorder them.
 /// </summary>
-internal static class MF
+public static class MF
 {
     public const int Version = 0x00020070;
     public const int FirstVideoStream = unchecked((int)0xFFFFFFFC);
@@ -42,6 +42,28 @@ internal static class MF
     public static readonly Guid PresentationDuration = new("6c990d33-bb8e-477a-8598-0d5d96fcd88a");
     public static readonly Guid EnableVideoProcessing = new("fb394f3d-ccf1-42ee-bbb3-f9b845d5681d");
 
+    // Used by the Windows video engine of Reduce Size - Videos (decode with the Source Reader, re-encode with the Sink Writer).
+    public const int FirstAudioStream = unchecked((int)0xFFFFFFFD);
+    public const int AnyStream = unchecked((int)0xFFFFFFFE);
+    public static readonly Guid MediaTypeAudio = new("73647561-0000-0010-8000-00aa00389b71"); // Media Foundation GUID - pragma: allowlist secret
+    public static readonly Guid FormatNv12 = new("3231564e-0000-0010-8000-00aa00389b71"); // Media Foundation GUID - pragma: allowlist secret
+    public static readonly Guid FormatHevc = new("43564548-0000-0010-8000-00aa00389b71"); // Media Foundation GUID - pragma: allowlist secret
+    public static readonly Guid AudioFormatPcm = new("00000001-0000-0010-8000-00aa00389b71"); // Media Foundation GUID - pragma: allowlist secret
+    public static readonly Guid AudioFormatAac = new("00001610-0000-0010-8000-00aa00389b71"); // Media Foundation GUID - pragma: allowlist secret
+    public static readonly Guid AudioChannels = new("37e48bf5-645e-4c5b-89de-ada9e29b696a");
+    public static readonly Guid AudioSamplesPerSecond = new("5faeeae7-0290-4c31-9e8a-c534f68d9dba");
+    public static readonly Guid AudioBitsPerSample = new("f2deb57f-40fa-4764-aa33-ed4f2d1ff669");
+    public static readonly Guid AudioAvgBytesPerSecond = new("1aab75c8-cfef-451c-ab95-ac034b8e1731");
+    public static readonly Guid AudioBlockAlignment = new("322de230-9eeb-43bd-ab7a-ff412251541d");
+    public static readonly Guid AacPayloadType = new("bfbabe79-7434-4d1c-94f0-72a3b9e17188");
+    public static readonly Guid TransferFunction = new("5fb0fce9-be5c-4935-a811-ec838f8eed93");
+    public static readonly Guid EnableHardwareTransforms = new("a634a91c-822b-41b9-a494-4de4643612b0");
+    public static readonly Guid DisableThrottling = new("08b845d8-2b74-4afe-9d53-be16d2d5ae4f");
+
+    /// <summary>MFVideoTransFunc_2084 (PQ) and MFVideoTransFunc_HLG: the HDR transfer functions.</summary>
+    public const int TransferPq = 15;
+    public const int TransferHlg = 16;
+
     /// <summary>MFStartup has succeeded in this process (it is reference-counted and never shut down here).</summary>
     public static bool Started => LazyStart.Value;
 
@@ -49,7 +71,7 @@ internal static class MF
     {
         try
         {
-            return NativeMethods.MFStartup(Version, 0) >= 0;
+            return MFNative.Startup(Version, 0) >= 0;
         }
         catch (Exception ex) when (ex is DllNotFoundException or EntryPointNotFoundException or BadImageFormatException)
         {
@@ -82,11 +104,11 @@ internal static class MF
 }
 
 /// <summary>A failed Media Foundation call; callers catch it as a <see cref="COMException"/>.</summary>
-internal sealed class MediaFoundationException(string message, int hr) : COMException(message, hr);
+public sealed class MediaFoundationException(string message, int hr) : COMException(message, hr);
 
 /// <summary>A PROPVARIANT holding a 64-bit integer (the only kind used here: time positions and durations).</summary>
 [StructLayout(LayoutKind.Explicit, Size = 24)]
-internal struct PropVariant
+public struct PropVariant
 {
     [FieldOffset(0)]
     public ushort Type;
@@ -98,7 +120,7 @@ internal struct PropVariant
 [ComImport]
 [Guid("2cd2d921-c447-44a7-a13c-4adabfc247e3")]
 [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-internal interface IMFAttributes
+public interface IMFAttributes
 {
     [PreserveSig] int GetItem([In, MarshalAs(UnmanagedType.LPStruct)] Guid key, IntPtr value);
     [PreserveSig] int GetItemType([In, MarshalAs(UnmanagedType.LPStruct)] Guid key, out int type);
@@ -136,7 +158,7 @@ internal interface IMFAttributes
 [ComImport]
 [Guid("c40a00f2-b93a-4d80-ae8c-5a1c634f58e4")]
 [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-internal interface IMFSample
+public interface IMFSample
 {
     [PreserveSig] int GetItem([In, MarshalAs(UnmanagedType.LPStruct)] Guid key, IntPtr value);
     [PreserveSig] int GetItemType([In, MarshalAs(UnmanagedType.LPStruct)] Guid key, out int type);
@@ -188,7 +210,7 @@ internal interface IMFSample
 [ComImport]
 [Guid("045fa593-8799-42b8-bc8d-8968c6453507")]
 [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-internal interface IMFMediaBuffer
+public interface IMFMediaBuffer
 {
     [PreserveSig] int Lock(out IntPtr buffer, out int maxLength, out int currentLength);
     [PreserveSig] int Unlock();
@@ -201,7 +223,7 @@ internal interface IMFMediaBuffer
 [ComImport]
 [Guid("70ae66f2-c809-4e4f-8915-bdcb406b7993")]
 [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-internal interface IMFSourceReader
+public interface IMFSourceReader
 {
     [PreserveSig] int GetStreamSelection(int streamIndex, [MarshalAs(UnmanagedType.Bool)] out bool selected);
     [PreserveSig] int SetStreamSelection(int streamIndex, [MarshalAs(UnmanagedType.Bool)] bool selected);
@@ -219,7 +241,7 @@ internal interface IMFSourceReader
 [ComImport]
 [Guid("3137f1cd-fe5e-4805-a5d8-fb477448cb3d")]
 [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-internal interface IMFSinkWriter
+public interface IMFSinkWriter
 {
     [PreserveSig] int AddStream(IMFAttributes targetMediaType, out int streamIndex);
     [PreserveSig] int SetInputMediaType(int streamIndex, IMFAttributes inputMediaType, IMFAttributes? encodingParameters);
@@ -234,26 +256,49 @@ internal interface IMFSinkWriter
     [PreserveSig] int GetStatistics(int streamIndex, IntPtr stats);
 }
 
-internal static class NativeMethods
+/// <summary>
+/// The Media Foundation entry points, as public wrappers over private P/Invokes (CA1401). Named MFNative so it
+/// never clashes with a feature's own NativeMethods. Each returns the HRESULT; callers check it.
+/// </summary>
+public static class MFNative
 {
-    [DllImport("mfplat.dll", ExactSpelling = true)]
-    public static extern int MFStartup(int version, int flags);
+    public static int Startup(int version, int flags) => Native.MFStartup(version, flags);
 
-    [DllImport("mfplat.dll", ExactSpelling = true)]
-    public static extern int MFCreateAttributes(out IMFAttributes attributes, int initialSize);
+    public static int MFCreateAttributes(out IMFAttributes attributes, int initialSize) => Native.MFCreateAttributes(out attributes, initialSize);
 
-    [DllImport("mfplat.dll", ExactSpelling = true)]
-    public static extern int MFCreateMediaType(out IMFAttributes mediaType);
+    public static int MFCreateMediaType(out IMFAttributes mediaType) => Native.MFCreateMediaType(out mediaType);
 
-    [DllImport("mfplat.dll", ExactSpelling = true)]
-    public static extern int MFCreateSample(out IMFSample sample);
+    public static int MFCreateSample(out IMFSample sample) => Native.MFCreateSample(out sample);
 
-    [DllImport("mfplat.dll", ExactSpelling = true)]
-    public static extern int MFCreateMemoryBuffer(int maxLength, out IMFMediaBuffer buffer);
+    public static int MFCreateMemoryBuffer(int maxLength, out IMFMediaBuffer buffer) => Native.MFCreateMemoryBuffer(maxLength, out buffer);
 
-    [DllImport("mfreadwrite.dll", ExactSpelling = true, CharSet = CharSet.Unicode)]
-    public static extern int MFCreateSourceReaderFromURL([MarshalAs(UnmanagedType.LPWStr)] string url, IMFAttributes? attributes, out IMFSourceReader reader);
+    public static int MFCreateSourceReaderFromURL(string url, IMFAttributes? attributes, out IMFSourceReader reader)
+        => Native.MFCreateSourceReaderFromURL(url, attributes, out reader);
 
-    [DllImport("mfreadwrite.dll", ExactSpelling = true, CharSet = CharSet.Unicode)]
-    public static extern int MFCreateSinkWriterFromURL([MarshalAs(UnmanagedType.LPWStr)] string url, IntPtr byteStream, IMFAttributes? attributes, out IMFSinkWriter writer);
+    public static int MFCreateSinkWriterFromURL(string url, IntPtr byteStream, IMFAttributes? attributes, out IMFSinkWriter writer)
+        => Native.MFCreateSinkWriterFromURL(url, byteStream, attributes, out writer);
+
+    private static class Native
+    {
+        [DllImport("mfplat.dll", ExactSpelling = true)]
+        public static extern int MFStartup(int version, int flags);
+
+        [DllImport("mfplat.dll", ExactSpelling = true)]
+        public static extern int MFCreateAttributes(out IMFAttributes attributes, int initialSize);
+
+        [DllImport("mfplat.dll", ExactSpelling = true)]
+        public static extern int MFCreateMediaType(out IMFAttributes mediaType);
+
+        [DllImport("mfplat.dll", ExactSpelling = true)]
+        public static extern int MFCreateSample(out IMFSample sample);
+
+        [DllImport("mfplat.dll", ExactSpelling = true)]
+        public static extern int MFCreateMemoryBuffer(int maxLength, out IMFMediaBuffer buffer);
+
+        [DllImport("mfreadwrite.dll", ExactSpelling = true, CharSet = CharSet.Unicode)]
+        public static extern int MFCreateSourceReaderFromURL([MarshalAs(UnmanagedType.LPWStr)] string url, IMFAttributes? attributes, out IMFSourceReader reader);
+
+        [DllImport("mfreadwrite.dll", ExactSpelling = true, CharSet = CharSet.Unicode)]
+        public static extern int MFCreateSinkWriterFromURL([MarshalAs(UnmanagedType.LPWStr)] string url, IntPtr byteStream, IMFAttributes? attributes, out IMFSinkWriter writer);
+    }
 }

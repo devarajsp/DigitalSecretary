@@ -31,7 +31,7 @@ public sealed class PluginPipelineQaTests
         {
             "launcher", "calculator", "clipboard-history", "email-downloader",
             "gmail-downloader", "google-drive-downloader", "dedupe-files", "storage-studio",
-            "similar-pictures", "similar-videos"
+            "similar-pictures", "similar-videos", "reduce-size-videos", "reduce-size-images"
         });
     }
 
@@ -228,6 +228,46 @@ public sealed class PluginPipelineQaTests
             }
         });
     }
+
+    [Theory]
+    [InlineData("reduce-size-videos", "DigitalSecretary.Features.ReduceVideos.SampleVideoFacts")]
+    [InlineData("reduce-size-images", "DigitalSecretary.Features.ReduceImages.SampleImageFacts")]
+    public void Reduce_Size_advises_the_sample_preselects_only_recommended_and_never_ticks_a_skip(string id, string sampleTypeName)
+    {
+        var m = QaEnvironment.Manifests().First(x => x.Id == id);
+
+        Sta.Run(() =>
+        {
+            var asmPath = Path.Combine(m.Directory, m.EntryAssembly);
+            var asm = new PluginLoadContext(asmPath).LoadFromAssemblyPath(asmPath);
+            var module = (IFeatureModule)Activator.CreateInstance(asm.GetType(m.EntryType)!)!;
+            using var view = module.CreateView(new QaContext(m.Id));
+            view.Size = new System.Drawing.Size(1300, 800);
+            view.CreateControl();
+
+            // Show the placeholder sample (made-up facts, placeholder paths), as DocShots does.
+            var sampleType = asm.GetType(sampleTypeName)!;
+            var facts = sampleType.GetMethod("Create")!.Invoke(null, null)!;
+            var root = (string)sampleType.GetField("Root")!.GetValue(null)!;
+            view.GetType().GetMethod("ShowFacts")!.Invoke(view, [root, facts]);
+
+            var list = Descendants(view).OfType<ListView>().Single();
+            var rows = list.Items.Cast<ListViewItem>().ToList();
+            rows.Count.Should().Be(((System.Collections.ICollection)facts).Count);
+            rows.Where(r => r.Checked).Should().NotBeEmpty().And.OnlyContain(r => r.SubItems[AdviceColumn(list)].Text == "Recommended");
+            var skip = rows.First(r => r.SubItems[AdviceColumn(list)].Text == "Skip");
+            skip.Checked = true;
+            skip.Checked.Should().BeFalse("a Skip row is not worth it or not safe, so it can never be ticked");
+            Descendants(view).OfType<Button>().Single(b => b.Text == "Reduce selected").Enabled.Should().BeFalse("the sample has no real files");
+
+            Descendants(view).OfType<Button>().Single(b => b.Text == "Select none").PerformClick();
+            list.CheckedItems.Count.Should().Be(0);
+            Descendants(view).OfType<Button>().Single(b => b.Text == "Select all worth it").PerformClick();
+            list.CheckedItems.Count.Should().Be(rows.Count(r => r.SubItems[AdviceColumn(list)].Text != "Skip"));
+        });
+    }
+
+    private static int AdviceColumn(ListView list) => list.Columns.Cast<ColumnHeader>().First(c => c.Text == "Advice").Index;
 
     private static T WaitFor<T>(Func<T> read, Func<T, bool> done)
     {

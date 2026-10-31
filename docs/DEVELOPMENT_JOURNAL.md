@@ -383,6 +383,41 @@ _What went wrong:_ the test writer forgot to start Media Foundation (passed only
 first - the probe found it); and three attempts to write a `'\\'` literal through shell/Python heredocs
 produced a form-feed and broken code until the Edit tool was used instead (pitfall below).
 
+### Phase 26 - Reduce Size: Videos + Images (2026-11-01)
+Two new plugins, ids `reduce-size-videos` and `reduce-size-images`, category *Files*, **no NuGet, no host
+change** - 16 + 16 `.cs` files, ~2.43 + ~1.96 KLOC, plus ~0.55 KLOC of new kit code (ENH-18). Requirements
+`RVD-1`..`RVD-16` and `RIM-1`..`RIM-16`, 13 traceability rows. `./build.ps1 -All` => **VERDICT: PASS**
+(0 warnings, **763 unit + 36 QA**, overall coverage **93.3%**, Reduce Videos **92.1%**, Reduce Images **93.6%**, kit **93.1%**).
+
+_The owner's choices up front:_ ffmpeg as the default engine **and** Windows' encoder as a second one, with
+guidance to choose; originals to the review folder **or** the Recycle Bin; all four image options (JPEG re-save,
+photo PNG/BMP/TIFF to JPEG, downscale, modern formats), each explained so quality is not lost. ffmpeg 9.0.2 was
+installed with winget at the owner's request; the app itself never downloads it (`FfmpegLocator` only finds it).
+
+_Why the design is shaped this way:_
+- **Advice from bits per pixel per frame**, not file size: phones record H.264 at 0.2-0.4, HEVC looks the same
+  at ~0.07. Targets scale with engine, resolution and frame rate; estimates are cautious because the real copy is
+  measured and thrown away when it does not save enough.
+- **A JPEG is judged by the quality it was saved at**, read from its own quantisation table. Re-saving a camera's
+  96 at 90 saves a third invisibly; re-saving an 80 only adds loss - so it is skipped.
+- **Never trust an encoder: verify, then swap.** The copy is made beside the original, read back (length, sound,
+  saving, SSIM for video, PSNR for pictures) and only then swapped in by the kit's `ShrinkSwap`, which keeps the
+  original's dates, refuses files changed since the scan, and puts the original back if the rename fails.
+- **Three video engines, one interface.** `IVideoEngine` lets the run loop be tested with a fake engine for every
+  safety rule; the real engines are tested on videos made at test time.
+
+_What went wrong (and what caught it):_
+- The Windows engine's copy reported 640x**368** - hardware encoders pad to 16 rows; the real-video test caught it
+  and both the probe and the encoder now use the display aperture (a second test asserts ffprobe sees 640x360).
+- Every JPEG read as "unreadable": `MemoryStream.GetBuffer()` throws on a stream built from a byte array - found by
+  the first real-picture test.
+- GDI+ saves "quality 90" with the IJG table of **89**: the estimator is right by the standard; tests allow +-1.
+- A BMP -> PNG copy was not bit-identical (re-drawn with high-quality compositing); same-size copies now clone.
+- **PII in a screenshot:** the ffmpeg label showed `C:\Users\<name>\...`. Seen when looking at the DocShots
+  image (no text scanner can catch it); the path now goes to the log only and the sample view clears the log.
+- `dotnet sln add --solution-folder Features` silently nested the project under a second, pre-existing "Features"
+  folder; an attempt to tidy it removed that folder - reverted with `git checkout` and re-added plainly.
+
 ## Key decisions & rationale
 - **Plugin architecture over a monolith** — features must be independent, lazy, and addable without
   touching the host.

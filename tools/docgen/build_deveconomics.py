@@ -46,51 +46,48 @@ RATE = {"in": 5.0, "out": 25.0, "cache_read": 0.50, "cache_write": 6.25}
 #    (Phase, Activity, Bucket, Tool/Method, LLM?, EstTokens, EstCostUSD, TimeMin, TimeBasis, Notes)
 #    Bucket: "A" LLM tokens | "B" local compute | "C" remote | "B+C" local that pulls from network.
 # --------------------------------------------------------------------------- #
-FEATURE = "Similar Videos (+ shared helper kit)"
-FEATURE_DATE = "2026-10-31"
+FEATURE = "Reduce Size - Videos + Images (+ media kit)"
+FEATURE_DATE = "2026-11-01"
 MODEL = "Opus 5.5"
-PRODUCTION_KLOC = 2.60  # 2,536 lines of new feature C# (16 .cs files) + ~65 net-new kit lines; ~0.8 KLOC moved into the kit, ~0.25 KLOC of duplicates deleted
+PRODUCTION_KLOC = 4.94  # 2,429 lines Reduce Videos (16 .cs) + 1,963 Reduce Images (16 .cs) + 551 net-new kit lines; MF interop (~0.3 KLOC) moved, not new; tests 1.82 KLOC not counted
 
-# One session, no subagents. Strategy first, then the owner said "use defaults" (kit first, no trimmed
-# clips, no ffmpeg, skip Live Photos). Thresholds were set from a measured probe on real H.264 round trips.
+# One session, no subagents, run overnight at the owner's "finish it". The owner chose the engines (ffmpeg default +
+# Windows), originals handling and the four image options up front; ffmpeg was installed with winget at their request.
 ACTIVITIES = [
-    ("Explore", "Locate the project; read Similar Pictures end to end; write the Similar Videos strategy and four decisions for the owner", "A", "Read/Write", "Yes", 15000, 0.60, 6.0, "estimate", "owner: use the recommended defaults"),
-    ("Gate", "Baseline quality gate before any change", "B", "build.ps1 -All", "No", 0, 0.0, 1.7, "measured", "PASS, 584 unit + 27 QA"),
-    ("Refactor", "ENH-12 kit: move ByteSize/PauseToken/FileBytes/GrayImage/ImageHasher, generic ReviewFolder; UseKit opt-in; golden rule 1 + architecture docs", "A", "Write/Edit", "Yes", 18000, 0.70, 10.0, "estimate", "3 copies + 4 duplicate test files removed"),
-    ("Gate", "Pre-commit gate on the kit commit", "B", "build.ps1 -NoPrompt", "No", 0, 0.0, 0.5, "measured", ""),
-    ("Refactor", "Kit part 2: FileRecordCache, IncrementalScanner, FileNames, Ranking, SampleScene; Similar Pictures delegates (API unchanged)", "A", "Write/Edit", "Yes", 16000, 0.60, 9.0, "estimate", "picture tests unchanged and green"),
-    ("Bugfix", "CA1000 static-on-generic, ScanProgress name clash, three shell-escaping slips on a backslash literal", "A", "Edit", "Yes", 6000, 0.22, 4.0, "estimate", "waste - see journal pitfall"),
-    ("Build", "Hand-written Media Foundation interop: Source Reader, Sample, Buffer, Attributes, Sink Writer (no NuGet)", "A", "Write", "Yes", 14000, 0.55, 8.0, "estimate", "worked first time"),
-    ("Build", "Engine: VideoDecoder/ReaderSession (exact seek, stride, rotation), record + cache, scanner (Live Photos), matcher, keeper ranking, mover, settings, report, sample set", "A", "Write", "Yes", 34000, 1.30, 18.0, "estimate", ""),
-    ("Tests", "TestVideoWriter (encode MP4s at test time) + Media Foundation round-trip tests", "A", "Write", "Yes", 9000, 0.35, 5.0, "estimate", "no binary test files"),
-    ("Calibrate", "Probe: per-frame distances across re-encodes; found codec padding (160x88 decoded as 160x96) and brittle per-frame dHash", "A", "Write/Edit", "Yes", 14000, 0.50, 9.0, "estimate", "-> crop to aperture; judge dHash on the mean"),
-    ("Calibrate", "Run the probes", "B", "dotnet test", "No", 0, 0.0, 1.0, "measured", ""),
-    ("Build", "Review UI: VideoCardControl (film strip) + SimilarVideosControl", "A", "Write", "Yes", 22000, 0.85, 10.0, "estimate", ""),
-    ("Tests", "8 unit-test files + the scan -> group -> move -> rescan -> undo pipeline test + kit helper tests", "A", "Write", "Yes", 30000, 1.15, 15.0, "estimate", "all 622 green on the first run"),
-    ("Tests", "Unit + QA runs", "B", "dotnet test", "No", 0, 0.0, 1.0, "measured", "622 unit + 30 QA"),
-    ("Tests", "QA test (real plugin, sample, click) + DocShots hook; card layout fix after looking at the screenshot", "A", "Write/Edit", "Yes", 8000, 0.30, 5.0, "estimate", ""),
-    ("Docgen", "Regenerate DocShots screenshots (twice)", "B", "dotnet run", "No", 0, 0.0, 0.8, "measured", ""),
-    ("Docs", "FEATURE.md, requirement doc (SVD-1..20), user guide, manual section, hubs, README row, Pages card, kit README", "A", "Write", "Yes", 24000, 0.90, 12.0, "estimate", ""),
-    ("Docgen", "20 requirement + 11 traceability rows, SVD id in check_docs regex", "A", "Write", "Yes", 9000, 0.35, 4.0, "estimate", ""),
-    ("Docgen", "Regenerate requirements/traceability xlsx + HTML user manual; docs check", "B", "python + powershell", "No", 0, 0.0, 0.4, "measured", "cleanliness check PASSED"),
-    ("Gate", "Full quality gate", "B", "build.ps1 -All", "No", 0, 0.0, 1.7, "measured", "PASS, 652 tests, 93.9%"),
-    ("Release", "CHANGELOG 2.6.0, journal phase 25, DevEconomics, PM trackers, memory note", "A", "Write/Edit", "Yes", 12000, 0.45, 8.0, "estimate", "this release entry"),
+    ("Explore", "Read CLAUDE.md, trackers, Similar Videos + kit; probe this PC's encoders (MF HEVC/H.264, WIC); three design questions", "A", "Read/Bash", "Yes", 22000, 0.85, 9.0, "estimate", "owner: ffmpeg default + Windows, both originals options, all image options"),
+    ("Setup", "Install ffmpeg 9.0.2 (winget, owner's request) and list its encoders / muxers", "C", "winget", "No", 0, 0.0, 1.5, "measured", "x265, hevc_amf, libwebp, AVIF; no HEIF muxer"),
+    ("Gate", "Baseline quality gate before any change", "B", "build.ps1 -All", "No", 0, 0.0, 1.8, "measured", "PASS, 622 unit + 30 QA, 93.9%"),
+    ("Refactor", "ENH-18: Media Foundation interop moved into the kit (public, MFNative wrappers for CA1401); Similar Videos repointed", "A", "Bash/Edit", "Yes", 9000, 0.35, 5.0, "estimate", "one slip: removed a pre-existing solution folder, reverted"),
+    ("Build", "Kit: FfmpegLocator + ToolRunner, ShrinkSwap (temp -> verify -> swap -> undo), SavingsLedger, shared Verdict/FileOutcome", "A", "Write", "Yes", 16000, 0.62, 9.0, "estimate", ""),
+    ("Build", "Reduce Videos engine: facts + ffprobe/MF probes, advisor (bits/pixel), ffmpeg args, engines, MF transcoder, runner + verify", "A", "Write", "Yes", 42000, 1.60, 22.0, "estimate", ""),
+    ("Build", "Reduce Videos UI (3 partials), settings, scanner, text, sample", "A", "Write", "Yes", 24000, 0.92, 12.0, "estimate", ""),
+    ("Tests", "Real-video integration tests (MF + ffmpeg test sources) and the visible-size fix they found (368 vs 360)", "A", "Write/Edit", "Yes", 14000, 0.55, 8.0, "estimate", "8/8 after one fix"),
+    ("Tests", "Video unit tests: advisor, args/probe/SSIM parsing, runner with a fake engine, text/settings; kit tests", "A", "Write", "Yes", 26000, 1.00, 14.0, "estimate", "102 green"),
+    ("Build", "Reduce Images: facts, JPEG quality from DQT, photo/graphic probe, advisor, GDI+/ffmpeg encoder, PSNR guard, runner, UI, sample", "A", "Write", "Yes", 44000, 1.70, 24.0, "estimate", ""),
+    ("Tests", "Image tests: real pictures (EXIF, orientation, WebP/AVIF), rules; fixed GetBuffer bug, GDI+ q90=IJG q89, exact PNG clone", "A", "Write/Edit", "Yes", 24000, 0.92, 14.0, "estimate", "39 green"),
+    ("Tests", "Unit + QA runs (many, focused)", "B", "dotnet test", "No", 0, 0.0, 4.0, "measured", ""),
+    ("Tests", "QA test for both views + DocShots hooks; PII fix (ffmpeg path off the label and out of the sample log)", "A", "Write/Edit", "Yes", 9000, 0.35, 6.0, "estimate", "caught by looking at the screenshot"),
+    ("Docgen", "Regenerate DocShots screenshots (twice)", "B", "dotnet run", "No", 0, 0.0, 1.0, "measured", ""),
+    ("Docs", "2 FEATURE.md, 2 requirement docs, 2 user guides, 2 manual sections, hubs, README rows, Pages cards", "A", "Write", "Yes", 30000, 1.15, 15.0, "estimate", ""),
+    ("Docgen", "32 requirement + 13 traceability rows, RVD/RIM in the check_docs regex", "A", "Write", "Yes", 12000, 0.46, 6.0, "estimate", "inline script hit a shell-quoting limit; moved to a script file"),
+    ("Docgen", "Regenerate requirements/traceability xlsx + HTML user manual; docs check", "B", "python + powershell", "No", 0, 0.0, 0.5, "measured", "cleanliness check PASSED"),
+    ("Gate", "Full quality gate", "B", "build.ps1 -All", "No", 0, 0.0, 2.0, "measured", "see journal phase 26"),
+    ("Release", "CHANGELOG 2.7.0, journal phase 26, DevEconomics, PM trackers, memory notes", "A", "Write/Edit", "Yes", 14000, 0.54, 9.0, "estimate", ""),
     ("Gate", "Storage report", "B", "node storage-report.mjs", "No", 0, 0.0, 0.2, "measured", "docs/pm/STORAGE.md"),
 ]
 
-# Shared session overhead: one long session (no subagents) re-sends a large transcript each turn; this one
-# was longer than the last (a refactor plus a feature). Estimated; reconcile the total against /cost.
-CONTEXT_OVERHEAD_USD = 22.0
+# Shared session overhead: one long session (no subagents) re-sends a large transcript each turn; two features in
+# one session made it the longest yet. Estimated; reconcile the total against /cost.
+CONTEXT_OVERHEAD_USD = 34.0
 
-# Whole-app baseline for everything built BEFORE this release: the pluggable host, the first 10
-# features, and the quality/docs/CI/release infrastructure (phases 1-24, through v2.5.0). The tracked
-# Similar Pictures release (2.66 KLOC, 166,000 tokens, $20.31, 106.7 min) is folded in here so the App
-# Total stays correct as Similar Videos becomes the tracked feature.
+# Whole-app baseline for everything built BEFORE this release: the pluggable host, the first 11 features, the kit
+# and the quality/docs/CI/release infrastructure (phases 1-25, through v2.6.0). The tracked Similar Videos release
+# (2.60 KLOC, 231,000 tokens, $30.82, 130.3 min) is folded in here so the App Total stays correct.
 FOUNDATION = {
-    "name": "Prior releases (host + 10 features + quality/docs/CI/release infra, through v2.5.0)",
-    "date": "2026-06-19..10-30", "model": "Opus (multi-session)",
-    "kloc": 12.33, "tokens": 3_161_764, "cost_est": 126.70, "time_est": 1162.0,
-    "note": "Phases 1-17 predate DevEconomics tracking (rough estimate); includes the tracked v2.1.0-v2.5.0 releases.",
+    "name": "Prior releases (host + 11 features + kit + quality/docs/CI/release infra, through v2.6.0)",
+    "date": "2026-06-19..10-31", "model": "Opus (multi-session)",
+    "kloc": 14.93, "tokens": 3_392_764, "cost_est": 157.52, "time_est": 1292.3,
+    "note": "Phases 1-17 predate DevEconomics tracking (rough estimate); includes the tracked v2.1.0-v2.6.0 releases.",
 }
 
 ACT_HEADERS = ["#", "Phase", "Activity", "Bucket", "Tool / Method", "LLM?",
