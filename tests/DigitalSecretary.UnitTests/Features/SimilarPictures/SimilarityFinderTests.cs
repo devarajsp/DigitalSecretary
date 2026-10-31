@@ -1,4 +1,5 @@
 using System.Drawing;
+using DigitalSecretary.Kit;
 using DigitalSecretary.Features.SimilarPictures;
 using FluentAssertions;
 using Xunit;

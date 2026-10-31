@@ -24,6 +24,17 @@
     </ProjectReference>
   </ItemGroup>
 
+  <!--
+    Opt-in shared helper kit (ENH-12): a feature sets <UseKit>true</UseKit> to use DigitalSecretary.Kit.
+    Private=true (the default) copies the kit into that feature's plugin folder, where its own
+    PluginLoadContext loads it - so the host never references it and features still never reference
+    each other. The global using lets feature code say ByteSize / PauseToken / GrayImage directly.
+  -->
+  <ItemGroup Condition="'$(UseKit)' == 'true'">
+    <ProjectReference Include="$(MSBuildThisFileDirectory)..\DigitalSecretary.Kit\DigitalSecretary.Kit.csproj" />
+    <Using Include="DigitalSecretary.Kit" />
+  </ItemGroup>
+
   <!-- Every feature ships a plugin.json manifest next to its DLL. -->
   <ItemGroup>
     <Content Include="plugin.json" Condition="Exists('plugin.json')" CopyToOutputDirectory="PreserveNewest" />

@@ -1,4 +1,4 @@
-namespace DigitalSecretary.Features.StorageStudio;
+namespace DigitalSecretary.Kit;
 
 /// <summary>
 /// A pause/resume gate for a long-running loop. The worker calls <see cref="Wait"/> once per item;

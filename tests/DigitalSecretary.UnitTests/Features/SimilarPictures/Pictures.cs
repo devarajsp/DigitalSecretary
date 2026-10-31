@@ -1,6 +1,7 @@
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using DigitalSecretary.Kit;
 using DigitalSecretary.Features.SimilarPictures;
 
 namespace DigitalSecretary.UnitTests.Features.SimilarPictures;

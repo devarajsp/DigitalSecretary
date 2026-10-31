@@ -1,6 +1,6 @@
 using System.Numerics;
 
-namespace DigitalSecretary.Features.SimilarPictures;
+namespace DigitalSecretary.Kit;
 
 /// <summary>
 /// A picture's visual fingerprint: a perceptual hash (pHash) and a difference hash (dHash) for each

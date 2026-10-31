@@ -1,3 +1,4 @@
+using DigitalSecretary.Kit;
 using DigitalSecretary.Features.DeDupeFiles;
 using FluentAssertions;
 using Xunit;

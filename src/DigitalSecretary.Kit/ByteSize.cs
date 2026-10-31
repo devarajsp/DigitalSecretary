@@ -1,4 +1,4 @@
-namespace DigitalSecretary.Features.StorageStudio;
+namespace DigitalSecretary.Kit;
 
 /// <summary>
 /// Formats byte counts for people ("1.44 GB"). Pure and culture-free so the text in the UI,

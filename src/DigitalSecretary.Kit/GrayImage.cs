@@ -2,7 +2,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 
-namespace DigitalSecretary.Features.SimilarPictures;
+namespace DigitalSecretary.Kit;
 
 /// <summary>The eight ways a picture can be turned or mirrored (the symmetries of a rectangle).</summary>
 public enum PictureOrientation
@@ -15,6 +15,18 @@ public enum PictureOrientation
     MirrorTopBottom,
     MirrorDiagonal,
     MirrorAntiDiagonal
+}
+
+/// <summary>Arithmetic on <see cref="PictureOrientation"/>s.</summary>
+public static class Orientations
+{
+    /// <summary>The orientation that undoes <paramref name="o"/> (only the quarter turns differ).</summary>
+    public static PictureOrientation Inverse(PictureOrientation o) => o switch
+    {
+        PictureOrientation.Rotate90 => PictureOrientation.Rotate270,
+        PictureOrientation.Rotate270 => PictureOrientation.Rotate90,
+        _ => o
+    };
 }
 
 /// <summary>

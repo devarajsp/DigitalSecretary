@@ -39,21 +39,21 @@ plugin at the owner's request.
 ## Classes
 | Class | Role | Pure? |
 |---|---|---|
-| `GrayImage`, `PictureOrientation` | greyscale pixels, area-average resize, 8 transforms, Laplacian sharpness | yes (except `FromBitmap`) |
-| `ImageHasher`, `Fingerprint` | pHash (32x32 DCT, 8x8 low frequencies, median), dHash (9x8), 8 orientations | yes |
+| `GrayImage`, `PictureOrientation` (kit) | greyscale pixels, area-average resize, 8 transforms, Laplacian sharpness | yes (except `FromBitmap`) |
+| `ImageHasher`, `Fingerprint` (kit) | pHash (32x32 DCT, 8x8 low frequencies, median), dHash (9x8), 8 orientations | yes |
 | `PictureReader`, `ShellThumbnailProvider`, `GdiThumbnailProvider` | thumbnails + header (size, EXIF time, rotation) | I/O edge |
 | `PictureRecord`, `PictureCache` | one picture's facts; gzip cache per folder | cache is I/O |
 | `PictureScanner` | find pictures, bounded-parallel reading, incremental, pause/stop, autosave, prune | I/O edge |
 | `SimilarityFinder`, `Thresholds`, `FindOptions`, `SimilarGroup` | pair matching, tiers, star grouping, suggestions | yes |
 | `KeeperRanking` | which picture is kept | yes |
 | `GroupEdits` | "keep this one instead" | yes |
-| `ReviewMover` | plan (keepers never move), move/recycle, undo, last-batch file | I/O edge |
-| `FileBytes` | byte-for-byte check for exact copies | I/O edge |
+| `ReviewMover` | plan (keepers never move); moving, undo and the last-batch file are the kit's `ReviewFolder` | I/O edge |
+| `FileBytes` (kit) | byte-for-byte check for exact copies | I/O edge |
 | `SimilarReportText` | labels, summary, saved report | yes |
 | `SimilarPicturesSettings(Store)` | remembered options | I/O edge |
 | `SamplePictureSet` | generated pictures + placeholder paths for screenshots / tests | yes |
 | `PictureCardControl`, `SimilarPicturesControl` | review screen; wiring only | UI |
-| `ByteSize`, `PauseToken` | copies of the DeDupe Files helpers (features never reference each other) | yes |
+| `ByteSize`, `PauseToken` | from the shared helper kit (`src/DigitalSecretary.Kit`) | yes |
 
 ## The design decisions that matter
 **Two hashes must agree.** pHash is robust to scaling, compression and brightness; dHash is cheap and

@@ -55,9 +55,9 @@ the moment of deletion &mdash; if it has gone, the whole set is left alone.
 | `DuplicateAnalyzer.cs` | Pure analysis: groups, savings, and which copy to keep (`PickKeeper`). |
 | `DeleteEngine.cs` | Guarded deletion + `IFileDeleter` (Recycle Bin or permanent). |
 | `FileComparer.cs` | Byte-for-byte comparison &mdash; the guard in front of every delete. |
-| `PauseToken.cs` | The pause/resume gate the engines wait on. |
+| `PauseToken` (kit) | The pause/resume gate the engines wait on. |
 | `DeDupeReportText.cs` | Renders the saved text report. |
-| `ByteSize.cs` | Human-readable sizes. |
+| `ByteSize` (kit) | Human-readable sizes. |
 | `HexText.cs` | Lower-case hex, with no culture-sensitive casing. |
 | `DeDupeSettings.cs` | Settings model + JSON store, and the `KeeperPolicy` / `ExistingListAction` choices. |
 | `plugin.json` | Manifest. |

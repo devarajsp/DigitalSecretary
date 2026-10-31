@@ -1,8 +1,8 @@
-using DigitalSecretary.Features.DeDupeFiles;
+using DigitalSecretary.Kit;
 using FluentAssertions;
 using Xunit;
 
-namespace DigitalSecretary.UnitTests.Features;
+namespace DigitalSecretary.UnitTests.Kit;
 
 /// <summary>Covers the pause/resume gate a long scan or deletion checks once per file.</summary>
 public sealed class PauseTokenTests

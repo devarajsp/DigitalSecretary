@@ -49,7 +49,7 @@ Phase 1 of the Storage Studio strategy (similar pictures and similar videos come
 | `StorageSettings(Store)` | remembered folder + map levels | I/O edge |
 | `SampleSpaceTree` | placeholder tree for screenshots / QA (no real paths) | yes |
 | `TreemapControl`, `BarChartControl`, `StorageStudioControl` | painting + wiring only | UI |
-| `ByteSize`, `PauseToken` | copies of the DeDupe Files helpers (features never reference each other) | yes |
+| `ByteSize`, `PauseToken` | from the shared helper kit (`src/DigitalSecretary.Kit`) | yes |
 
 ## The design decisions that matter
 **Metadata only, never file contents.** A space map only needs sizes and dates, which the directory

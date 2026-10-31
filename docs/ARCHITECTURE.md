@@ -83,6 +83,12 @@ both sides, so the cast works. Everything else (e.g. MailKit) is resolved from t
 via the feature's `deps.json`. This is why a feature must set
 `CopyLocalLockFileAssemblies=true` when it uses NuGet packages.
 
+The **helper kit** `DigitalSecretary.Kit` (ENH-12, v2.6.0) is resolved the same way: a feature that
+sets `<UseKit>true</UseKit>` gets a project reference to it (see `src/Features/Directory.Build.props`),
+the kit DLL is copied into that feature's plugin folder, and that feature's `PluginLoadContext` loads its
+own copy. The kit is not part of the contract: the host never references it, and no kit type crosses the
+host/feature boundary, so two features loading two copies never conflict.
+
 ## Per-feature data
 `IFeatureContext.DataDirectory` → `%APPDATA%\DigitalSecretary\data\<feature-id>\`. The host creates
 it. A feature must store everything there and nowhere else; that keeps features independent and

@@ -212,10 +212,5 @@ public static class SimilarityFinder
     }
 
     /// <summary>The orientation that undoes <paramref name="o"/> (only the quarter turns differ).</summary>
-    public static PictureOrientation Inverse(PictureOrientation o) => o switch
-    {
-        PictureOrientation.Rotate90 => PictureOrientation.Rotate270,
-        PictureOrientation.Rotate270 => PictureOrientation.Rotate90,
-        _ => o
-    };
+    public static PictureOrientation Inverse(PictureOrientation o) => Orientations.Inverse(o);
 }

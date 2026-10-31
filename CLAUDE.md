@@ -14,7 +14,10 @@ important workflow in this repo is "add a feature" — keep it mechanical and re
 ## Golden rules
 1. **Never make the host reference a feature.** The host (`DigitalSecretary.App`) references only
    `DigitalSecretary.Abstractions`. Features reference only `DigitalSecretary.Abstractions`.
-   Features never reference each other.
+   Features never reference each other. The one exception is the **shared helper kit**
+   (`src/DigitalSecretary.Kit`, opt in with `<UseKit>true</UseKit>`): pure, contract-free helpers
+   (ByteSize, PauseToken, FileBytes, GrayImage/ImageHasher, ReviewFolder) that ship *inside* each
+   plugin folder. The host never references the kit. Move a helper there on its second copy, not its third.
 2. **One feature = one project** under `src/Features/<Name>/` + a `plugin.json` + a `FEATURE.md`.
 3. **Persist per feature**, only under `IFeatureContext.DataDirectory`. Never write to the host's
    settings or another feature's folder.

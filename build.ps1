@@ -52,6 +52,7 @@ function Friendly-Name($assembly) {
     switch ($assembly) {
         'DigitalSecretary'              { 'Host (DigitalSecretary.App)'; break }
         'DigitalSecretary.Abstractions' { 'Abstractions (contract)'; break }
+        'DigitalSecretary.Kit'          { 'Kit (shared helpers)'; break }
         default { $assembly -replace '^DigitalSecretary\.Features\.', 'Feature: ' }
     }
 }

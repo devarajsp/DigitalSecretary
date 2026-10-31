@@ -1,8 +1,8 @@
-using DigitalSecretary.Features.DeDupeFiles;
+using DigitalSecretary.Kit;
 using FluentAssertions;
 using Xunit;
 
-namespace DigitalSecretary.UnitTests.Features;
+namespace DigitalSecretary.UnitTests.Kit;
 
 /// <summary>Covers <see cref="ByteSize"/> - the human-readable byte formatting used everywhere.</summary>
 public sealed class ByteSizeTests

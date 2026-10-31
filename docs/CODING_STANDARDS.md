@@ -5,8 +5,9 @@ every build; this file is the full version. They are enforced by review, static 
 
 ## 1. Architecture boundaries
 - The **host never references a feature**. Features reference only `DigitalSecretary.Abstractions`.
-- Features never reference each other. Shared behaviour belongs in `Abstractions` (rarely) or is
-  duplicated deliberately.
+- Features never reference each other. Shared behaviour belongs in `Abstractions` (rarely - only when
+  every feature needs it) or in the **helper kit** `DigitalSecretary.Kit` (pure helpers several features
+  use; a feature opts in with `<UseKit>true</UseKit>` and ships its own copy of the kit DLL).
 - A feature persists data **only** under `IFeatureContext.DataDirectory`. Never write to the host's
   settings or another feature's folder.
 

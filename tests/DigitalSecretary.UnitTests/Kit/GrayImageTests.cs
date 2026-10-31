@@ -1,9 +1,9 @@
 using System.Drawing;
-using DigitalSecretary.Features.SimilarPictures;
+using DigitalSecretary.Kit;
 using FluentAssertions;
 using Xunit;
 
-namespace DigitalSecretary.UnitTests.Features.SimilarPictures;
+namespace DigitalSecretary.UnitTests.Kit;
 
 /// <summary>Covers <see cref="GrayImage"/> - greyscale conversion, resampling, turning and sharpness.</summary>
 public sealed class GrayImageTests
@@ -110,7 +110,7 @@ public sealed class GrayImageTests
         var img = Numbered(4, 3);
         foreach (var o in Enum.GetValues<PictureOrientation>())
         {
-            Pixels(img.Transform(o).Transform(SimilarityFinder.Inverse(o))).Should().Equal(Pixels(img), "for {0}", o);
+            Pixels(img.Transform(o).Transform(Orientations.Inverse(o))).Should().Equal(Pixels(img), "for {0}", o);
         }
     }
 

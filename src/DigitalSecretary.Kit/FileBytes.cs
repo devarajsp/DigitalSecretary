@@ -1,4 +1,4 @@
-namespace DigitalSecretary.Features.SimilarPictures;
+namespace DigitalSecretary.Kit;
 
 /// <summary>Byte-for-byte file comparison, used to confirm that a zero-distance pair is truly an exact copy.</summary>
 public static class FileBytes

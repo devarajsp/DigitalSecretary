@@ -3,7 +3,7 @@
 Bugs and enhancements are tracked **separately** (machine rule §8). IDs are never reused.
 Open items first, then the history. Keep this current **as** work happens, not after.
 
-**Counts:** 0 open bugs · 10 open enhancements (1 P1) · 1 item needs the owner.
+**Counts:** 0 open bugs · 9 open enhancements (1 P1) · 1 item needs the owner.
 
 ---
 
@@ -35,13 +35,13 @@ _None known._
 | ENH-4 | Improvement | P3 | DeDupe Files | Duplicate grid is capped at 5,000 rows for responsiveness; the full set is only in the saved report. Virtual-mode `ListView` would lift the cap. | Open |
 | ENH-5 | Feature | P3 | DeDupe Files | Deduplicate *across* two folders (compare folder A against folder B, delete only in B) — currently one tree at a time. | Open |
 | ENH-11 | Improvement | P3 | Storage Studio | Show *size on disk* (compression, cluster slack) next to the logical size. | Open |
-| ENH-12 | Tech debt | P2 | Features | `ByteSize` and `PauseToken` now exist in **three** features (DeDupe Files, Storage Studio, Similar Pictures) because features may not reference each other. The "third copy" trigger has been reached: decide on a shared, non-contract helper kit (needs the owner's go - it changes golden rule 1). | Open |
 | ENH-13 | Feature | P3 | Storage Studio | **Phase 4 (optional):** "similar in meaning" pictures via a local ONNX image-embedding model, off by default (~150 MB download). | Open |
 
 ### Done
 
 | ID | Type | Area | Summary | Version | Commit |
 |----|------|------|---------|---------|--------|
+| ENH-12 | Tech debt | Features | **Shared helper kit** `src/DigitalSecretary.Kit` (owner's go 2026-10-31): `ByteSize`, `PauseToken`, `FileBytes`, `GrayImage`/`ImageHasher`, and the undo-able `ReviewFolder` mover. Features opt in with `<UseKit>true</UseKit>` and ship their own copy of the kit DLL; the host never references it. Removed 3 copies of `ByteSize`/`PauseToken` and their 4 duplicate test files; golden rule 1 updated. | 2.6.0 | branch `feature/similar-videos` |
 | ENH-9 | Feature | Similar Pictures | **Phase 2 of the Storage Studio plan, own plugin:** Shell-thumbnail reading (HEIC/WebP/RAW with codecs), pHash + dHash in 8 orientations, Exact / Same picture / Similar tiers, EXIF-moment rule for bursts, star grouping with a ranked keeper, side-by-side review with manual verification, move to an undo-able review folder or Recycle Bin, incremental gzip cache. 18 requirements SIM-1…SIM-18. | 2.5.0 | see tag `v2.5.0` |
 | ENH-8 | Feature | Storage Studio | **Phase 1 - Space Map:** read-only metadata scan, clickable squarified size map coloured by type (1-3 levels), space by type and by age, largest files/folders, report-only clean-up candidates, "changes since last scan" from a gzip snapshot, pause/stop, Explorer actions, text report. 17 requirements SST-1…SST-17. | 2.4.0 | see tag `v2.4.0` |
 | ENH-6 | Feature | DeDupe Files | New feature plugin: MD5 checksum list per folder, incremental rescan, duplicate analysis with reclaimable space, guarded deletion (dry run, byte-for-byte verify, Recycle Bin), pause/resume/stop. 19 requirements DDF-1…DDF-19. | 2.3.0 | see tag `v2.3.0` |
