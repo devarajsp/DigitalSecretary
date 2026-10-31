@@ -5,7 +5,7 @@ the exact **▶ NEXT** step, so any later session can resume with no extra conte
 
 ---
 
-## 2026-10-31 — New feature: Similar Videos + shared helper kit (v2.6.0, branch `feature/similar-videos`)
+## 2026-10-31 — New feature: Similar Videos + shared helper kit (v2.6.0)
 
 **Done**
 - Wrote the Similar Videos strategy; owner: **"use defaults"** - kit first (ENH-12), no trimmed clips,
@@ -33,15 +33,18 @@ the exact **▶ NEXT** step, so any later session can resume with no extra conte
 **State**
 - `./build.ps1 -All` => **VERDICT: PASS** - 0 warnings, **622 unit + 30 QA**, overall coverage
   **93.9%**, Similar Videos **92.9%**, kit **96.1%**, docs consistent, PII scan clean.
-- Two commits on `feature/similar-videos` (kit, then feature); **not pushed, not merged, no tag/release**.
+- Two commits on `feature/similar-videos` (kit `279328c`, feature `2d8e98f`); PR #1 opened (CI green),
+  owner said "merge and release": fast-forwarded `main`, tagged `v2.6.0` and published the GitHub
+  release with `DigitalSecretary-v2.6.0-win-x64.zip` (54.8 MB, self-contained). Release staging folder
+  and the v2.5.0 zip/unpacked folder deleted (v2.5.0 zip verified on its GitHub release first).
 - Storage (§9): tracked 2.2 MB (+~0.1 MB: code, docs, one 60 KB screenshot); ignored build output now
   471.5 MB (two new projects' `bin`/`obj`, all regenerable). No video files are committed - test videos
   are made at test time in a temp folder and deleted.
 - Not done: a run on a real video folder in the app (verified with real MP4s made at test time, the QA
   click test and the generated sample).
 
-**▶ NEXT** — Owner reviews the branch, tries Similar Videos on a real videos folder, then decides:
-merge + tag `v2.6.0` + publish the release. Reconcile DevEconomics ACTUAL via `/cost` (OWN-3).
+**▶ NEXT** — Owner tries Similar Videos on a real videos folder and reports anything off. Reconcile
+DevEconomics ACTUAL via `/cost` (OWN-3). Then ENH-14 (faster grouping) or ENH-15 (trimmed clips).
 
 ---
 
