@@ -13,6 +13,8 @@ the exact **▶ NEXT** step, so any later session can resume with no extra conte
 - CI on the push **failed**: a test did not compile on the runner's newer SDK (**BUG-4**, `Span.Reverse()` vs LINQ).
   Fixed with `Enumerable.Reverse`, local gate PASS (763 unit + 36 QA, 93.3%), committed after the tag; the release zip
   is unaffected (test-only change).
+- The next CI run then failed a test that expected Windows' encoder to save 20% (the runner's saved 14%) -
+  **BUG-5**, test-only; the test now only requires a smaller copy. CI-equivalent gate PASS locally.
 - Deleted the v2.6.0 zip + unpacked folder and the release staging folder (v2.6.0 asset verified on GitHub first).
 
 **▶ NEXT** — Owner tries both Reduce Size features on a copy of a real folder and reports anything off. Reconcile
