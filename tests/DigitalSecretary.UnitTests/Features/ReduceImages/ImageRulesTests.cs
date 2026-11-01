@@ -112,7 +112,7 @@ public sealed class ImageRulesTests
     [Fact]
     public void Quantisation_tables_are_found_in_8_and_16_bit_form_and_junk_gives_zero()
     {
-        static byte[] Jpeg(byte[] dqt) => [0xFF, 0xD8, 0xFF, 0xE0, 0x00, 0x04, 0x00, 0x00, 0xFF, 0xDB, .. BitConverter.GetBytes((ushort)(dqt.Length + 2)).Reverse(), .. dqt, 0xFF, 0xDA, 0x00, 0x02];
+        static byte[] Jpeg(byte[] dqt) => [0xFF, 0xD8, 0xFF, 0xE0, 0x00, 0x04, 0x00, 0x00, 0xFF, 0xDB, .. Enumerable.Reverse(BitConverter.GetBytes((ushort)(dqt.Length + 2))), .. dqt, 0xFF, 0xDA, 0x00, 0x02];
         var q75 = JpegQuality.TableFor(75);
         byte[] eight = [0x00, .. q75.Select(v => (byte)v)];
         byte[] sixteen = [0x10, .. q75.SelectMany(v => new[] { (byte)0, (byte)v })];

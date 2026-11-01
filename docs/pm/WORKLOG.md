@@ -5,6 +5,19 @@ the exact **▶ NEXT** step, so any later session can resume with no extra conte
 
 ---
 
+## 2026-11-01 — Released v2.7.0 (Reduce Size - Videos + Images)
+
+**Done**
+- Owner said "Push and release": pushed `main` (`ba9f62a`), tagged `v2.7.0`, published the GitHub release with
+  `DigitalSecretary-v2.7.0-win-x64.zip` (55.3 MB, self-contained; uploaded size verified against the local file).
+- CI on the push **failed**: a test did not compile on the runner's newer SDK (**BUG-4**, `Span.Reverse()` vs LINQ).
+  Fixed with `Enumerable.Reverse`, local gate PASS (763 unit + 36 QA, 93.3%), committed after the tag; the release zip
+  is unaffected (test-only change).
+- Deleted the v2.6.0 zip + unpacked folder and the release staging folder (v2.6.0 asset verified on GitHub first).
+
+**▶ NEXT** — Owner tries both Reduce Size features on a copy of a real folder and reports anything off. Reconcile
+DevEconomics ACTUAL via `/cost` (OWN-3). ENH-39 (ffmpeg in CI).
+
 ## 2026-11-01 — New features: Reduce Size - Videos + Reduce Size - Images (v2.7.0)
 
 **Done**
